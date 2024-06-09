@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    tty: true
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mpp
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
