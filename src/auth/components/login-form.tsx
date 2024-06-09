@@ -2,6 +2,7 @@
 
 import { FormInput, Button } from "@/src/misc"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -52,12 +53,17 @@ export const LoginForm = () => {
         type='password'
         placeholder='Password'
         errorMessage={errors.password?.message}
-        helperText='Your password must be at least 12 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character'
         {...register("password")}
       />
-      <Button type='submit' className='mt-2'>
+      <Button type='submit' className='mt-1'>
         Login
       </Button>
+      <div className='text-center text-xs text-neutral-500'>
+        {`Don't have an account yet? `}
+        <Link href='/sign-up' className='underline'>
+          Create an account
+        </Link>
+      </div>
     </form>
   )
 }
