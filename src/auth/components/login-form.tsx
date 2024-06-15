@@ -2,22 +2,16 @@
 
 import { FormInput, Button } from "@/src/misc"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Router } from "next/router"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least one special character"
-    ),
+  password: z.string().min(1, "Password is required"),
 })
 
 type LoginFormData = z.infer<typeof schema>
@@ -31,9 +25,20 @@ export const LoginForm = () => {
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(schema),
   })
+  const router = useRouter()
 
-  const submit = (formData: LoginFormData) => {
-    console.log(formData)
+  const submit = async (formData: LoginFormData) => {
+    const response = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: false,
+    })
+    console.log(response)
+    if (!response || response?.error) {
+      router.replace(`/login?error=${response?.error}`)
+    } else {
+      router.replace("/")
+    }
   }
 
   return (

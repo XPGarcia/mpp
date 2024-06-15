@@ -3,6 +3,7 @@
 import { FormInput, Button } from "@/src/misc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -17,10 +18,7 @@ const schema = z
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
       .regex(/[a-z]/, "Password must contain at least one lowercase letter")
       .regex(/[0-9]/, "Password must contain at least one number")
-      .regex(
-        /[^A-Za-z0-9]/,
-        "Password must contain at least one special character"
-      ),
+      .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
     confirmPassword: z.string(),
   })
   .refine(
@@ -34,23 +32,35 @@ type SignUpFormData = z.infer<typeof schema>
 
 export const SignUpForm = () => {
   const {
+    reset,
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<SignUpFormData>({
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(schema),
   })
 
-  const submit = (formData: SignUpFormData) => {
-    console.log(formData)
+  const router = useRouter()
+
+  const submit = async (formData: SignUpFormData) => {
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+      if (response.ok) {
+        reset()
+        router.push("/login")
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
-    <form
-      className='flex flex-col gap-y-4 py-5'
-      onSubmit={handleSubmit(submit)}
-    >
+    <form className='flex flex-col gap-y-4 py-5' onSubmit={handleSubmit(submit)}>
       <div className='grid grid-cols-2 gap-4'>
         <FormInput
           label='First Name'
@@ -90,7 +100,7 @@ export const SignUpForm = () => {
         {...register("confirmPassword")}
       />
 
-      <Button type='submit' className='mt-1'>
+      <Button type='submit' className='mt-1' isLoading={isSubmitting}>
         Sign Up
       </Button>
       <div className='text-center text-xs text-neutral-500'>

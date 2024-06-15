@@ -1,11 +1,6 @@
-import { drizzle } from "drizzle-orm/node-postgres"
-import { Client } from "pg"
+import * as schema from "./schema/index"
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js"
+import postgres from "postgres"
 
-export const initDb = async () => {
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-  })
-
-  await client.connect()
-  return drizzle(client)
-}
+const client = postgres(process.env.DATABASE_URL ?? "")
+export const db: PostgresJsDatabase<typeof schema> = drizzle(client, { schema })
