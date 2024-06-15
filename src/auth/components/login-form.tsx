@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Router } from "next/router"
 import { useForm } from "react-hook-form"
+import toast from "react-hot-toast"
 import { z } from "zod"
 
 const schema = z.object({
@@ -20,7 +20,7 @@ export const LoginForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(schema),
@@ -33,19 +33,16 @@ export const LoginForm = () => {
       password: formData.password,
       redirect: false,
     })
-    console.log(response)
     if (!response || response?.error) {
-      router.replace(`/login?error=${response?.error}`)
+      toast.error(response?.error || "An error occurred")
     } else {
+      toast.success("Logged in successfully")
       router.replace("/")
     }
   }
 
   return (
-    <form
-      className='flex flex-col gap-y-4 py-5'
-      onSubmit={handleSubmit(submit)}
-    >
+    <form className='flex flex-col gap-y-4 py-5' onSubmit={handleSubmit(submit)}>
       <FormInput
         label='Email'
         type='email'
@@ -60,7 +57,7 @@ export const LoginForm = () => {
         errorMessage={errors.password?.message}
         {...register("password")}
       />
-      <Button type='submit' className='mt-1'>
+      <Button type='submit' className='mt-1' isLoading={isSubmitting}>
         Login
       </Button>
       <div className='text-center text-xs text-neutral-500'>

@@ -1,10 +1,15 @@
 "use client"
 
+import { RegisterOutput } from "@/app/api/register/route"
 import { FormInput, Button } from "@/src/misc"
+import { getErrorMessage } from "@/src/utils/errors/get-error-message"
+import { HttpClient } from "@/src/utils/http-client/http-client"
+import { ApiRoutes } from "@/src/utils/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
+import toast from "react-hot-toast"
 import { z } from "zod"
 
 const schema = z
@@ -45,17 +50,15 @@ export const SignUpForm = () => {
 
   const submit = async (formData: SignUpFormData) => {
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-      if (response.ok) {
-        reset()
-        router.push("/login")
+      const { error } = await HttpClient.post<RegisterOutput>(ApiRoutes.register, formData)
+      if (error) {
+        throw new Error(error)
       }
+      toast.success("Account created successfully")
+      router.push("/login")
     } catch (error) {
-      console.error(error)
+      const message = getErrorMessage(error)
+      toast.error(message)
     }
   }
 

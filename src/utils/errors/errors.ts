@@ -6,6 +6,7 @@ export class HttpError extends Error {
   constructor(message: string, options?: HttpErrorOptions) {
     super(message)
     this.status = options?.status ?? this.status
+    Error.captureStackTrace(this, this.constructor)
   }
 }
 

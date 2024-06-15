@@ -1,6 +1,6 @@
 import { login } from "@/src/auth/actions/login"
 import { UserRepository } from "@/src/auth/repositories/user-repository"
-import { BadRequestError, InternalServerError } from "@/src/misc/errors/errors"
+import { BadRequestError, InternalServerError } from "@/src/utils/errors/errors"
 import NextAuth, { DefaultSession } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
