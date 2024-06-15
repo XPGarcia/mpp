@@ -1,5 +1,6 @@
 import { createUser } from "@/src/auth/actions/create-user"
 import { ApiResponseBuilder } from "@/src/utils/api-response"
+import { apiMiddleware } from "@/src/utils/middlewares/apiMiddleware"
 import { type NextRequest } from "next/server"
 
 export type RegisterOutput = {
@@ -8,13 +9,10 @@ export type RegisterOutput = {
   email: string
 }
 
-export async function POST(request: NextRequest) {
+async function createUserApi(request: NextRequest) {
   const { firstName, lastName, email, password } = await request.json()
-  try {
-    await createUser({ firstName, lastName, email, password })
-  } catch (error) {
-    return ApiResponseBuilder.error({ error })
-  }
-
+  await createUser({ firstName, lastName, email, password })
   return ApiResponseBuilder.created({ data: { firstName, lastName, email } })
 }
+
+export const POST = apiMiddleware(createUserApi)

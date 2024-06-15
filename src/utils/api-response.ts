@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server"
 import { HttpError } from "./errors/errors"
 
 export type ApiResponse<T> = {
@@ -16,8 +17,8 @@ type ApiResponseErrorInput = {
 }
 
 export class ApiResponseBuilder<T> {
-  static ok({ data = {}, status = 200 }: ApiResponseInput): Response {
-    return Response.json(
+  static ok({ data = {}, status = 200 }: ApiResponseInput): NextResponse {
+    return NextResponse.json(
       {
         data,
       },
@@ -27,8 +28,8 @@ export class ApiResponseBuilder<T> {
     )
   }
 
-  static created<T>({ data = {}, status = 201 }: ApiResponseInput): Response {
-    return Response.json(
+  static created<T>({ data = {}, status = 201 }: ApiResponseInput): NextResponse {
+    return NextResponse.json(
       {
         data,
       },
@@ -36,7 +37,7 @@ export class ApiResponseBuilder<T> {
     )
   }
 
-  static error({ error }: ApiResponseErrorInput): Response {
+  static error({ error }: ApiResponseErrorInput): NextResponse {
     let name = "InternalServerError"
     let message = "Internal server error"
     if (error instanceof Error) {
@@ -48,7 +49,7 @@ export class ApiResponseBuilder<T> {
       status = error.status
     }
 
-    return Response.json(
+    return NextResponse.json(
       {
         error: message,
       },
