@@ -1,16 +1,18 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { Button } from "@/src/misc"
+import { signOut } from "next-auth/react"
+import { MouseEvent } from "react"
 
 export default function Home() {
-  const { data: session } = useSession()
-  console.log(session)
+  const logout = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    await signOut()
+  }
 
   return (
-    <main>
-      <div>
-        <h1>Home</h1>
-      </div>
+    <main className='flex w-full items-center justify-center p-4'>
+      <Button onClick={logout}>Logout</Button>
     </main>
   )
 }

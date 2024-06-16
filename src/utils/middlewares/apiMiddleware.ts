@@ -14,6 +14,7 @@ export const apiMiddleware =
         }
       }
     } catch (error) {
+      console.error(error)
       return ApiResponseBuilder.error({ error })
     }
   }

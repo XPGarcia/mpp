@@ -27,22 +27,27 @@ const handler = NextAuth({
         password: { type: "password" },
       },
       async authorize(credentials) {
-        const { user, error } = await login({
-          email: credentials?.email ?? "",
-          password: credentials?.password ?? "",
-        })
-        if (error) {
-          throw new BadRequestError(error)
-        }
-        if (!user) {
-          throw new InternalServerError("Something went wrong. Please try again later.")
-        }
+        try {
+          const { user, error } = await login({
+            email: credentials?.email ?? "",
+            password: credentials?.password ?? "",
+          })
+          if (error) {
+            throw new BadRequestError(error)
+          }
+          if (!user) {
+            throw new InternalServerError("Something went wrong. Please try again later.")
+          }
 
-        return {
-          id: user.id.toString(),
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          return {
+            id: user.id.toString(),
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          }
+        } catch (error) {
+          console.log(error)
+          throw new InternalServerError("Something went wrong. Please try again later.")
         }
       },
     }),
