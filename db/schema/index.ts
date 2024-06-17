@@ -45,6 +45,9 @@ export const transactions = pgTable("Transaction", {
   categoryId: integer("category_id")
     .references(() => categories.id)
     .notNull(),
+  userId: integer("user_id")
+    .references(() => users.id)
+    .notNull(),
   amount: doublePrecision("amount").notNull(),
   description: text("description"),
   date: timestamp("date").notNull(),

@@ -38,6 +38,7 @@ export const Button = ({
   className,
   isLoading = false,
   disabled,
+  type,
   ...props
 }: Props) => {
   const defaultStyle = styles[variant].default
@@ -46,7 +47,8 @@ export const Button = ({
 
   return (
     <button
-      className={`middle none center font-sans font-medium ${sizeStyle} ${defaultStyle} ${loadingStyle} $ ${className}`}
+      type={type ?? "button"}
+      className={`middle none center font-sans font-medium ${sizeStyle} ${defaultStyle} ${loadingStyle} ${className ?? ""}`}
       disabled={disabled || isLoading}
       {...props}
     >

@@ -1,3 +1,5 @@
+import { Category } from "@/src/categories/types"
+
 export const TransactionType = {
   INCOME: "INCOME",
   EXPENSE: "EXPENSE",
@@ -9,6 +11,8 @@ export type Transaction = {
   date: Date
   amount: number
   typeId: number
+  type?: TransactionType
   categoryId: number
+  category?: Category
   description?: string | null
 }

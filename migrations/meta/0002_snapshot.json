@@ -1,5 +1,5 @@
 {
-  "id": "a4864977-dfdc-4d18-b349-90781c0c2c0d",
+  "id": "1bb4f6dc-9100-4920-9855-64cdbc7c710d",
   "prevId": "4dd4a18b-f08f-433e-9a1e-74ba0994af50",
   "version": "7",
   "dialect": "postgresql",
@@ -123,6 +123,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
         "amount": {
           "name": "amount",
           "type": "double precision",
@@ -177,6 +183,19 @@
           "tableTo": "Category",
           "columnsFrom": [
             "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Transaction_user_id_User_id_fk": {
+          "name": "Transaction_user_id_User_id_fk",
+          "tableFrom": "Transaction",
+          "tableTo": "User",
+          "columnsFrom": [
+            "user_id"
           ],
           "columnsTo": [
             "id"

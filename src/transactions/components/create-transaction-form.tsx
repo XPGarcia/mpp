@@ -23,58 +23,88 @@ const schema = z.object({
 export type CreateTransactionFormData = z.infer<typeof schema>
 
 interface Props {
-  transactionType: TransactionType
   onSubmit: (data: CreateTransactionFormData) => void
+  onCancel: () => void
 }
 
-export const CreateTransactionForm = ({ transactionType, onSubmit }: Props) => {
+export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
   const {
     register,
     handleSubmit,
     setValue,
+    getValues,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<CreateTransactionFormData>({
-    defaultValues: { typeId: getTransactionTypeId(transactionType) },
+    defaultValues: { typeId: getTransactionTypeId(TransactionType.INCOME) },
     resolver: zodResolver(schema),
   })
 
-  const { categories } = useGetCategories(getTransactionTypeId(transactionType))
+  const transactionType = getValues().typeId
+
+  const { categories } = useGetCategories(transactionType)
 
   return (
-    <form className='flex flex-col gap-y-4' onSubmit={handleSubmit(onSubmit)}>
-      <FormInput
-        type='datetime-local'
-        label='Date'
-        errorMessage={errors.date?.message}
-        {...register("date", { valueAsDate: true })}
-      />
-      <FormInput
-        type='number'
-        label='Amount'
-        errorMessage={errors.amount?.message}
-        {...register("amount", { valueAsNumber: true })}
-      />
-      <FormInput
-        type='text'
-        label='Description'
-        errorMessage={errors.description?.message}
-        {...register("description")}
-      />
-      <FormSelect
-        id='categories'
-        label='Category'
-        errorMessage={errors.categoryId?.message}
-        options={categories.map((category) => ({ value: category.id, label: category.name }))}
-        onChange={(categoryId) => setValue("categoryId", Number(categoryId))}
-      />
-      <div className='mt-2 flex flex-col gap-2'>
-        <Button type='submit' isLoading={isSubmitting}>
-          Save {transactionType === TransactionType.INCOME ? "Income" : "Expense"}
+    <>
+      <div className='flex w-full justify-center gap-3'>
+        <Button
+          size='sm'
+          variant={transactionType === getTransactionTypeId(TransactionType.INCOME) ? "solid" : "outline"}
+          onClick={() => {
+            setValue("typeId", getTransactionTypeId(TransactionType.INCOME))
+            trigger("typeId")
+          }}
+        >
+          Income
         </Button>
-        <Button type='button' variant='ghost'>
-          Cancel
+        <Button
+          size='sm'
+          variant={transactionType === getTransactionTypeId(TransactionType.EXPENSE) ? "solid" : "outline"}
+          onClick={() => {
+            setValue("typeId", getTransactionTypeId(TransactionType.EXPENSE))
+            trigger("typeId")
+          }}
+        >
+          Expense
         </Button>
       </div>
-    </form>
+      <form className='mt-4 flex flex-col gap-y-4' onSubmit={handleSubmit(onSubmit)}>
+        <FormInput
+          type='datetime-local'
+          label='Date'
+          errorMessage={errors.date?.message}
+          {...register("date", { valueAsDate: true })}
+        />
+        <FormInput
+          type='number'
+          step='0.01'
+          label='Amount'
+          errorMessage={errors.amount?.message}
+          {...register("amount", { valueAsNumber: true })}
+        />
+        <FormSelect
+          id='categories'
+          label='Category'
+          errorMessage={errors.categoryId?.message}
+          options={categories.map((category) => ({ value: category.id, label: category.name }))}
+          onChange={(categoryId) => setValue("categoryId", Number(categoryId))}
+        />
+        <FormInput
+          type='text'
+          label='Description'
+          errorMessage={errors.description?.message}
+          {...register("description")}
+        />
+
+        <div className='mt-2 flex flex-col gap-2'>
+          <Button type='submit' isLoading={isSubmitting}>
+            Save {transactionType === getTransactionTypeId(TransactionType.INCOME) ? "Income" : "Expense"}
+          </Button>
+          <Button type='button' variant='ghost' onClick={onCancel}>
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </>
   )
 }
