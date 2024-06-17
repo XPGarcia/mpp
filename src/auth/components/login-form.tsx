@@ -44,6 +44,7 @@ export const LoginForm = () => {
   return (
     <form className='flex flex-col gap-y-4 py-5' onSubmit={handleSubmit(submit)}>
       <FormInput
+        size='lg'
         label='Email'
         type='email'
         placeholder='Email'
@@ -51,13 +52,14 @@ export const LoginForm = () => {
         {...register("email")}
       />
       <FormInput
+        size='lg'
         label='Password'
         type='password'
         placeholder='Password'
         errorMessage={errors.password?.message}
         {...register("password")}
       />
-      <Button type='submit' className='mt-1' isLoading={isSubmitting}>
+      <Button type='submit' size='lg' className='mt-1' isLoading={isSubmitting}>
         Login
       </Button>
       <div className='text-center text-xs text-neutral-500'>

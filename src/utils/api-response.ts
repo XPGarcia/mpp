@@ -28,7 +28,7 @@ export class ApiResponseBuilder<T> {
     )
   }
 
-  static created<T>({ data = {}, status = 201 }: ApiResponseInput): NextResponse {
+  static created({ data = {}, status = 201 }: ApiResponseInput): NextResponse {
     return NextResponse.json(
       {
         data,

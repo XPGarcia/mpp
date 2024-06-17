@@ -10,11 +10,24 @@ export class HttpClient {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     })
-    const data = await response.json()
+    const { data, error } = await response.json()
     if (response.ok) {
       return { data: data as T }
     }
 
-    return { error: data.error as string }
+    return { error: error as string }
+  }
+
+  static async get<T>(url: string): Promise<HttpClientResponse<T>> {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+    const { data, error } = await response.json()
+    if (response.ok) {
+      return { data: data as T }
+    }
+
+    return { error: error as string }
   }
 }
