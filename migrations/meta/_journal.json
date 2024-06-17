@@ -15,6 +15,13 @@
       "when": 1718556418590,
       "tag": "0001_clean_ultron",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1718595596721,
+      "tag": "0002_bouncy_the_twelve",
+      "breakpoints": true
     }
   ]
 }
