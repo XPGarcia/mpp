@@ -4,6 +4,7 @@ export const ApiRoutes = {
     `/api/categories?userId=${userId}&transactionTypeId=${transactionTypeId}`,
   createTransaction: "/api/transactions",
   getTransactions: (userId: number) => `/api/transactions?userId=${userId}`,
+  createCategoryForUser: "/api/categories/createForUser",
 }
 
 export const AppRoutes = {

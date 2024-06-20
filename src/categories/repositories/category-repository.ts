@@ -21,4 +21,17 @@ export class CategoryRepository {
         )
       )
   }
+
+  static async createForUser({
+    userId,
+    transactionTypeId,
+    name,
+  }: {
+    userId: number
+    transactionTypeId: number
+    name: string
+  }): Promise<Category> {
+    const createdCategories = await db.insert(categories).values({ userId, transactionTypeId, name }).returning()
+    return createdCategories[0]
+  }
 }

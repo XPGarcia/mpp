@@ -2,19 +2,15 @@ import { HttpClient } from "@/src/utils/http-client/http-client"
 import { ApiRoutes } from "@/src/utils/routes"
 import { useSession } from "next-auth/react"
 import { Category } from "../types"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
 export const useGetCategories = (transactionTypeId: number) => {
   const { data: session } = useSession()
   const [categories, setCategories] = useState<Category[]>([])
 
-  useEffect(() => {
-    if (!session?.user?.id) {
-      return
-    }
-
-    const fetchCategories = async (userId: number) => {
+  const fetchCategories = useCallback(
+    async (userId: number) => {
       try {
         const { data, error } = await HttpClient.get<Category[]>(
           ApiRoutes.userCategoriesByTransaction(userId, transactionTypeId)
@@ -32,10 +28,23 @@ export const useGetCategories = (transactionTypeId: number) => {
         console.error(error)
         toast.error("Something went wrong while fetching categories")
       }
+    },
+    [transactionTypeId]
+  )
+
+  useEffect(() => {
+    if (!session?.user?.id) {
+      return
     }
 
     fetchCategories(session.user.id)
-  }, [session?.user?.id, transactionTypeId])
+  }, [session?.user?.id, fetchCategories])
 
-  return { categories }
+  const refetch = () => {
+    if (session?.user?.id) {
+      fetchCategories(session.user.id)
+    }
+  }
+
+  return { categories, refetch }
 }
