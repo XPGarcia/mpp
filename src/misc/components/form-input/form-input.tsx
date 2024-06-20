@@ -17,6 +17,7 @@ interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   label?: string
   errorMessage?: string
   helperText?: string
+  leftElement?: React.ReactNode
 }
 
 const ErrorMessage = ({ message }: { message: string }) => {
@@ -24,7 +25,7 @@ const ErrorMessage = ({ message }: { message: string }) => {
 }
 
 export const FormInput = forwardRef<HTMLInputElement, Props>(
-  ({ size = "md", label, errorMessage, helperText, type = "text", onChange, ...props }, ref) => {
+  ({ size = "md", label, errorMessage, helperText, type = "text", onChange, leftElement, ...props }, ref) => {
     const hasError = errorMessage !== undefined
     const style = hasError ? styles.error : styles.default
     const sizeStyle = sizes[size]
@@ -32,12 +33,19 @@ export const FormInput = forwardRef<HTMLInputElement, Props>(
     return (
       <div>
         {label && <FormLabel>{label}</FormLabel>}
-        <input
-          ref={ref}
-          type={type}
-          className={`block w-full border bg-white px-3 text-gray-700 placeholder-gray-400/70 hover:border-shades-400 focus:outline-none focus:outline-1 focus:-outline-offset-2 focus:ring focus:ring-opacity-40 sm:px-5 ${style} ${sizeStyle}`}
-          {...props}
-        />
+        <div className='relative box-border'>
+          {leftElement && (
+            <div className='absolute left-[2px] top-[2px] flex h-[36px] w-10 items-center justify-center rounded-l-md border-transparent bg-gray-50'>
+              {leftElement}
+            </div>
+          )}
+          <input
+            ref={ref}
+            type={type}
+            className={`block w-full border bg-white pr-3 ${leftElement ? "pl-12" : "pl-3"} text-gray-700 placeholder-gray-400/70 hover:border-shades-400 focus:outline-none focus:outline-1 focus:-outline-offset-2 focus:ring focus:ring-opacity-40 sm:pr-5 ${style} ${sizeStyle}`}
+            {...props}
+          />
+        </div>
         {hasError && <ErrorMessage message={errorMessage} />}
         {helperText && <div className='mt-1 text-xxs text-neutral-500'>{helperText}</div>}
       </div>

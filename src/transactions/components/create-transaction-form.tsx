@@ -34,15 +34,27 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
     setValue,
     getValues,
     trigger,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<CreateTransactionFormData>({
-    defaultValues: { typeId: getTransactionTypeId(TransactionType.INCOME) },
+    defaultValues: {
+      typeId: getTransactionTypeId(TransactionType.INCOME),
+      date: undefined,
+      amount: undefined,
+      categoryId: undefined,
+      description: undefined,
+    },
     resolver: zodResolver(schema),
   })
 
   const transactionType = getValues().typeId
 
   const { categories } = useGetCategories(transactionType)
+
+  const submit = (data: CreateTransactionFormData) => {
+    reset()
+    onSubmit(data)
+  }
 
   return (
     <>
@@ -68,7 +80,7 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
           Expense
         </Button>
       </div>
-      <form className='mt-4 flex flex-col gap-y-4' onSubmit={handleSubmit(onSubmit)}>
+      <form className='mt-4 flex flex-col gap-y-4' onSubmit={handleSubmit(submit)}>
         <FormInput
           type='datetime-local'
           label='Date'
@@ -80,6 +92,7 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
           step='0.01'
           label='Amount'
           errorMessage={errors.amount?.message}
+          leftElement={<span className='text-shades-200'>$</span>}
           {...register("amount", { valueAsNumber: true })}
         />
         <FormSelect

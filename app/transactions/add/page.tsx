@@ -17,7 +17,6 @@ export default function AddTransaction() {
   const submit = async (data: CreateTransactionFormData) => {
     await createTransaction(data)
     toast.success("Transaction created successfully")
-    router.push("/")
   }
 
   const cancel = () => {
