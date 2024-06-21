@@ -15,7 +15,7 @@ export const BottomDrawer = ({ isOpen, onClose, title = "", children }: Props) =
   return (
     <>
       <div
-        className={`fixed bottom-0 left-0 right-0 z-40 w-full overflow-y-auto rounded-t-3xl bg-gray-100 px-4 pb-10 pt-4 transition-transform ${styles}`}
+        className={`fixed bottom-0 left-0 right-0 z-50 w-full overflow-y-auto rounded-t-3xl bg-gray-100 px-4 pb-10 pt-4 transition-transform ${styles}`}
         tabIndex={-1}
         {...ariaProperties}
       >

@@ -28,6 +28,7 @@ export const LoginForm = () => {
   const router = useRouter()
 
   const submit = async (formData: LoginFormData) => {
+    console.log(formData)
     const response = await signIn("credentials", {
       email: formData.email,
       password: formData.password,

@@ -5,7 +5,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {}
 export const FloatingAddButton = (props: Props) => {
   return (
     <button
-      className='fixed bottom-6 right-6 flex size-12 items-center justify-center rounded-full bg-shades-500'
+      className='fixed bottom-14 right-6 flex size-12 items-center justify-center rounded-full bg-shades-500'
       {...props}
     >
       <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' className='size-6'>
