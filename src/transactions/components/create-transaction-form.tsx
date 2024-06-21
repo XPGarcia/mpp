@@ -16,6 +16,7 @@ import {
   CreateCategoryFormData,
 } from "@/src/categories/components/create-category-form/create-category-form"
 import { useCreateCategoryForUser } from "@/src/categories/hooks/use-create-categories-for-user"
+import { Modal } from "@/src/misc/components/modal/modal"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -36,7 +37,7 @@ interface Props {
 }
 
 export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [openCategoryForm, setOpenCategoryForm] = useState(false)
   const {
     register,
     handleSubmit,
@@ -72,7 +73,7 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
     if (category) {
       refetch()
     }
-    setIsDrawerOpen(false)
+    setOpenCategoryForm(false)
   }
 
   return (
@@ -122,7 +123,7 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
             options={categories.map((category) => ({ value: category.id, label: category.name }))}
             onChange={(categoryId) => setValue("categoryId", Number(categoryId))}
           />
-          <Button size='sm' className='float-right mt-2' onClick={() => setIsDrawerOpen(true)}>
+          <Button size='sm' className='float-right mt-2' onClick={() => setOpenCategoryForm(true)}>
             <PlusIcon />
           </Button>
         </div>
@@ -143,13 +144,25 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
           </Button>
         </div>
       </form>
-      <BottomDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        title={`Want to create a new ${transactionType === getTransactionTypeId(TransactionType.INCOME) ? "income" : "expense"}?`}
-      >
-        <CreateCategoryForm transactionTypeId={transactionType} onSubmit={handleCreateCategory} />
-      </BottomDrawer>
+      <div className='block md:hidden'>
+        <BottomDrawer
+          isOpen={openCategoryForm}
+          onClose={() => setOpenCategoryForm(false)}
+          title={`New ${transactionType === getTransactionTypeId(TransactionType.INCOME) ? "income" : "expense"} category`}
+        >
+          <CreateCategoryForm transactionTypeId={transactionType} onSubmit={handleCreateCategory} />
+        </BottomDrawer>
+      </div>
+      <div className='hidden md:block'>
+        <Modal
+          isOpen={openCategoryForm}
+          onClose={() => setOpenCategoryForm(false)}
+          title={`New ${transactionType === getTransactionTypeId(TransactionType.INCOME) ? "income" : "expense"} category`}
+          isCentered
+        >
+          <CreateCategoryForm transactionTypeId={transactionType} onSubmit={handleCreateCategory} />
+        </Modal>
+      </div>
     </>
   )
 }

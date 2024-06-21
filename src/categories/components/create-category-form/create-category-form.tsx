@@ -43,8 +43,8 @@ export const CreateCategoryForm = ({ transactionTypeId, onSubmit }: Props) => {
     <form className='flex flex-col gap-3' onSubmit={handleSubmit(submit)}>
       <FormInput
         type='text'
-        label='Category Name'
-        placeholder='Food'
+        label='Name'
+        placeholder='Food...'
         errorMessage={errors.name?.message}
         {...register("name")}
       />
