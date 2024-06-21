@@ -30,7 +30,7 @@ export const useTransactionsBalance = () => {
 
         const { income, expenses, total } = calculateBalance(data)
         setBalance(() => ({ income, expenses, total }))
-        setTransactions(data)
+        setTransactions(data.map((transaction) => ({ ...transaction, date: new Date(transaction.date) })))
       } catch (error) {
         console.error(error)
         toast.error("Something went wrong while fetching transactions")
