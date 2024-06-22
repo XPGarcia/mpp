@@ -1,18 +1,20 @@
 "use client"
 
 import { CreateTransactionForm, CreateTransactionFormData } from "@/src/transactions/components/create-transaction-form"
-import { useCreateTransaction } from "@/src/transactions/hooks/use-create-transaction"
+import { trpc } from "@/src/utils/_trpc/client"
 import { AppRoutes } from "@/src/utils/routes"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 
 export default function AddTransaction() {
+  const { data: session } = useSession()
   const router = useRouter()
 
-  const { createTransaction } = useCreateTransaction()
+  const createTransaction = trpc.transactions.createOne.useMutation()
 
   const submit = async (data: CreateTransactionFormData) => {
-    await createTransaction(data)
+    await createTransaction.mutateAsync({ ...data, userId: session?.user?.id ?? 0 })
     toast.success("Transaction created successfully")
   }
 

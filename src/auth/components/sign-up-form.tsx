@@ -1,10 +1,9 @@
 "use client"
 
-import { RegisterOutput } from "@/app/api/register/route"
 import { FormInput, Button } from "@/src/misc"
+import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
-import { HttpClient } from "@/src/utils/http-client/http-client"
-import { ApiRoutes } from "@/src/utils/routes"
+import { AppRoutes } from "@/src/utils/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -37,7 +36,6 @@ type SignUpFormData = z.infer<typeof schema>
 
 export const SignUpForm = () => {
   const {
-    reset,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -48,14 +46,13 @@ export const SignUpForm = () => {
 
   const router = useRouter()
 
+  const { mutateAsync: registerUser } = trpc.users.register.useMutation()
+
   const submit = async (formData: SignUpFormData) => {
     try {
-      const { error } = await HttpClient.post<RegisterOutput>(ApiRoutes.register, formData)
-      if (error) {
-        throw new Error(error)
-      }
+      await registerUser(formData)
       toast.success("Account created successfully")
-      router.push("/login")
+      router.push(AppRoutes.login)
     } catch (error) {
       const message = getErrorMessage(error)
       toast.error(message)
@@ -108,7 +105,7 @@ export const SignUpForm = () => {
       </Button>
       <div className='text-center text-xs text-neutral-500'>
         {`Do you have an account yet? `}
-        <Link href='/login' className='underline'>
+        <Link href={AppRoutes.login} className='underline'>
           Log in
         </Link>
         {` into your account`}

@@ -2,7 +2,7 @@ import { TransactionRepository } from "../repositories/transaction-repository"
 
 interface CreateTransactionInput {
   userId: number
-  date: string
+  date: Date
   amount: number
   categoryId: number
   typeId: number

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { HttpError } from "./errors/errors"
+import { HttpError } from "../errors/errors"
 
 export type ApiResponse<T> = {
   data: T

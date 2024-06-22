@@ -1,5 +1,6 @@
 "use client"
 
+import { TRPCProvider } from "@/src/utils/_trpc/provider"
 import { Session } from "next-auth"
 import { SessionProvider } from "next-auth/react"
 
@@ -11,5 +12,9 @@ interface Props {
 }
 
 export const Providers = ({ children, params }: Props) => {
-  return <SessionProvider session={params.session}>{children}</SessionProvider>
+  return (
+    <SessionProvider session={params.session}>
+      <TRPCProvider>{children}</TRPCProvider>
+    </SessionProvider>
+  )
 }

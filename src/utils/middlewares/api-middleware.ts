@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server"
-import { ApiResponseBuilder } from "../api-response"
+import { ApiResponseBuilder } from "./api-response"
 
 export const apiMiddleware =
   (...handlers: Function[]) =>

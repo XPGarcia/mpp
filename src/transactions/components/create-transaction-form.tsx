@@ -6,18 +6,17 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { TransactionType } from "../types"
-import { useGetCategories } from "@/src/categories/hooks/use-get-categories"
 import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
-import { PlusIcon } from "@/src/misc/components/icons/plus-icon"
 import { BottomDrawer } from "@/src/misc/components/bottom-drawer/bottom-drawer"
 import { useState } from "react"
 import {
   CreateCategoryForm,
   CreateCategoryFormData,
 } from "@/src/categories/components/create-category-form/create-category-form"
-import { useCreateCategoryForUser } from "@/src/categories/hooks/use-create-categories-for-user"
 import { Modal } from "@/src/misc/components/modal/modal"
 import { Icon } from "@/src/misc/components/icons/icon"
+import { trpc } from "@/src/utils/_trpc/client"
+import { useSession } from "next-auth/react"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -38,6 +37,7 @@ interface Props {
 }
 
 export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
+  const { data: session } = useSession()
   const [openCategoryForm, setOpenCategoryForm] = useState(false)
   const {
     register,
@@ -60,9 +60,17 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
 
   const transactionType = getValues().typeId
 
-  const { categories, refetch } = useGetCategories(transactionType)
+  const { data: categories, refetch: refetchCategories } = trpc.categories.findManyByUser.useQuery(
+    {
+      userId: session?.user?.id ?? 0,
+      transactionTypeId: transactionType,
+    },
+    {
+      enabled: Boolean(session?.user?.id),
+    }
+  )
 
-  const { createCategoryForUser } = useCreateCategoryForUser()
+  const { mutateAsync: createCategoryForUser } = trpc.categories.createOneForUser.useMutation()
 
   const submit = (data: CreateTransactionFormData) => {
     reset()
@@ -70,9 +78,9 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
   }
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
-    const category = await createCategoryForUser(data)
+    const category = await createCategoryForUser({ ...data, userId: session?.user?.id ?? 0 })
     if (category) {
-      refetch()
+      await refetchCategories()
     }
     setOpenCategoryForm(false)
   }
@@ -121,7 +129,7 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
             id='categories'
             label='Category'
             errorMessage={errors.categoryId?.message}
-            options={categories.map((category) => ({ value: category.id, label: category.name }))}
+            options={categories?.map((category) => ({ value: category.id, label: category.name })) ?? []}
             onChange={(categoryId) => setValue("categoryId", Number(categoryId))}
           />
           <Button size='sm' className='float-right mt-2' onClick={() => setOpenCategoryForm(true)}>

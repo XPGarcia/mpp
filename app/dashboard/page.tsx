@@ -1,41 +1,43 @@
 "use client"
 
 import { FloatingAddButton } from "@/src/misc/components/floating-add-button/floating-add-button"
-import { useTransactionsBalance } from "@/src/transactions/hooks/use-transactions-balance"
 import { Transaction, TransactionType } from "@/src/transactions/types"
+import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
 import { AppRoutes } from "@/src/utils/routes"
 import dayjs from "dayjs"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 export default function Dashboard() {
+  const { data: session } = useSession()
   const router = useRouter()
 
-  const {
-    balance: { income, expenses, total },
-    transactions,
-  } = useTransactionsBalance()
+  const { data } = trpc.transactions.getUserTransactionsWithBalance.useQuery(
+    { userId: session?.user?.id ?? 0 },
+    { enabled: Boolean(session?.user?.id) }
+  )
 
   const addTransaction = () => {
     router.push(AppRoutes.addTransaction)
   }
 
-  const groupTransactionsByDate = (transactions: Transaction[]): { [key: string]: Transaction[] } => {
+  const groupTransactionsByDate = (transactions?: Transaction[]): { [key: string]: Transaction[] } => {
     const groupedTransactionsByDate: { [key: string]: Transaction[] } = {}
 
-    transactions.forEach((transaction) => {
+    for (const transaction of transactions ?? []) {
       const formattedDate = dayjs(transaction.date).format("YYYY-MM-DD")
       if (!groupedTransactionsByDate[formattedDate]) {
         groupedTransactionsByDate[formattedDate] = []
       }
       groupedTransactionsByDate[formattedDate].push(transaction)
-    })
+    }
 
     return groupedTransactionsByDate
   }
 
-  const groupedTransactionsByDate = groupTransactionsByDate(transactions)
+  const groupedTransactionsByDate = groupTransactionsByDate(data?.transactions)
 
   return (
     <main className='flex w-full flex-col'>
@@ -43,15 +45,15 @@ export default function Dashboard() {
       <div className='flex w-full justify-between px-8 pt-3'>
         <div className='block text-center'>
           <p className='mb-0.5 text-xs font-medium text-shades-300'>Income</p>
-          <p className='text-xs font-bold text-blue-500'>{formatNumberToMoney(income)}</p>
+          <p className='text-xs font-bold text-blue-500'>{formatNumberToMoney(data?.balance.income)}</p>
         </div>
         <div className='block text-center'>
           <p className='mb-0.5 text-xs font-medium text-shades-300'>Expenses</p>
-          <p className='text-xs font-bold text-red-500'>{formatNumberToMoney(expenses)}</p>
+          <p className='text-xs font-bold text-red-500'>{formatNumberToMoney(data?.balance.expenses)}</p>
         </div>
         <div className='block text-center'>
           <p className='mb-0.5 text-xs font-medium text-shades-300'>Total</p>
-          <p className='text-xs font-bold text-shades-500'>{formatNumberToMoney(total)}</p>
+          <p className='text-xs font-bold text-shades-500'>{formatNumberToMoney(data?.balance.expenses)}</p>
         </div>
       </div>
       <div className='flex w-full flex-col gap-6 px-4 pt-6'>
