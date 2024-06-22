@@ -1,5 +1,6 @@
 import { ButtonHTMLAttributes } from "react"
 import { LoadingIcon } from "../icons/loading-icon"
+import { Icon } from "../icons/icon"
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md" | "lg"
@@ -52,7 +53,7 @@ export const Button = ({
       disabled={disabled || isLoading}
       {...props}
     >
-      {!isLoading ? children : <LoadingIcon />}
+      {!isLoading ? children : <Icon icon='loading' />}
     </button>
   )
 }

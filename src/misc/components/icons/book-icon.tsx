@@ -1,4 +1,6 @@
-export const BookIcon = () => {
+import { InternalIconProps } from "./types"
+
+export const BookIcon = ({ className }: InternalIconProps) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -6,7 +8,7 @@ export const BookIcon = () => {
       viewBox='0 0 24 24'
       strokeWidth='1.5'
       stroke='currentColor'
-      className='size-5'
+      className={className}
     >
       <path
         strokeLinecap='round'

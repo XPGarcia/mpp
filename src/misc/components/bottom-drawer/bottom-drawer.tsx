@@ -1,5 +1,6 @@
 import { ReactNode } from "react"
 import { Backdrop } from "../backdrop/backdrop"
+import { Icon } from "../icons/icon"
 
 interface Props {
   isOpen: boolean
@@ -24,21 +25,7 @@ export const BottomDrawer = ({ isOpen, onClose, title = "", children }: Props) =
           className='absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-shades-100'
           onClick={onClose}
         >
-          <svg
-            className='h-3 w-3'
-            aria-hidden='true'
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 14 14'
-          >
-            <path
-              stroke='currentColor'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
-            />
-          </svg>
+          <Icon icon='x-mark' />
         </button>
 
         <div>

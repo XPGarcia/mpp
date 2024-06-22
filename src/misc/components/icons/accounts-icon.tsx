@@ -1,6 +1,6 @@
-import { IconProps } from "./types"
+import { InternalIconProps } from "./types"
 
-export const AccountsIcon = ({ size = "5" }: IconProps) => {
+export const AccountsIcon = ({ className }: InternalIconProps) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -8,7 +8,7 @@ export const AccountsIcon = ({ size = "5" }: IconProps) => {
       viewBox='0 0 24 24'
       strokeWidth='1.5'
       stroke='currentColor'
-      className={`size-${size}`}
+      className={className}
     >
       <path
         strokeLinecap='round'

@@ -17,6 +17,7 @@ import {
 } from "@/src/categories/components/create-category-form/create-category-form"
 import { useCreateCategoryForUser } from "@/src/categories/hooks/use-create-categories-for-user"
 import { Modal } from "@/src/misc/components/modal/modal"
+import { Icon } from "@/src/misc/components/icons/icon"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -124,7 +125,7 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
             onChange={(categoryId) => setValue("categoryId", Number(categoryId))}
           />
           <Button size='sm' className='float-right mt-2' onClick={() => setOpenCategoryForm(true)}>
-            <PlusIcon />
+            <Icon icon='plus' />
           </Button>
         </div>
 

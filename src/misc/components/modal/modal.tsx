@@ -1,6 +1,7 @@
 import { ReactNode } from "react"
 import { Backdrop } from "../backdrop/backdrop"
 import { XMarkIcon } from "../icons/x-mark-icon"
+import { Icon } from "../icons/icon"
 
 interface Props {
   isOpen: boolean
@@ -28,7 +29,7 @@ export const Modal = ({ isOpen, onClose, title = "", isCentered, children }: Pro
             className='absolute right-6 top-4 z-10 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-shades-100'
             onClick={onClose}
           >
-            <XMarkIcon />
+            <Icon icon='x-mark' />
           </button>
           <div className='relative rounded-2xl bg-gray-100 p-8 shadow'>
             <p className='pb-2 text-lg font-medium'>{title}</p>
