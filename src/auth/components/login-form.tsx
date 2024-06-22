@@ -1,6 +1,7 @@
 "use client"
 
 import { FormInput, Button } from "@/src/misc"
+import { AppRoutes } from "@/src/utils/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
 import Link from "next/link"
@@ -28,7 +29,6 @@ export const LoginForm = () => {
   const router = useRouter()
 
   const submit = async (formData: LoginFormData) => {
-    console.log(formData)
     const response = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
@@ -38,7 +38,7 @@ export const LoginForm = () => {
       toast.error(response?.error || "An error occurred")
     } else {
       toast.success("Logged in successfully")
-      router.replace("/")
+      router.replace(AppRoutes.dashboard)
     }
   }
 

@@ -2,6 +2,7 @@
 
 import { CreateTransactionForm, CreateTransactionFormData } from "@/src/transactions/components/create-transaction-form"
 import { useCreateTransaction } from "@/src/transactions/hooks/use-create-transaction"
+import { AppRoutes } from "@/src/utils/routes"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 
@@ -16,7 +17,7 @@ export default function AddTransaction() {
   }
 
   const cancel = () => {
-    router.push("/")
+    router.push(AppRoutes.dashboard)
   }
 
   return (

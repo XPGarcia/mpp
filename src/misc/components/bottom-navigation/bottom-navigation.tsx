@@ -1,14 +1,10 @@
 "use client"
 
-import { usePathname, useRouter } from "next/navigation"
-import { BookIcon } from "../icons/book-icon"
-import { StatsIcon } from "../icons/stats-icon"
-import { AccountsIcon } from "../icons/accounts-icon"
-import { HorizontalDotsIcon } from "../icons/horizontal-dots-icon"
+import { useRouter } from "next/navigation"
 import { Icon } from "../icons/icon"
+import { AppRoutes } from "@/src/utils/routes"
 
 export const BottomNavigation = () => {
-  const pathName = usePathname()
   const router = useRouter()
 
   const options = [
@@ -16,33 +12,31 @@ export const BottomNavigation = () => {
       label: "Trans.",
       icon: <Icon icon='book' />,
       onClick: () => {
-        router.push("/")
+        router.push(AppRoutes.dashboard)
       },
     },
     {
       label: "Stats",
       icon: <Icon icon='stats' />,
       onClick: () => {
-        router.push("/stats")
+        router.push(AppRoutes.stats)
       },
     },
     {
       label: "Accounts",
       icon: <Icon icon='accounts' />,
       onClick: () => {
-        router.push("/accounts")
+        router.push(AppRoutes.accounts)
       },
     },
     {
       label: "More",
       icon: <Icon icon='horizontal-dots' />,
       onClick: () => {
-        router.push("/options")
+        router.push(AppRoutes.options)
       },
     },
   ]
-
-  if (pathName.startsWith("/login") || pathName.startsWith("/sign-up")) return <></>
 
   return (
     <div className='fixed bottom-0 left-0 z-40 h-[58px] w-full bg-shades-500'>

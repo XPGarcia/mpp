@@ -3,6 +3,7 @@
 import { AccountsIcon } from "@/src/misc/components/icons/accounts-icon"
 import { DangerIcon } from "@/src/misc/components/icons/danger-icon"
 import { Icon } from "@/src/misc/components/icons/icon"
+import { AppRoutes } from "@/src/utils/routes"
 import { signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { MouseEvent } from "react"
@@ -20,7 +21,7 @@ export default function Options() {
       label: "Accounts",
       icon: <Icon icon='accounts' size='lg' />,
       onClick: () => {
-        router.push("/accounts")
+        router.push(AppRoutes.accounts)
       },
     },
     {

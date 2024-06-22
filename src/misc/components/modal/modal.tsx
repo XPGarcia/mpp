@@ -1,6 +1,5 @@
 import { ReactNode } from "react"
 import { Backdrop } from "../backdrop/backdrop"
-import { XMarkIcon } from "../icons/x-mark-icon"
 import { Icon } from "../icons/icon"
 
 interface Props {

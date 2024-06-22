@@ -7,6 +7,11 @@ export const ApiRoutes = {
   createCategoryForUser: "/api/categories/createForUser",
 }
 
+const appRoot = "/dashboard"
 export const AppRoutes = {
-  addTransaction: "/transactions/add",
+  dashboard: appRoot,
+  accounts: `${appRoot}/accounts`,
+  stats: `${appRoot}/stats`,
+  options: `${appRoot}/options`,
+  addTransaction: `${appRoot}/transactions/add`,
 }
