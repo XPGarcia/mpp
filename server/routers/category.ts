@@ -1,10 +1,10 @@
 import { z } from "zod"
-import { procedure, router } from "../trpc"
+import { privateProcedure, router } from "../trpc"
 import { createCategoryForUser } from "@/src/categories/actions/create-category-for-user"
 import { CategoryRepository } from "@/src/categories/repositories/category-repository"
 
 export const categoryRouter = router({
-  createOneForUser: procedure
+  createOneForUser: privateProcedure
     .input(
       z.object({
         userId: z.number().min(1),
@@ -17,7 +17,7 @@ export const categoryRouter = router({
       const category = await createCategoryForUser({ userId, transactionTypeId, name })
       return category
     }),
-  findManyByUser: procedure
+  findManyByUser: privateProcedure
     .input(
       z.object({
         userId: z.number().min(1),

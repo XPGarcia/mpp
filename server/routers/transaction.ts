@@ -1,11 +1,11 @@
 import { z } from "zod"
-import { procedure, router } from "../trpc"
+import { privateProcedure, router } from "../trpc"
 import { TransactionRepository } from "@/src/transactions/repositories/transaction-repository"
 import { createTransaction } from "@/src/transactions/actions/create-transaction"
 import { calculateBalance } from "@/src/transactions/actions/calculate-balance"
 
 export const transactionRouter = router({
-  findManyByUserId: procedure
+  findManyByUserId: privateProcedure
     .input(
       z.object({
         userId: z.number().min(1),
@@ -15,7 +15,7 @@ export const transactionRouter = router({
       const transactions = await TransactionRepository.findAllByUserId(input.userId)
       return transactions
     }),
-  createOne: procedure
+  createOne: privateProcedure
     .input(
       z.object({
         userId: z.number().min(1),
@@ -38,7 +38,7 @@ export const transactionRouter = router({
       })
       return createdTransaction
     }),
-  getUserTransactionsWithBalance: procedure
+  getUserTransactionsWithBalance: privateProcedure
     .input(
       z.object({
         userId: z.number().min(1),
@@ -49,4 +49,7 @@ export const transactionRouter = router({
       const balance = calculateBalance(transactions)
       return { balance, transactions }
     }),
+  test: privateProcedure.input(z.object({})).query(async () => {
+    return [10, 20, 30]
+  }),
 })

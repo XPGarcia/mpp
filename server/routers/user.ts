@@ -1,9 +1,9 @@
 import { z } from "zod"
-import { procedure, router } from "../trpc"
+import { publicProcedure, router } from "../trpc"
 import { createUser } from "@/src/auth/actions/create-user"
 
 export const userRouter = router({
-  register: procedure
+  register: publicProcedure
     .input(
       z.object({
         firstName: z.string().min(1),

@@ -1,9 +1,9 @@
 import { z } from "zod"
-import { procedure, router } from "../trpc"
+import { privateProcedure, router } from "../trpc"
 import { submitFeedback } from "@/src/feedback/actions/subtmit-feedback"
 
 export const feedbackRouter = router({
-  submitOne: procedure
+  submitOne: privateProcedure
     .input(
       z.object({
         userId: z.number().min(1),
