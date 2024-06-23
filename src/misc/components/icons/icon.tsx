@@ -8,6 +8,7 @@ import { PlusIcon } from "./plus-icon"
 import { StatsIcon } from "./stats-icon"
 import { IconProps, InternalIconProps } from "./types"
 import { XMarkIcon } from "./x-mark-icon"
+import { EnvelopeOpenIcon } from "./envelope-open"
 
 const styles = {
   sm: "size-4",
@@ -25,6 +26,7 @@ const IconBuilder = (icon: IconType, internalProps: InternalIconProps) => {
     plus: <PlusIcon {...internalProps} />,
     stats: <StatsIcon {...internalProps} />,
     "x-mark": <XMarkIcon {...internalProps} />,
+    "envelope-open": <EnvelopeOpenIcon {...internalProps} />,
   }
   return icons[icon]
 }

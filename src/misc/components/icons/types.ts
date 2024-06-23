@@ -16,5 +16,6 @@ export const Icons = {
   plus: "plus",
   stats: "stats",
   "x-mark": "x-mark",
+  "envelope-open": "envelope-open",
 } as const
 export type Icon = (typeof Icons)[keyof typeof Icons]

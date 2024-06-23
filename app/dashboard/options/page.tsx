@@ -25,6 +25,13 @@ export default function Options() {
       },
     },
     {
+      label: "Feedback",
+      icon: <Icon icon='envelope-open' size='lg' />,
+      onClick: () => {
+        router.push(AppRoutes.feedback)
+      },
+    },
+    {
       label: "Logout",
       icon: <Icon icon='danger' size='lg' />,
       onClick: logout,

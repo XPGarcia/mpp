@@ -1,7 +1,6 @@
 "use client"
 
 import { FormInput, Button } from "@/src/misc"
-import { trpc } from "@/src/utils/_trpc/client"
 import { AppRoutes } from "@/src/utils/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"

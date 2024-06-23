@@ -53,7 +53,7 @@ export default function Dashboard() {
         </div>
         <div className='block text-center'>
           <p className='mb-0.5 text-xs font-medium text-shades-300'>Total</p>
-          <p className='text-xs font-bold text-shades-500'>{formatNumberToMoney(data?.balance.expenses)}</p>
+          <p className='text-xs font-bold text-shades-500'>{formatNumberToMoney(data?.balance.total)}</p>
         </div>
       </div>
       <div className='flex w-full flex-col gap-6 px-4 pt-6'>
