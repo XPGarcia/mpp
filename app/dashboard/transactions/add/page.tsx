@@ -3,18 +3,16 @@
 import { CreateTransactionForm, CreateTransactionFormData } from "@/src/transactions/components/create-transaction-form"
 import { trpc } from "@/src/utils/_trpc/client"
 import { AppRoutes } from "@/src/utils/routes"
-import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 
 export default function AddTransaction() {
-  const { data: session } = useSession()
   const router = useRouter()
 
-  const createTransaction = trpc.transactions.createOne.useMutation()
+  const { mutateAsync: createTransaction } = trpc.transactions.createOne.useMutation()
 
   const submit = async (data: CreateTransactionFormData) => {
-    await createTransaction.mutateAsync({ ...data, userId: session?.user?.id ?? 0 })
+    await createTransaction(data)
     toast.success("Transaction created successfully")
   }
 

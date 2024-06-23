@@ -14,10 +14,9 @@ export default function Dashboard() {
   const { data: session } = useSession()
   const router = useRouter()
 
-  const { data } = trpc.transactions.getUserTransactionsWithBalance.useQuery(
-    { userId: session?.user?.id ?? 0 },
-    { enabled: Boolean(session?.user?.id) }
-  )
+  const { data } = trpc.transactions.getUserTransactionsWithBalance.useQuery(undefined, {
+    enabled: Boolean(session?.user?.id),
+  })
 
   const addTransaction = () => {
     router.push(AppRoutes.addTransaction)

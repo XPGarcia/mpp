@@ -5,20 +5,13 @@ import { createTransaction } from "@/src/transactions/actions/create-transaction
 import { calculateBalance } from "@/src/transactions/actions/calculate-balance"
 
 export const transactionRouter = router({
-  findManyByUserId: privateProcedure
-    .input(
-      z.object({
-        userId: z.number().min(1),
-      })
-    )
-    .query(async ({ input }) => {
-      const transactions = await TransactionRepository.findAllByUserId(input.userId)
-      return transactions
-    }),
+  findManyByUserId: privateProcedure.input(z.void()).query(async ({ ctx }) => {
+    const transactions = await TransactionRepository.findAllByUserId(ctx.user.id)
+    return transactions
+  }),
   createOne: privateProcedure
     .input(
       z.object({
-        userId: z.number().min(1),
         date: z.date(),
         amount: z.number().min(0),
         categoryId: z.number().min(1),
@@ -26,10 +19,10 @@ export const transactionRouter = router({
         description: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
-      const { userId, date, amount, categoryId, typeId, description } = input
+    .mutation(async ({ input, ctx }) => {
+      const { date, amount, categoryId, typeId, description } = input
       const createdTransaction = await createTransaction({
-        userId,
+        userId: ctx.user.id,
         date,
         amount,
         categoryId,
@@ -38,17 +31,11 @@ export const transactionRouter = router({
       })
       return createdTransaction
     }),
-  getUserTransactionsWithBalance: privateProcedure
-    .input(
-      z.object({
-        userId: z.number().min(1),
-      })
-    )
-    .query(async ({ input }) => {
-      const transactions = await TransactionRepository.findAllByUserId(input.userId)
-      const balance = calculateBalance(transactions)
-      return { balance, transactions }
-    }),
+  getUserTransactionsWithBalance: privateProcedure.input(z.void()).query(async ({ ctx }) => {
+    const transactions = await TransactionRepository.findAllByUserId(ctx.user.id)
+    const balance = calculateBalance(transactions)
+    return { balance, transactions }
+  }),
   test: privateProcedure.input(z.object({})).query(async () => {
     return [10, 20, 30]
   }),

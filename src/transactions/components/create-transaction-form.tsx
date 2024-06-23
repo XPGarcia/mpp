@@ -16,7 +16,6 @@ import {
 import { Modal } from "@/src/misc/components/modal/modal"
 import { Icon } from "@/src/misc/components/icons/icon"
 import { trpc } from "@/src/utils/_trpc/client"
-import { useSession } from "next-auth/react"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -37,7 +36,6 @@ interface Props {
 }
 
 export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
-  const { data: session } = useSession()
   const [openCategoryForm, setOpenCategoryForm] = useState(false)
   const {
     register,
@@ -60,15 +58,9 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
 
   const transactionType = getValues().typeId
 
-  const { data: categories, refetch: refetchCategories } = trpc.categories.findManyByUser.useQuery(
-    {
-      userId: session?.user?.id ?? 0,
-      transactionTypeId: transactionType,
-    },
-    {
-      enabled: Boolean(session?.user?.id),
-    }
-  )
+  const { data: categories, refetch: refetchCategories } = trpc.categories.findManyByUser.useQuery({
+    transactionTypeId: transactionType,
+  })
 
   const { mutateAsync: createCategoryForUser } = trpc.categories.createOneForUser.useMutation()
 
@@ -78,7 +70,7 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
   }
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
-    const category = await createCategoryForUser({ ...data, userId: session?.user?.id ?? 0 })
+    const category = await createCategoryForUser(data)
     if (category) {
       await refetchCategories()
     }

@@ -7,28 +7,25 @@ export const categoryRouter = router({
   createOneForUser: privateProcedure
     .input(
       z.object({
-        userId: z.number().min(1),
         transactionTypeId: z.number().min(1),
         name: z.string().min(1),
       })
     )
-    .mutation(async ({ input }) => {
-      const { userId, transactionTypeId, name } = input
-      const category = await createCategoryForUser({ userId, transactionTypeId, name })
+    .mutation(async ({ input, ctx }) => {
+      const { transactionTypeId, name } = input
+      const category = await createCategoryForUser({ userId: ctx.user.id, transactionTypeId, name })
       return category
     }),
   findManyByUser: privateProcedure
     .input(
       z.object({
-        userId: z.number().min(1),
         transactionTypeId: z.number().min(1),
       })
     )
-    .query(async ({ input }) => {
-      const { userId, transactionTypeId } = input
+    .query(async ({ input, ctx }) => {
       const categories = await CategoryRepository.getUserCategoriesByTransaction({
-        userId,
-        transactionTypeId,
+        userId: ctx.user.id,
+        transactionTypeId: input.transactionTypeId,
       })
       return categories
     }),

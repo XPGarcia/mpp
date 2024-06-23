@@ -6,13 +6,11 @@ export const feedbackRouter = router({
   submitOne: privateProcedure
     .input(
       z.object({
-        userId: z.number().min(1),
         message: z.string().min(1),
       })
     )
-    .mutation(async ({ input }) => {
-      const { userId, message } = input
-      const feedback = await submitFeedback({ userId, message })
+    .mutation(async ({ input, ctx }) => {
+      const feedback = await submitFeedback({ userId: ctx.user.id, message: input.message })
       return { id: feedback.id }
     }),
 })

@@ -1,11 +1,10 @@
 "use client"
 
-import { Button, FormInput } from "@/src/misc"
+import { Button } from "@/src/misc"
 import { FormTextArea } from "@/src/misc/components/form-text-area/form-text-area"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { z } from "zod"
@@ -17,7 +16,6 @@ const schema = z.object({
 type FeedbackFormData = z.infer<typeof schema>
 
 export default function Feedback() {
-  const { data: session } = useSession()
   const {
     reset,
     register,
@@ -31,7 +29,7 @@ export default function Feedback() {
   const { mutateAsync: submitFeedback } = trpc.feedbacks.submitOne.useMutation()
   const submit = async (formData: FeedbackFormData) => {
     try {
-      await submitFeedback({ message: formData.feedback, userId: session?.user?.id ?? 0 })
+      await submitFeedback({ message: formData.feedback })
       reset()
       toast.success("Thanks for sharing your thoughts! Your feedback has been received.", { duration: 5000 })
     } catch (error) {
