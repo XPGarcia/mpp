@@ -2,7 +2,14 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server"
 
 import { CustomMiddleware } from "./chain-middlewares"
 import { AppRoutes } from "@/src/utils/routes"
-import { Session, User } from "next-auth"
+import { getSession } from "next-auth/react"
+
+export const config = {
+  runtime: "nodejs", // rather than "edge"
+  unstable_allowDynamic: [
+    "/*", // file causing the build error in next-auth/react getSession
+  ],
+}
 
 export function withSessionRedirectsMiddleware(middleware: CustomMiddleware) {
   const witheListedPaths = ["/login", "/sign-up"]
@@ -16,18 +23,22 @@ export function withSessionRedirectsMiddleware(middleware: CustomMiddleware) {
       return middleware(request, event, response)
     }
 
-    /**
-     * The token should be appended to the request object by the withAuthMiddleware
-     * before any middleware is called.
-     */
-    // @ts-ignore
-    const user = request.nextauth?.token as User | null
+    const session = await getSession({
+      req: {
+        ...request,
+        headers: {
+          ...Object.fromEntries(request.headers),
+        },
+      },
+    })
 
-    if (!user || !user.verifiedAt) {
+    if (!session || !session.user || !session.user.verifiedAt) {
       const signInUrl = new URL(AppRoutes.login, request.url)
       signInUrl.searchParams.set("callbackUrl", pathname)
       return NextResponse.redirect(signInUrl)
     }
+
+    const user = session.user
 
     const dashboardUrl = new URL(AppRoutes.dashboard, request.url)
 
