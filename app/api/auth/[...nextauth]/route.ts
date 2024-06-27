@@ -1,7 +1,7 @@
 import { login } from "@/src/users/actions/login"
 import { UserRepository } from "@/src/users/repositories/user-repository"
 import { BadRequestError, InternalServerError } from "@/src/utils/errors/errors"
-import NextAuth, { DefaultSession } from "next-auth"
+import NextAuth, { DefaultSession, DefaultUser } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
 declare module "next-auth" {
@@ -14,6 +14,14 @@ declare module "next-auth" {
       verifiedAt: Date | null
       onboardedAt: Date | null
     }
+  }
+  interface User extends DefaultUser {
+    id: number
+    email: string
+    firstName: string
+    lastName: string
+    verifiedAt: Date | null
+    onboardedAt: Date | null
   }
 }
 
@@ -38,10 +46,12 @@ const handler = NextAuth({
         }
 
         return {
-          id: user.id.toString(),
+          id: user.id,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          verifiedAt: user.verifiedAt,
+          onboardedAt: user.onboardedAt,
         }
       },
     }),
@@ -50,6 +60,11 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.email = user.email
+        token.firstName = user.firstName
+        token.lastName = user.lastName
+        token.verifiedAt = user.verifiedAt
+        token.onboardedAt = user.onboardedAt
       }
       return token
     },
