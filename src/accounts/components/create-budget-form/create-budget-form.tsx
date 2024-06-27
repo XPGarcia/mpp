@@ -72,6 +72,12 @@ export const CreateBudgetForm = ({ initialValues, onSubmit }: Props) => {
         errorMessage={errors.entertainment?.message}
         {...register("entertainment", { valueAsNumber: true })}
       />
+      {!errors.total && (
+        <p className='text-xs text-gray-500'>
+          *Living, expenses, and entertainment categories divide your monthly budget. Ensure their total equals 100% of
+          your monthly expenses
+        </p>
+      )}
       {errors.total && <p className='text-sm text-red-500'>{errors.total.message}</p>}
       <Button type='submit' isLoading={isSubmitting}>
         Save

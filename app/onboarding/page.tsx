@@ -6,6 +6,7 @@ import { Button } from "@/src/misc"
 import { OnboardingCreateAccount } from "@/src/onboarding/components/onboarding-create-account"
 import { OnboardingCreateBudget } from "@/src/onboarding/components/onboarding-create-budget"
 import { OnboardingIntroduction } from "@/src/onboarding/components/onboarding-introduction"
+import { OnboardingReview } from "@/src/onboarding/components/onboarding-review"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { AppRoutes } from "@/src/utils/routes"
@@ -70,7 +71,7 @@ export default function OnboardingPage() {
       {currentStep === "select-budget" && (
         <OnboardingCreateBudget initialValues={onboardFormData.budget} onContinue={handleCreateBudget} />
       )}
-      {currentStep === "review" && <Button onClick={handleOnboardUser}>{`Let's do this!`}</Button>}
+      {currentStep === "review" && <OnboardingReview onContinue={handleOnboardUser} />}
     </>
   )
 }
