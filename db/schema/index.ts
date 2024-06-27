@@ -65,3 +65,28 @@ export const feedbacks = pgTable("Feedback", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
+
+export const accounts = pgTable("Account", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  name: varchar("name").notNull(),
+  balance: doublePrecision("balance").notNull(),
+  currency: varchar("currency", { length: 3 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const budgets = pgTable("Budget", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  name: varchar("name").notNull(),
+  living: smallint("living").notNull(),
+  savings: smallint("savings").notNull(),
+  entertainment: smallint("entertainment").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
