@@ -9,6 +9,10 @@ import { StatsIcon } from "./stats-icon"
 import { IconProps, InternalIconProps } from "./types"
 import { XMarkIcon } from "./x-mark-icon"
 import { EnvelopeOpenIcon } from "./envelope-open"
+import { NewspaperIcon } from "./newspaper-icon"
+import { BankNotesIcon } from "./bank-notes-icon"
+import { CheckIcon } from "./check-icon"
+import { SparklesIcon } from "./sparkles-icon"
 
 const styles = {
   sm: "size-4",
@@ -27,6 +31,10 @@ const IconBuilder = (icon: IconType, internalProps: InternalIconProps) => {
     stats: <StatsIcon {...internalProps} />,
     "x-mark": <XMarkIcon {...internalProps} />,
     "envelope-open": <EnvelopeOpenIcon {...internalProps} />,
+    newspaper: <NewspaperIcon {...internalProps} />,
+    "bank-notes": <BankNotesIcon {...internalProps} />,
+    check: <CheckIcon {...internalProps} />,
+    sparkles: <SparklesIcon {...internalProps} />,
   }
   return icons[icon]
 }

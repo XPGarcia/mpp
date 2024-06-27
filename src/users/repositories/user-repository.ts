@@ -22,4 +22,14 @@ export class UserRepository {
       where: eq(users.id, id),
     })
   }
+
+  static async update(id: number, input: Partial<User>): Promise<User | undefined> {
+    const user = await this.findById(id)
+    if (!user) {
+      return
+    }
+
+    const updatedUser = await db.update(users).set(input).where(eq(users.id, id)).returning()
+    return updatedUser[0]
+  }
 }

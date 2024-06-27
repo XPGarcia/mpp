@@ -1,5 +1,5 @@
-import { login } from "@/src/auth/actions/login"
-import { UserRepository } from "@/src/auth/repositories/user-repository"
+import { login } from "@/src/users/actions/login"
+import { UserRepository } from "@/src/users/repositories/user-repository"
 import { BadRequestError, InternalServerError } from "@/src/utils/errors/errors"
 import NextAuth, { DefaultSession } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
@@ -11,14 +11,13 @@ declare module "next-auth" {
       email: string
       firstName: string
       lastName: string
+      verifiedAt: Date | null
+      onboardedAt: Date | null
     }
   }
 }
 
 const handler = NextAuth({
-  pages: {
-    signIn: "/login",
-  },
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -65,6 +64,8 @@ const handler = NextAuth({
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          verifiedAt: user.verifiedAt,
+          onboardedAt: user.onboardedAt,
         }
       }
       return session

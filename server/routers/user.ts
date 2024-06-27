@@ -1,6 +1,7 @@
 import { z } from "zod"
-import { publicProcedure, router } from "../trpc"
-import { createUser } from "@/src/auth/actions/create-user"
+import { publicProcedure, privateProcedure, router } from "../trpc"
+import { createUser } from "@/src/users/actions/create-user"
+import { onboardUser } from "@/src/users/actions/onboard-user"
 
 export const userRouter = router({
   register: publicProcedure
@@ -17,4 +18,8 @@ export const userRouter = router({
       await createUser({ firstName, lastName, email, password })
       return { firstName, lastName, email }
     }),
+  onboardUser: privateProcedure.input(z.object({})).mutation(async ({ input, ctx }) => {
+    const userId = ctx.user.id
+    await onboardUser({ userId })
+  }),
 })

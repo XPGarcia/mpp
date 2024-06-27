@@ -8,4 +8,5 @@ export const AppRoutes = {
   options: `${appRoot}/options`,
   addTransaction: `${appRoot}/transactions/add`,
   feedback: `${appRoot}/feedback`,
+  onboarding: `/onboarding`,
 }
