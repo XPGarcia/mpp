@@ -3,7 +3,7 @@
 import { Button, FormInput } from "@/src/misc"
 import { FormSelect } from "@/src/misc/components/form-select/form-select"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 import { TransactionType } from "../types"
 import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
@@ -16,6 +16,8 @@ import {
 import { Modal } from "@/src/misc/components/modal/modal"
 import { Icon } from "@/src/misc/components/icons/icon"
 import { trpc } from "@/src/utils/_trpc/client"
+import { initialValueForFormDate } from "@/src/utils/format/forms"
+import { adjustTimezone } from "@/src/utils/format/dates"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -31,11 +33,12 @@ const schema = z.object({
 export type CreateTransactionFormData = z.infer<typeof schema>
 
 interface Props {
+  initialValues?: CreateTransactionFormData
   onSubmit: (data: CreateTransactionFormData) => void
   onCancel: () => void
 }
 
-export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
+export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Props) => {
   const [openCategoryForm, setOpenCategoryForm] = useState(false)
   const {
     register,
@@ -44,16 +47,18 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
     getValues,
     trigger,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<CreateTransactionFormData>({
     defaultValues: {
-      typeId: getTransactionTypeId(TransactionType.INCOME),
-      date: undefined,
-      amount: undefined,
-      categoryId: undefined,
-      description: undefined,
+      typeId: initialValues?.typeId ?? getTransactionTypeId(TransactionType.EXPENSE),
+      date: initialValueForFormDate(initialValues?.date ?? new Date()),
+      amount: initialValues?.amount,
+      categoryId: initialValues?.categoryId,
+      description: initialValues?.description,
     },
     resolver: zodResolver(schema),
+    mode: "onChange",
   })
 
   const transactionType = getValues().typeId
@@ -66,13 +71,14 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
 
   const submit = (data: CreateTransactionFormData) => {
     reset()
-    onSubmit(data)
+    onSubmit({ ...data, date: adjustTimezone(data.date) })
   }
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
     const category = await createCategoryForUser(data)
     if (category) {
       await refetchCategories()
+      setValue("categoryId", category.id)
     }
     setOpenCategoryForm(false)
   }
@@ -103,7 +109,7 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
       </div>
       <form className='mt-4 flex flex-col gap-y-4' onSubmit={handleSubmit(submit)}>
         <FormInput
-          type='datetime-local'
+          type='date'
           label='Date'
           errorMessage={errors.date?.message}
           {...register("date", { valueAsDate: true })}
@@ -117,13 +123,21 @@ export const CreateTransactionForm = ({ onSubmit, onCancel }: Props) => {
           {...register("amount", { valueAsNumber: true })}
         />
         <div className='relative'>
-          <FormSelect
-            id='categories'
-            label='Category'
-            errorMessage={errors.categoryId?.message}
-            options={categories?.map((category) => ({ value: category.id, label: category.name })) ?? []}
-            onChange={(categoryId) => setValue("categoryId", Number(categoryId))}
+          <Controller
+            control={control}
+            name='categoryId'
+            render={({ field }) => (
+              <FormSelect
+                id='categories'
+                label='Category'
+                defaultValue={field.value?.toString()}
+                errorMessage={errors.categoryId?.message}
+                options={categories?.map((category) => ({ value: category.id.toString(), label: category.name })) ?? []}
+                onChange={(val) => field.onChange(Number(val))}
+              />
+            )}
           />
+
           <Button size='sm' className='float-right mt-2' onClick={() => setOpenCategoryForm(true)}>
             <Icon icon='plus' />
           </Button>

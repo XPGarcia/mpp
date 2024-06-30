@@ -1,3 +1,4 @@
+import { forwardRef } from "react"
 import { FormLabel } from "../form-label/form-label"
 
 const styles = {
@@ -13,10 +14,11 @@ const sizes = {
 
 interface Props {
   id: string
+  defaultValue?: string
   size?: "sm" | "md" | "lg"
   label?: string
   errorMessage?: string
-  options: { value: string | number; label: string }[]
+  options: { value: string; label: string }[]
   onChange: (value: string) => void
 }
 
@@ -24,7 +26,7 @@ const ErrorMessage = ({ message }: { message: string }) => {
   return <p className='mt-1 text-xs text-red-400'>{message}</p>
 }
 
-export const FormSelect = ({ id, size = "md", label, errorMessage, options, onChange }: Props) => {
+export const FormSelect = ({ id, defaultValue, size = "md", label, errorMessage, options, onChange }: Props) => {
   const hasError = errorMessage !== undefined
   const style = hasError ? styles.error : styles.default
   const sizeStyle = sizes[size]
@@ -34,10 +36,10 @@ export const FormSelect = ({ id, size = "md", label, errorMessage, options, onCh
       {label && <FormLabel htmlFor={id}>{label}</FormLabel>}
       <select
         id={id}
+        value={defaultValue}
         className={`block w-full border bg-white px-3 text-gray-700 placeholder-gray-400/70 hover:border-shades-400 focus:outline-none focus:outline-1 focus:-outline-offset-2 focus:ring focus:ring-opacity-40 sm:px-5 ${style} ${sizeStyle}`}
         onChange={(e) => onChange(e.target.value)}
       >
-        <option></option>
         {options.map(({ value, label }) => (
           <option key={value} value={value}>
             {label}

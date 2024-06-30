@@ -4,11 +4,18 @@ import { categories, transactionTypes, transactions } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
 type CreateTransactionInput = typeof transactions.$inferInsert
+type UpdateTransactionInput = Partial<CreateTransactionInput>
 
 export class TransactionRepository {
   static async createOne(input: CreateTransactionInput): Promise<Transaction> {
     const rows = await db.insert(transactions).values(input).returning()
     return rows[0]
+  }
+
+  static async findOneById(transactionId: number): Promise<Transaction | undefined> {
+    return await db.query.transactions.findFirst({
+      where: eq(transactions.id, transactionId),
+    })
   }
 
   static async findAllByUserId(userId: number): Promise<Transaction[]> {
@@ -46,5 +53,14 @@ export class TransactionRepository {
 
       return transaction
     })
+  }
+
+  static async updateOne(transactionId: number, input: UpdateTransactionInput): Promise<Transaction | undefined> {
+    const updatedTransaction = await db
+      .update(transactions)
+      .set(input)
+      .where(eq(transactions.id, transactionId))
+      .returning()
+    return updatedTransaction.length > 0 ? updatedTransaction[0] : undefined
   }
 }

@@ -3,8 +3,17 @@ import { privateProcedure, router } from "../trpc"
 import { TransactionRepository } from "@/src/transactions/repositories/transaction-repository"
 import { createTransaction } from "@/src/transactions/actions/create-transaction"
 import { calculateBalance } from "@/src/transactions/actions/calculate-balance"
+import { TRPCError } from "@trpc/server"
+import { updateTransaction } from "@/src/transactions/actions/update-transaction"
 
 export const transactionRouter = router({
+  findOneById: privateProcedure.input(z.object({ id: z.number() })).query(async ({ input }) => {
+    const transaction = await TransactionRepository.findOneById(input.id)
+    if (!transaction) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Transaction not found" })
+    }
+    return transaction
+  }),
   findManyByUserId: privateProcedure.input(z.void()).query(async ({ ctx }) => {
     const transactions = await TransactionRepository.findAllByUserId(ctx.user.id)
     return transactions
@@ -31,12 +40,32 @@ export const transactionRouter = router({
       })
       return createdTransaction
     }),
+  updateOne: privateProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        date: z.date(),
+        amount: z.number().min(0),
+        categoryId: z.number().min(1),
+        typeId: z.number().min(1),
+        description: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { id, date, amount, categoryId, typeId, description } = input
+      const createdTransaction = await updateTransaction({
+        id,
+        date,
+        amount,
+        categoryId,
+        typeId,
+        description,
+      })
+      return createdTransaction
+    }),
   getUserTransactionsWithBalance: privateProcedure.input(z.void()).query(async ({ ctx }) => {
     const transactions = await TransactionRepository.findAllByUserId(ctx.user.id)
     const balance = calculateBalance(transactions)
     return { balance, transactions }
-  }),
-  test: privateProcedure.input(z.object({})).query(async () => {
-    return [10, 20, 30]
   }),
 })
