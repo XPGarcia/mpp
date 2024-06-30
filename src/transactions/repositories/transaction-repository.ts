@@ -1,7 +1,7 @@
 import { db } from "@/db"
 import { Transaction, TransactionType } from "../types"
 import { categories, transactionTypes, transactions } from "@/db/schema"
-import { eq } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 
 type CreateTransactionInput = typeof transactions.$inferInsert
 type UpdateTransactionInput = Partial<CreateTransactionInput>
@@ -25,6 +25,7 @@ export class TransactionRepository {
       .leftJoin(categories, eq(categories.id, transactions.categoryId))
       .leftJoin(transactionTypes, eq(transactionTypes.id, transactions.typeId))
       .where(eq(transactions.userId, userId))
+      .orderBy(desc(transactions.date))
 
     return rows.map((row) => {
       if (!row.Category || !row.TransactionType) {

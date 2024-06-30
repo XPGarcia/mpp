@@ -1,6 +1,9 @@
 "use client"
 
+import { Button } from "@/src/misc"
 import { FloatingAddButton } from "@/src/misc/components/floating-add-button/floating-add-button"
+import { Icon } from "@/src/misc/components/icons/icon"
+import { TransactionRow } from "@/src/transactions/components/transaction-row"
 import { Transaction, TransactionType } from "@/src/transactions/types"
 import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
@@ -40,7 +43,6 @@ export default function Dashboard() {
 
   return (
     <main className='flex w-full flex-col'>
-      {" "}
       <div className='flex w-full justify-between px-8 pt-3'>
         <div className='block text-center'>
           <p className='mb-0.5 text-xs font-medium text-shades-300'>Income</p>
@@ -55,7 +57,7 @@ export default function Dashboard() {
           <p className='text-xs font-bold text-shades-500'>{formatNumberToMoney(data?.balance.total)}</p>
         </div>
       </div>
-      <div className='flex w-full flex-col gap-6 px-4 pt-6'>
+      <div className='flex w-full flex-col gap-6 pt-6'>
         {Object.keys(groupedTransactionsByDate).map((date) => {
           const transactions = groupedTransactionsByDate[date]
           const transactionsTotal = transactions.reduce((acc, transaction) => {
@@ -80,19 +82,7 @@ export default function Dashboard() {
 
               <div className='flex flex-col gap-2 pt-2'>
                 {transactions.map((transaction) => (
-                  <div key={transaction.id} className='flex w-full justify-between'>
-                    <div>
-                      <p className='text-sm font-medium'>{transaction.category?.name ?? ""}</p>
-                      {transaction.description && (
-                        <p className='text-sm font-light text-shades-50'>{transaction.description}</p>
-                      )}
-                    </div>
-                    <p
-                      className={`text-sm font-medium ${transaction.type === TransactionType.INCOME ? "text-blue-500" : "text-red-500"}`}
-                    >
-                      {formatNumberToMoney(transaction.amount)}
-                    </p>
-                  </div>
+                  <TransactionRow key={transaction.id} transaction={transaction} />
                 ))}
               </div>
             </div>

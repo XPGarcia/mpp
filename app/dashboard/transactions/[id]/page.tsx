@@ -19,7 +19,6 @@ export default function UpdateTransaction({ params }: Props) {
     data: transaction,
     error,
     isLoading,
-    refetch: refetchTransaction,
     isRefetching,
   } = trpc.transactions.findOneById.useQuery({ id: Number(params.id) }, { retry: 0 })
   if (error) {
@@ -36,7 +35,7 @@ export default function UpdateTransaction({ params }: Props) {
     try {
       await updateTransaction({ id: Number(params.id), ...data })
       toast.success("Transaction updated successfully")
-      refetchTransaction()
+      router.push(AppRoutes.dashboard)
     } catch (error) {
       console.error(error)
       toast.error("Something went wrong. Please try again.")

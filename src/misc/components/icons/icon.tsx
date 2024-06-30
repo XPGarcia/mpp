@@ -13,6 +13,7 @@ import { NewspaperIcon } from "./newspaper-icon"
 import { BankNotesIcon } from "./bank-notes-icon"
 import { CheckIcon } from "./check-icon"
 import { SparklesIcon } from "./sparkles-icon"
+import { PencilIcon } from "./pencil-icon"
 
 const styles = {
   sm: "size-4",
@@ -35,6 +36,7 @@ const IconBuilder = (icon: IconType, internalProps: InternalIconProps) => {
     "bank-notes": <BankNotesIcon {...internalProps} />,
     check: <CheckIcon {...internalProps} />,
     sparkles: <SparklesIcon {...internalProps} />,
+    pencil: <PencilIcon {...internalProps} />,
   }
   return icons[icon]
 }
