@@ -63,9 +63,12 @@ export const transactionRouter = router({
       })
       return createdTransaction
     }),
-  getUserTransactionsWithBalance: privateProcedure.input(z.void()).query(async ({ ctx }) => {
-    const transactions = await TransactionRepository.findAllByUserId(ctx.user.id)
-    const balance = calculateBalance(transactions)
-    return { balance, transactions }
-  }),
+  getUserTransactionsWithBalance: privateProcedure
+    .input(z.object({ month: z.string(), year: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const { month, year } = input
+      const transactions = await TransactionRepository.findManyByUserIdAndMonthRange(ctx.user.id, month, year)
+      const balance = calculateBalance(transactions)
+      return { balance, transactions }
+    }),
 })

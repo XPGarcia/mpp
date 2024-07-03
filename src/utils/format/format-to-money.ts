@@ -1,5 +1,5 @@
 export const formatNumberToMoney = (value?: number) => {
-  if (!value) {
+  if (value === undefined) {
     return
   }
   return `$${value.toFixed(2)}`
