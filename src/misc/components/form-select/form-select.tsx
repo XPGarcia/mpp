@@ -40,6 +40,7 @@ export const FormSelect = ({ id, defaultValue, size = "md", label, errorMessage,
         className={`block w-full border bg-white px-3 text-gray-700 placeholder-gray-400/70 hover:border-shades-400 focus:outline-none focus:outline-1 focus:-outline-offset-2 focus:ring focus:ring-opacity-40 sm:px-5 ${style} ${sizeStyle}`}
         onChange={(e) => onChange(e.target.value)}
       >
+        <option></option>
         {options.map(({ value, label }) => (
           <option key={value} value={value}>
             {label}

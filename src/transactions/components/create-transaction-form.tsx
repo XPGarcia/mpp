@@ -18,6 +18,7 @@ import { Icon } from "@/src/misc/components/icons/icon"
 import { trpc } from "@/src/utils/_trpc/client"
 import { initialValueForFormDate } from "@/src/utils/format/forms"
 import { adjustTimezone } from "@/src/utils/format/dates"
+import { getValues } from "@/src/utils/format/zod-enums"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -25,7 +26,7 @@ const schema = z.object({
     .number({ message: "Amount must be a number" })
     .positive("Amount must be positive")
     .min(1, "Amount is required"),
-  typeId: z.number().positive("Type is required").min(1, "Type is required"),
+  type: z.enum(getValues(TransactionType), { message: "Select a valid type for transaction" }),
   categoryId: z.number().positive("Category is required").min(1, "Category is required"),
   description: z.string(),
 })
@@ -51,7 +52,7 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
     formState: { errors, isSubmitting },
   } = useForm<CreateTransactionFormData>({
     defaultValues: {
-      typeId: initialValues?.typeId ?? getTransactionTypeId(TransactionType.EXPENSE),
+      type: initialValues?.type ?? TransactionType.EXPENSE,
       date: initialValueForFormDate(initialValues?.date ?? new Date()),
       amount: initialValues?.amount,
       categoryId: initialValues?.categoryId,
@@ -61,16 +62,17 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
     mode: "onChange",
   })
 
-  const transactionType = getValues().typeId
+  const transactionType = getValues().type
 
   const { data: categories, refetch: refetchCategories } = trpc.categories.findManyByUser.useQuery({
-    transactionTypeId: transactionType,
+    transactionType: transactionType,
   })
 
   const { mutateAsync: createCategoryForUser } = trpc.categories.createOneForUser.useMutation()
 
   const submit = (data: CreateTransactionFormData) => {
     reset()
+    console.log(getValues())
     onSubmit({ ...data, date: adjustTimezone(data.date) })
   }
 
@@ -83,26 +85,27 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
     setOpenCategoryForm(false)
   }
 
+  const handleChangeTransactionType = (type: TransactionType) => {
+    // @ts-ignore - we want to remove the category ID
+    setValue("categoryId", undefined)
+    setValue("type", type)
+    trigger("type")
+  }
+
   return (
     <>
       <div className='flex w-full justify-center gap-3'>
         <Button
           size='sm'
-          variant={transactionType === getTransactionTypeId(TransactionType.INCOME) ? "solid" : "outline"}
-          onClick={() => {
-            setValue("typeId", getTransactionTypeId(TransactionType.INCOME))
-            trigger("typeId")
-          }}
+          variant={transactionType === TransactionType.INCOME ? "solid" : "outline"}
+          onClick={() => handleChangeTransactionType(TransactionType.INCOME)}
         >
           Income
         </Button>
         <Button
           size='sm'
-          variant={transactionType === getTransactionTypeId(TransactionType.EXPENSE) ? "solid" : "outline"}
-          onClick={() => {
-            setValue("typeId", getTransactionTypeId(TransactionType.EXPENSE))
-            trigger("typeId")
-          }}
+          variant={transactionType === TransactionType.EXPENSE ? "solid" : "outline"}
+          onClick={() => handleChangeTransactionType(TransactionType.EXPENSE)}
         >
           Expense
         </Button>
@@ -152,7 +155,7 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
 
         <div className='mt-2 flex flex-col gap-2'>
           <Button type='submit' isLoading={isSubmitting}>
-            Save {transactionType === getTransactionTypeId(TransactionType.INCOME) ? "Income" : "Expense"}
+            Save {transactionType === TransactionType.INCOME ? "Income" : "Expense"}
           </Button>
           <Button type='button' variant='ghost' onClick={onCancel}>
             Cancel
@@ -163,19 +166,19 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
         <BottomDrawer
           isOpen={openCategoryForm}
           onClose={() => setOpenCategoryForm(false)}
-          title={`New ${transactionType === getTransactionTypeId(TransactionType.INCOME) ? "income" : "expense"} category`}
+          title={`New ${transactionType === TransactionType.INCOME ? "income" : "expense"} category`}
         >
-          <CreateCategoryForm transactionTypeId={transactionType} onSubmit={handleCreateCategory} />
+          <CreateCategoryForm transactionType={transactionType} onSubmit={handleCreateCategory} />
         </BottomDrawer>
       </div>
       <div className='hidden md:block'>
         <Modal
           isOpen={openCategoryForm}
           onClose={() => setOpenCategoryForm(false)}
-          title={`New ${transactionType === getTransactionTypeId(TransactionType.INCOME) ? "income" : "expense"} category`}
+          title={`New ${transactionType === TransactionType.INCOME ? "income" : "expense"} category`}
           isCentered
         >
-          <CreateCategoryForm transactionTypeId={transactionType} onSubmit={handleCreateCategory} />
+          <CreateCategoryForm transactionType={transactionType} onSubmit={handleCreateCategory} />
         </Modal>
       </div>
     </>

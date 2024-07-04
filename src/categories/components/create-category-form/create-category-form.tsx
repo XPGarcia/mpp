@@ -1,4 +1,6 @@
 import { Button, FormInput } from "@/src/misc"
+import { TransactionType } from "@/src/transactions/types"
+import { getValues } from "@/src/utils/format/zod-enums"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -6,17 +8,17 @@ import { z } from "zod"
 
 const schema = z.object({
   name: z.string().min(1, "Category Name is required"),
-  transactionTypeId: z.number().positive("Transaction type is required").min(1, "Transaction type is required"),
+  transactionType: z.enum(getValues(TransactionType), { message: "Select a valid type for transaction" }),
 })
 
 export type CreateCategoryFormData = z.infer<typeof schema>
 
 interface Props {
-  transactionTypeId: number
+  transactionType: TransactionType
   onSubmit: (data: CreateCategoryFormData) => void
 }
 
-export const CreateCategoryForm = ({ transactionTypeId, onSubmit }: Props) => {
+export const CreateCategoryForm = ({ transactionType, onSubmit }: Props) => {
   const {
     register,
     handleSubmit,
@@ -25,14 +27,14 @@ export const CreateCategoryForm = ({ transactionTypeId, onSubmit }: Props) => {
   } = useForm<CreateCategoryFormData>({
     defaultValues: {
       name: "",
-      transactionTypeId,
+      transactionType,
     },
     resolver: zodResolver(schema),
   })
 
   useEffect(() => {
-    reset({ name: "", transactionTypeId })
-  }, [transactionTypeId, reset])
+    reset({ name: "", transactionType })
+  }, [transactionType, reset])
 
   const submit = (data: CreateCategoryFormData) => {
     reset()

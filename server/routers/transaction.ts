@@ -5,6 +5,8 @@ import { createTransaction } from "@/src/transactions/actions/create-transaction
 import { calculateBalance } from "@/src/transactions/actions/calculate-balance"
 import { TRPCError } from "@trpc/server"
 import { updateTransaction } from "@/src/transactions/actions/update-transaction"
+import { getValues } from "@/src/utils/format/zod-enums"
+import { TransactionType } from "@/src/transactions/types"
 
 export const transactionRouter = router({
   findOneById: privateProcedure.input(z.object({ id: z.number() })).query(async ({ input }) => {
@@ -24,18 +26,18 @@ export const transactionRouter = router({
         date: z.date(),
         amount: z.number().min(0),
         categoryId: z.number().min(1),
-        typeId: z.number().min(1),
+        type: z.enum(getValues(TransactionType)),
         description: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { date, amount, categoryId, typeId, description } = input
+      const { date, amount, categoryId, type, description } = input
       const createdTransaction = await createTransaction({
         userId: ctx.user.id,
         date,
         amount,
         categoryId,
-        typeId,
+        type,
         description,
       })
       return createdTransaction

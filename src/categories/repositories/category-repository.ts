@@ -2,15 +2,19 @@ import { db } from "@/db"
 import { Category } from "../types"
 import { categories } from "@/db/schema"
 import { and, eq, isNull, or } from "drizzle-orm"
+import { TransactionType } from "@/src/transactions/types"
+import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
 
 export class CategoryRepository {
   static async getUserCategoriesByTransaction({
     userId,
-    transactionTypeId,
+    transactionType,
   }: {
     userId: number
-    transactionTypeId: number
+    transactionType: TransactionType
   }): Promise<Category[]> {
+    const transactionTypeId = getTransactionTypeId(transactionType)
+
     return await db
       .select({ id: categories.id, name: categories.name })
       .from(categories)
@@ -24,13 +28,16 @@ export class CategoryRepository {
 
   static async createForUser({
     userId,
-    transactionTypeId,
+    transactionType,
     name,
   }: {
     userId: number
-    transactionTypeId: number
+    transactionType: TransactionType
     name: string
   }): Promise<Category> {
+    const transactionTypeId = getTransactionTypeId(transactionType)
+    console.log("transactionTypeId", transactionTypeId)
+
     const createdCategories = await db.insert(categories).values({ userId, transactionTypeId, name }).returning()
     return createdCategories[0]
   }
