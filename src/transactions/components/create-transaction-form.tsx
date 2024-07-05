@@ -5,7 +5,7 @@ import { FormSelect } from "@/src/misc/components/form-select/form-select"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
-import { TransactionType } from "../types"
+import { SpendingType, TransactionType } from "../types"
 import { useState } from "react"
 import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { Icon } from "@/src/misc/components/icons/icon"
@@ -149,7 +149,11 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
         </div>
       </form>
       <CreateCategoryModalDrawer
-        defaultValues={{ name: "", transactionType }}
+        defaultValues={{
+          name: "",
+          transactionType,
+          spendingType: isIncome(transactionType) ? SpendingType.NO_APPLY : SpendingType.NECESSITY,
+        }}
         isOpen={openCategoryForm}
         onClose={() => setOpenCategoryForm(false)}
         onSubmit={handleCreateCategory}
