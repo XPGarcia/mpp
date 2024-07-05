@@ -69,7 +69,6 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
 
   const submit = (data: CreateTransactionFormData) => {
     reset()
-    console.log(getValues())
     onSubmit({ ...data, date: adjustTimezone(data.date) })
   }
 

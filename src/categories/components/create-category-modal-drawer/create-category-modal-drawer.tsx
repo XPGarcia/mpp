@@ -1,7 +1,6 @@
 import { BottomDrawer } from "@/src/misc/components/bottom-drawer/bottom-drawer"
 import { CreateCategoryForm, CreateCategoryFormData } from "../create-category-form/create-category-form"
 import { Modal } from "@/src/misc/components/modal/modal"
-import { TransactionType } from "@/src/transactions/types"
 
 interface Props {
   defaultValues?: CreateCategoryFormData

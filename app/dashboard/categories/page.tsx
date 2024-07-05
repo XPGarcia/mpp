@@ -2,6 +2,7 @@
 
 import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { CreateCategoryModalDrawer } from "@/src/categories/components/create-category-modal-drawer/create-category-modal-drawer"
+import { DeleteCategoryModalDrawer } from "@/src/categories/components/delete-category-modal-drawer/delete-category-modal-drawer"
 import { Category } from "@/src/categories/types"
 import { Button } from "@/src/misc"
 import { Icon } from "@/src/misc/components/icons/icon"
@@ -17,12 +18,15 @@ import toast from "react-hot-toast"
 export default function CategoriesPage() {
   const { transactionType, setTransactionType } = useTransactionType()
   const { value: isOpenCategoryForm, on: openCategoryForm, off: closeCategoryForm } = useBoolean(false)
+  const { value: isOpenDelete, on: openDeleteAction, off: closeDeleteAction } = useBoolean(false)
 
   const [selectedCategory, setSelectedCategory] = useState<CreateCategoryFormData & { id: number }>()
 
   const { data: categories, refetch: refetchCategories } = trpc.categories.findManyByUser.useQuery({ transactionType })
 
   const { mutateAsync: updateCategory } = trpc.categories.updateOne.useMutation()
+
+  const { mutateAsync: deleteCategory } = trpc.categories.deleteOne.useMutation()
 
   const handleChangeTransactionType = (type: TransactionType) => {
     setTransactionType(type)
@@ -35,6 +39,15 @@ export default function CategoriesPage() {
       transactionType,
     })
     openCategoryForm()
+  }
+
+  const onDeleteCategoryClicked = (category: Category) => {
+    setSelectedCategory({
+      id: category.id,
+      name: category.name,
+      transactionType,
+    })
+    openDeleteAction()
   }
 
   const handleUpdateCategory = async (data: CreateCategoryFormData) => {
@@ -54,6 +67,25 @@ export default function CategoriesPage() {
 
     setSelectedCategory(undefined)
     closeCategoryForm()
+  }
+
+  const handleDeleteCategory = async () => {
+    if (!selectedCategory) {
+      return
+    }
+
+    try {
+      await deleteCategory({ categoryId: selectedCategory.id })
+      toast.success("Category deleted successfully")
+      refetchCategories()
+    } catch (error) {
+      console.error(error)
+      const errorMessage = getErrorMessage(error, "Failed to delete category")
+      toast.error(errorMessage)
+    }
+
+    setSelectedCategory(undefined)
+    closeDeleteAction()
   }
 
   return (
@@ -80,7 +112,7 @@ export default function CategoriesPage() {
               </Button>
               <Button
                 style={{ borderRadius: "100%", padding: "0", height: "32px", width: "32px" }}
-                className='bg-red-500'
+                onClick={() => onDeleteCategoryClicked(category)}
               >
                 <Icon icon='trash' size='sm' />
               </Button>
@@ -94,6 +126,7 @@ export default function CategoriesPage() {
         onClose={closeCategoryForm}
         onSubmit={handleUpdateCategory}
       />
+      <DeleteCategoryModalDrawer isOpen={isOpenDelete} onClose={closeDeleteAction} onAccept={handleDeleteCategory} />
     </main>
   )
 }

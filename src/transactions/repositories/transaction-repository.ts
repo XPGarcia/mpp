@@ -1,7 +1,7 @@
 import { db } from "@/db"
 import { Transaction, TransactionType } from "../types"
 import { categories, transactionTypes, transactions } from "@/db/schema"
-import { and, desc, eq, sql } from "drizzle-orm"
+import { and, count, desc, eq, sql } from "drizzle-orm"
 import { TransactionMapper } from "./transaction-mapper"
 
 type CreateTransactionInput = typeof transactions.$inferInsert
@@ -10,13 +10,14 @@ type UpdateTransactionInput = Partial<CreateTransactionInput>
 export class TransactionRepository {
   static async createOne(input: CreateTransactionInput): Promise<Transaction> {
     const rows = await db.insert(transactions).values(input).returning()
-    return rows[0]
+    return TransactionMapper.toDomain(rows[0])
   }
 
   static async findOneById(transactionId: number): Promise<Transaction | undefined> {
-    return await db.query.transactions.findFirst({
+    const transaction = await db.query.transactions.findFirst({
       where: eq(transactions.id, transactionId),
     })
+    return transaction ? TransactionMapper.toDomain(transaction) : undefined
   }
 
   static async findAllByUserId(userId: number): Promise<Transaction[]> {
@@ -53,6 +54,14 @@ export class TransactionRepository {
       .set(input)
       .where(eq(transactions.id, transactionId))
       .returning()
-    return updatedTransaction.length > 0 ? updatedTransaction[0] : undefined
+    return updatedTransaction.length > 0 ? TransactionMapper.toDomain(updatedTransaction[0]) : undefined
+  }
+
+  static async countByCategoryId(categoryId: number): Promise<number> {
+    const rows = await db
+      .select({ count: count(transactions.id) })
+      .from(transactions)
+      .where(eq(transactions.categoryId, categoryId))
+    return rows[0]?.count ?? 0
   }
 }

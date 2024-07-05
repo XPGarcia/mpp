@@ -49,18 +49,18 @@ export const transactionRouter = router({
         date: z.date(),
         amount: z.number().min(0),
         categoryId: z.number().min(1),
-        typeId: z.number().min(1),
+        type: z.enum(getValues(TransactionType)),
         description: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      const { id, date, amount, categoryId, typeId, description } = input
+      const { id, date, amount, categoryId, type, description } = input
       const createdTransaction = await updateTransaction({
         id,
         date,
         amount,
         categoryId,
-        typeId,
+        type,
         description,
       })
       return createdTransaction

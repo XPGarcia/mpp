@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <Providers params={params}>{children}</Providers>
-        <Toaster />
+        <Toaster toastOptions={{ duration: 3000 }} />
       </body>
     </html>
   )

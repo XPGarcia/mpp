@@ -60,4 +60,8 @@ export class CategoryRepository {
       .returning()
     return updatedCategories[0]
   }
+
+  static async deleteOne(categoryId: number): Promise<void> {
+    await db.delete(categories).where(eq(categories.id, categoryId))
+  }
 }

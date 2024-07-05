@@ -14,7 +14,7 @@ export const getTransactionTypeFromId = (typeId: number) => {
     (key) => TransactionTypeMapper[key as TransactionType] === typeId
   )
   if (!transaction) {
-    console.log(`Transaction type with id ${typeId} not found`)
+    console.error(`Transaction type with id ${typeId} not found`)
     throw new Error("Transaction type not found")
   }
   return transaction as TransactionType

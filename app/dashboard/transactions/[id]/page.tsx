@@ -27,8 +27,6 @@ export default function UpdateTransaction({ params }: Props) {
     router.push(AppRoutes.dashboard)
   }
 
-  console.log(transaction)
-
   const { mutateAsync: updateTransaction } = trpc.transactions.updateOne.useMutation()
 
   const submit = async (data: CreateTransactionFormData) => {

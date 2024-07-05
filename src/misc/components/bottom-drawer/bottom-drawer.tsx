@@ -29,7 +29,7 @@ export const BottomDrawer = ({ isOpen, onClose, title, children }: Props) => {
         </button>
 
         <div>
-          <p className={`pb-2 text-lg font-medium ${title ? "mt-0" : "mt-4"}`}>{title}</p>
+          <p className={`${title ? "pb-2" : "pb-8"} text-lg font-medium ${title ? "mt-0" : "mt-2"}`}>{title}</p>
           {children}
         </div>
       </div>

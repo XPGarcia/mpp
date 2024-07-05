@@ -5,6 +5,7 @@ import { CategoryRepository } from "@/src/categories/repositories/category-repos
 import { TransactionType } from "@/src/transactions/types"
 import { getValues } from "@/src/utils/format/zod-enums"
 import { updateOneCategory } from "@/src/categories/actions/update-one-category"
+import { deleteOneCategory } from "@/src/categories/actions/delete-one-category"
 
 export const categoryRouter = router({
   createOneForUser: privateProcedure
@@ -44,5 +45,14 @@ export const categoryRouter = router({
       const { categoryId, transactionType, name } = input
       const category = await updateOneCategory({ categoryId, transactionType, name })
       return category
+    }),
+  deleteOne: privateProcedure
+    .input(
+      z.object({
+        categoryId: z.number().positive(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      await deleteOneCategory(input.categoryId)
     }),
 })
