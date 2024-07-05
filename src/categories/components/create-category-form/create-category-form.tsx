@@ -34,8 +34,8 @@ export const CreateCategoryForm = ({ defaultValues, onSubmit }: Props) => {
   } = useForm<CreateCategoryFormData>({
     defaultValues: {
       name: defaultValues?.name ?? "",
-      transactionType: defaultValues?.transactionType ?? TransactionType.EXPENSE,
-      spendingType: defaultValues?.spendingType ?? SpendingType.NO_APPLY,
+      transactionType: defaultValues?.transactionType,
+      spendingType: defaultValues?.spendingType,
     },
     resolver: zodResolver(schema),
   })
@@ -43,8 +43,8 @@ export const CreateCategoryForm = ({ defaultValues, onSubmit }: Props) => {
   useEffect(() => {
     reset({
       name: defaultValues?.name ?? "",
-      transactionType: defaultValues?.transactionType ?? TransactionType.EXPENSE,
-      spendingType: defaultValues?.spendingType ?? SpendingType.NO_APPLY,
+      transactionType: defaultValues?.transactionType,
+      spendingType: defaultValues?.spendingType,
     })
   }, [defaultValues, reset])
 
