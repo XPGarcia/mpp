@@ -10,6 +10,10 @@ type UpdateCategoryInput = {
   name: string
 }
 
+type CreateCategoryInput = Omit<typeof categories.$inferInsert, "transactionTypeId"> & {
+  transactionType: TransactionType
+}
+
 export class CategoryRepository {
   static async getUserCategoriesByTransaction({
     userId,
@@ -32,18 +36,22 @@ export class CategoryRepository {
       .orderBy(asc(categories.name))
   }
 
-  static async createForUser({
-    userId,
-    transactionType,
-    name,
-  }: {
-    userId: number
-    transactionType: TransactionType
-    name: string
-  }): Promise<Category> {
-    const transactionTypeId = getTransactionTypeId(transactionType)
-    const createdCategories = await db.insert(categories).values({ userId, transactionTypeId, name }).returning()
+  static async createForUser(values: CreateCategoryInput): Promise<Category> {
+    const transactionTypeId = getTransactionTypeId(values.transactionType)
+    const createdCategories = await db
+      .insert(categories)
+      .values({ ...values, transactionTypeId })
+      .returning()
     return createdCategories[0]
+  }
+
+  static async createManyForUser(values: CreateCategoryInput[]): Promise<Category[]> {
+    const mappedValues = values.map((value) => ({
+      ...value,
+      transactionTypeId: getTransactionTypeId(value.transactionType),
+    }))
+    const createdCategories = await db.insert(categories).values(mappedValues).returning()
+    return createdCategories
   }
 
   static async findOneById(categoryId: number): Promise<Category | undefined> {

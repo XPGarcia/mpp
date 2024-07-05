@@ -24,6 +24,8 @@ export default function CategoriesPage() {
 
   const { data: categories, refetch: refetchCategories } = trpc.categories.findManyByUser.useQuery({ transactionType })
 
+  const { mutateAsync: createCategory } = trpc.categories.createOneForUser.useMutation()
+
   const { mutateAsync: updateCategory } = trpc.categories.updateOne.useMutation()
 
   const { mutateAsync: deleteCategory } = trpc.categories.deleteOne.useMutation()
@@ -41,6 +43,11 @@ export default function CategoriesPage() {
     openCategoryForm()
   }
 
+  const onAddCategoryClicked = () => {
+    setSelectedCategory(undefined)
+    openCategoryForm()
+  }
+
   const onDeleteCategoryClicked = (category: Category) => {
     setSelectedCategory({
       id: category.id,
@@ -50,19 +57,35 @@ export default function CategoriesPage() {
     openDeleteAction()
   }
 
-  const handleUpdateCategory = async (data: CreateCategoryFormData) => {
-    if (!selectedCategory) {
-      return
-    }
-
+  const handleUpdateCategory = async (categoryId: number, data: CreateCategoryFormData) => {
     try {
-      await updateCategory({ categoryId: selectedCategory.id, ...data })
+      await updateCategory({ categoryId, ...data })
       toast.success("Category updated successfully")
       refetchCategories()
     } catch (error) {
       console.error(error)
       const errorMessage = getErrorMessage(error, "Failed to update category")
       toast.error(errorMessage)
+    }
+  }
+
+  const handleCreateCategory = async (data: CreateCategoryFormData) => {
+    try {
+      await createCategory({ name: data.name, transactionType })
+      toast.success("Category created successfully")
+      refetchCategories()
+    } catch (error) {
+      console.error(error)
+      const errorMessage = getErrorMessage(error, "Failed to update category")
+      toast.error(errorMessage)
+    }
+  }
+
+  const handleSetCategory = async (data: CreateCategoryFormData) => {
+    if (selectedCategory) {
+      await handleUpdateCategory(selectedCategory.id, data)
+    } else {
+      await handleCreateCategory(data)
     }
 
     setSelectedCategory(undefined)
@@ -95,7 +118,6 @@ export default function CategoriesPage() {
         onIsIncomeClicked={() => handleChangeTransactionType(TransactionType.INCOME)}
         onIsExpenseClicked={() => handleChangeTransactionType(TransactionType.EXPENSE)}
       />
-      <h1 className='mt-4 text-xl font-medium text-shades-500'>Categories</h1>
       <div className='mt-4'>
         {categories?.map((category) => (
           <div
@@ -120,11 +142,17 @@ export default function CategoriesPage() {
           </div>
         ))}
       </div>
+      <div className='mt-6'>
+        <Button className='w-full' onClick={onAddCategoryClicked}>
+          Create New Category
+        </Button>
+      </div>
+
       <CreateCategoryModalDrawer
         defaultValues={selectedCategory}
         isOpen={isOpenCategoryForm}
         onClose={closeCategoryForm}
-        onSubmit={handleUpdateCategory}
+        onSubmit={handleSetCategory}
       />
       <DeleteCategoryModalDrawer isOpen={isOpenDelete} onClose={closeDeleteAction} onAccept={handleDeleteCategory} />
     </main>

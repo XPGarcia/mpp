@@ -128,6 +128,7 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
 
           <Button size='sm' className='float-right mt-2' onClick={() => setOpenCategoryForm(true)}>
             <Icon icon='plus' />
+            <p className='ml-1'>New Category</p>
           </Button>
         </div>
 

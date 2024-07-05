@@ -33,7 +33,10 @@ export const CreateCategoryForm = ({ defaultValues, onSubmit }: Props) => {
   })
 
   useEffect(() => {
-    reset(defaultValues)
+    reset({
+      name: defaultValues?.name ?? "",
+      transactionType: defaultValues?.transactionType ?? TransactionType.EXPENSE,
+    })
   }, [defaultValues, reset])
 
   const submit = (data: CreateCategoryFormData) => {
