@@ -35,11 +35,7 @@ export default function CategoriesPage() {
   }
 
   const onUpdateCategoryClicked = (category: Category) => {
-    setSelectedCategory({
-      id: category.id,
-      name: category.name,
-      transactionType,
-    })
+    setSelectedCategory(category)
     openCategoryForm()
   }
 
@@ -49,11 +45,7 @@ export default function CategoriesPage() {
   }
 
   const onDeleteCategoryClicked = (category: Category) => {
-    setSelectedCategory({
-      id: category.id,
-      name: category.name,
-      transactionType,
-    })
+    setSelectedCategory(category)
     openDeleteAction()
   }
 
@@ -71,7 +63,7 @@ export default function CategoriesPage() {
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
     try {
-      await createCategory({ name: data.name, transactionType })
+      await createCategory(data)
       toast.success("Category created successfully")
       refetchCategories()
     } catch (error) {

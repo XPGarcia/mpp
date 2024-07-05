@@ -1,0 +1,1 @@
+ALTER TABLE "Category" ALTER COLUMN "spending_type_id" DROP DEFAULT;

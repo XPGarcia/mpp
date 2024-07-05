@@ -54,8 +54,22 @@
     {
       "idx": 7,
       "version": "7",
-      "when": 1720198050020,
-      "tag": "0007_broad_war_machine",
+      "when": 1720200673612,
+      "tag": "0007_classy_malice",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1720209189586,
+      "tag": "0008_lethal_shiva",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1720211257027,
+      "tag": "0009_powerful_lethal_legion",
       "breakpoints": true
     }
   ]

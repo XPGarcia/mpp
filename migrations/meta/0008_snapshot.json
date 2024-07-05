@@ -1,6 +1,6 @@
 {
-  "id": "a2e676c5-863e-48dd-8033-ac33d4b62560",
-  "prevId": "7832a9d1-3a53-4a95-96fb-fc9bd7f125d7",
+  "id": "3de4e17e-3d38-4e88-9e41-4900664646d3",
+  "prevId": "a2e676c5-863e-48dd-8033-ac33d4b62560",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -174,6 +174,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "spending_type_id": {
+          "name": "spending_type_id",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -210,6 +217,19 @@
           "tableTo": "TransactionType",
           "columnsFrom": [
             "transaction_type_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Category_spending_type_id_SpendingType_id_fk": {
+          "name": "Category_spending_type_id_SpendingType_id_fk",
+          "tableFrom": "Category",
+          "tableTo": "SpendingType",
+          "columnsFrom": [
+            "spending_type_id"
           ],
           "columnsTo": [
             "id"

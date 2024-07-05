@@ -1,25 +1,23 @@
-import { TransactionType } from "@/src/transactions/types"
+import { SpendingType, TransactionType } from "@/src/transactions/types"
 import { Category } from "../types"
 import { CategoryRepository } from "../repositories/category-repository"
 import { InternalServerError } from "@/src/utils/errors/errors"
 
-const initialCategories: Record<TransactionType, Pick<Category, "name">[]> = {
-  INCOME: [{ name: "Salary" }],
-  EXPENSE: [{ name: "Food" }, { name: "Social Life" }, { name: "Bank investment" }],
-}
+const initialCategories: Pick<Category, "name" | "spendingType" | "transactionType">[] = [
+  { name: "Salary", transactionType: TransactionType.INCOME, spendingType: SpendingType.NO_APPLY },
+  { name: "Food", transactionType: TransactionType.EXPENSE, spendingType: SpendingType.NECESSITY },
+  { name: "Social Life", transactionType: TransactionType.EXPENSE, spendingType: SpendingType.LUXURY },
+  { name: "Bank investment", transactionType: TransactionType.EXPENSE, spendingType: SpendingType.SAVINGS },
+]
 
 export const createInitialCategoriesForUser = async (userId: number): Promise<Category[]> => {
   const mappedCategories = []
-  for (const key in initialCategories) {
-    const transactionType = key as TransactionType
-    for (const category of initialCategories[transactionType]) {
-      mappedCategories.push({ userId, transactionType, ...category })
-    }
+  for (const category of initialCategories) {
+    mappedCategories.push({ userId, ...category })
   }
   const createdCategories = await CategoryRepository.createManyForUser(mappedCategories)
   if (createdCategories.length === 0) {
     throw new InternalServerError("Failed to create initial categories")
   }
-
   return createdCategories
 }

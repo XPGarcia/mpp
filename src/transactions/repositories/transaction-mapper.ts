@@ -1,6 +1,7 @@
 import { categories, transactionTypes, transactions } from "@/db/schema"
 import { Transaction, TransactionType } from "../types"
 import { getTransactionTypeFromId } from "@/src/utils/get-transaction-type-id"
+import { CategoryMapper } from "@/src/categories/repositories/category-mapper"
 
 type DrizzleTransactionWithRelations = {
   Transaction: typeof transactions.$inferSelect
@@ -19,10 +20,7 @@ export class TransactionMapper {
     const transaction = singleToDomain(dbTransaction.Transaction)
 
     if (dbTransaction.Category) {
-      transaction.category = {
-        id: dbTransaction.Category.id,
-        name: dbTransaction.Category.name,
-      }
+      transaction.category = CategoryMapper.toDomain(dbTransaction.Category)
     }
 
     if (dbTransaction.TransactionType) {

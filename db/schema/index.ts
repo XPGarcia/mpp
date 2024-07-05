@@ -28,7 +28,10 @@ export const transactionTypes = pgTable("TransactionType", {
   name: varchar("name", { length: 10 }).notNull(),
 })
 
-export const spendingTypes = pgEnum("SpendingType", ["NECESSITY", "LUXURY", "SAVINGS"])
+export const spendingTypes = pgTable("SpendingType", {
+  id: smallserial("id").primaryKey(),
+  name: varchar("name", { length: 20 }).notNull(),
+})
 
 export const categories = pgTable("Category", {
   id: serial("id").primaryKey(),
@@ -37,7 +40,9 @@ export const categories = pgTable("Category", {
   transactionTypeId: smallint("transaction_type_id")
     .references(() => transactionTypes.id)
     .notNull(),
-  spendingType: spendingTypes("SpendingType").default("NECESSITY"),
+  spendingTypeId: smallint("spending_type_id")
+    .references(() => spendingTypes.id)
+    .notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
