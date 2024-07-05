@@ -2,6 +2,7 @@ import {
   pgTable,
   serial,
   smallserial,
+  pgEnum,
   text,
   timestamp,
   varchar,
@@ -27,6 +28,8 @@ export const transactionTypes = pgTable("TransactionType", {
   name: varchar("name", { length: 10 }).notNull(),
 })
 
+export const spendingTypes = pgEnum("SpendingType", ["NECESSITY", "LUXURY", "SAVINGS"])
+
 export const categories = pgTable("Category", {
   id: serial("id").primaryKey(),
   name: varchar("name").notNull(),
@@ -34,6 +37,7 @@ export const categories = pgTable("Category", {
   transactionTypeId: smallint("transaction_type_id")
     .references(() => transactionTypes.id)
     .notNull(),
+  spendingType: spendingTypes("SpendingType").default("NECESSITY"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
