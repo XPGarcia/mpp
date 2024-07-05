@@ -14,11 +14,11 @@ const schema = z.object({
 export type CreateCategoryFormData = z.infer<typeof schema>
 
 interface Props {
-  transactionType: TransactionType
+  defaultValues?: CreateCategoryFormData
   onSubmit: (data: CreateCategoryFormData) => void
 }
 
-export const CreateCategoryForm = ({ transactionType, onSubmit }: Props) => {
+export const CreateCategoryForm = ({ defaultValues, onSubmit }: Props) => {
   const {
     register,
     handleSubmit,
@@ -26,15 +26,15 @@ export const CreateCategoryForm = ({ transactionType, onSubmit }: Props) => {
     formState: { errors, isSubmitting },
   } = useForm<CreateCategoryFormData>({
     defaultValues: {
-      name: "",
-      transactionType,
+      name: defaultValues?.name ?? "",
+      transactionType: defaultValues?.transactionType ?? TransactionType.EXPENSE,
     },
     resolver: zodResolver(schema),
   })
 
   useEffect(() => {
-    reset({ name: "", transactionType })
-  }, [transactionType, reset])
+    reset(defaultValues)
+  }, [defaultValues, reset])
 
   const submit = (data: CreateCategoryFormData) => {
     reset()
@@ -51,7 +51,7 @@ export const CreateCategoryForm = ({ transactionType, onSubmit }: Props) => {
         {...register("name")}
       />
       <Button type='submit' isLoading={isSubmitting}>
-        Create
+        Save
       </Button>
     </form>
   )

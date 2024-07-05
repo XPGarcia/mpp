@@ -1,5 +1,6 @@
 import { categories, transactionTypes, transactions } from "@/db/schema"
 import { Transaction, TransactionType } from "../types"
+import { getTransactionTypeFromId } from "@/src/utils/get-transaction-type-id"
 
 type DrizzleTransactionWithRelations = {
   Transaction: typeof transactions.$inferSelect
@@ -37,7 +38,7 @@ function singleToDomain(dbTransaction: DrizzleTransaction): Transaction {
     id: dbTransaction.id,
     date: dbTransaction.date,
     amount: dbTransaction.amount,
-    typeId: dbTransaction.typeId,
+    type: getTransactionTypeFromId(dbTransaction.typeId),
     categoryId: dbTransaction.categoryId,
     description: dbTransaction.description,
   }

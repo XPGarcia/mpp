@@ -6,19 +6,16 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 import { TransactionType } from "../types"
-import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
-import { BottomDrawer } from "@/src/misc/components/bottom-drawer/bottom-drawer"
 import { useState } from "react"
-import {
-  CreateCategoryForm,
-  CreateCategoryFormData,
-} from "@/src/categories/components/create-category-form/create-category-form"
-import { Modal } from "@/src/misc/components/modal/modal"
+import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { Icon } from "@/src/misc/components/icons/icon"
 import { trpc } from "@/src/utils/_trpc/client"
 import { initialValueForFormDate } from "@/src/utils/format/forms"
 import { adjustTimezone } from "@/src/utils/format/dates"
 import { getValues } from "@/src/utils/format/zod-enums"
+import { isIncome } from "@/src/utils/get-transaction-type-id"
+import { SelectTransactionType } from "./select-transaction-type"
+import { CreateCategoryModalDrawer } from "@/src/categories/components/create-category-modal-drawer/create-category-modal-drawer"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -94,22 +91,11 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
 
   return (
     <>
-      <div className='flex w-full justify-center gap-3'>
-        <Button
-          size='sm'
-          variant={transactionType === TransactionType.INCOME ? "solid" : "outline"}
-          onClick={() => handleChangeTransactionType(TransactionType.INCOME)}
-        >
-          Income
-        </Button>
-        <Button
-          size='sm'
-          variant={transactionType === TransactionType.EXPENSE ? "solid" : "outline"}
-          onClick={() => handleChangeTransactionType(TransactionType.EXPENSE)}
-        >
-          Expense
-        </Button>
-      </div>
+      <SelectTransactionType
+        selectedType={transactionType}
+        onIsIncomeClicked={() => handleChangeTransactionType(TransactionType.INCOME)}
+        onIsExpenseClicked={() => handleChangeTransactionType(TransactionType.EXPENSE)}
+      />
       <form className='mt-4 flex flex-col gap-y-4' onSubmit={handleSubmit(submit)}>
         <FormInput
           type='date'
@@ -155,32 +141,19 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
 
         <div className='mt-2 flex flex-col gap-2'>
           <Button type='submit' isLoading={isSubmitting}>
-            Save {transactionType === TransactionType.INCOME ? "Income" : "Expense"}
+            Save {isIncome(transactionType) ? "Income" : "Expense"}
           </Button>
           <Button type='button' variant='ghost' onClick={onCancel}>
             Cancel
           </Button>
         </div>
       </form>
-      <div className='block md:hidden'>
-        <BottomDrawer
-          isOpen={openCategoryForm}
-          onClose={() => setOpenCategoryForm(false)}
-          title={`New ${transactionType === TransactionType.INCOME ? "income" : "expense"} category`}
-        >
-          <CreateCategoryForm transactionType={transactionType} onSubmit={handleCreateCategory} />
-        </BottomDrawer>
-      </div>
-      <div className='hidden md:block'>
-        <Modal
-          isOpen={openCategoryForm}
-          onClose={() => setOpenCategoryForm(false)}
-          title={`New ${transactionType === TransactionType.INCOME ? "income" : "expense"} category`}
-          isCentered
-        >
-          <CreateCategoryForm transactionType={transactionType} onSubmit={handleCreateCategory} />
-        </Modal>
-      </div>
+      <CreateCategoryModalDrawer
+        defaultValues={{ name: "", transactionType }}
+        isOpen={openCategoryForm}
+        onClose={() => setOpenCategoryForm(false)}
+        onSubmit={handleCreateCategory}
+      />
     </>
   )
 }

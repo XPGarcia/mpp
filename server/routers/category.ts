@@ -4,6 +4,7 @@ import { createCategoryForUser } from "@/src/categories/actions/create-category-
 import { CategoryRepository } from "@/src/categories/repositories/category-repository"
 import { TransactionType } from "@/src/transactions/types"
 import { getValues } from "@/src/utils/format/zod-enums"
+import { updateOneCategory } from "@/src/categories/actions/update-one-category"
 
 export const categoryRouter = router({
   createOneForUser: privateProcedure
@@ -30,5 +31,18 @@ export const categoryRouter = router({
         transactionType: input.transactionType,
       })
       return categories
+    }),
+  updateOne: privateProcedure
+    .input(
+      z.object({
+        categoryId: z.number().positive(),
+        transactionType: z.enum(getValues(TransactionType)),
+        name: z.string().min(1),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { categoryId, transactionType, name } = input
+      const category = await updateOneCategory({ categoryId, transactionType, name })
+      return category
     }),
 })

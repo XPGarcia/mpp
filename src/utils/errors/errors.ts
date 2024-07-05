@@ -23,3 +23,10 @@ export class BadRequestError extends HttpError {
     this.name = "BadRequestError"
   }
 }
+
+export class NotFoundError extends HttpError {
+  constructor(message: string) {
+    super(message, { status: 404 })
+    this.name = "NotFoundError"
+  }
+}

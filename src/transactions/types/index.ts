@@ -10,8 +10,7 @@ export type Transaction = {
   id: number
   date: Date
   amount: number
-  typeId: number
-  type?: TransactionType
+  type: TransactionType
   categoryId: number
   category?: Category
   description?: string | null

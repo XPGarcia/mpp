@@ -49,7 +49,7 @@ export const Button = ({
   return (
     <button
       type={type ?? "button"}
-      className={`middle none center font-sans font-medium ${sizeStyle} ${defaultStyle} ${loadingStyle} ${className ?? ""}`}
+      className={`middle none center flex items-center justify-center font-sans font-medium ${sizeStyle} ${defaultStyle} ${loadingStyle} ${className ?? ""}`}
       disabled={disabled || isLoading}
       {...props}
     >

@@ -8,3 +8,22 @@ const TransactionTypeMapper: Record<TransactionType, number> = {
 export const getTransactionTypeId = (type: TransactionType) => {
   return TransactionTypeMapper[type]
 }
+
+export const getTransactionTypeFromId = (typeId: number) => {
+  const transaction = Object.keys(TransactionTypeMapper).find(
+    (key) => TransactionTypeMapper[key as TransactionType] === typeId
+  )
+  if (!transaction) {
+    console.log(`Transaction type with id ${typeId} not found`)
+    throw new Error("Transaction type not found")
+  }
+  return transaction as TransactionType
+}
+
+export const isIncome = (transactionType: TransactionType) => {
+  return transactionType === TransactionType.INCOME
+}
+
+export const isExpense = (transactionType: TransactionType) => {
+  return transactionType === TransactionType.EXPENSE
+}

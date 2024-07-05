@@ -1,12 +1,13 @@
+import { isExpense, isIncome } from "@/src/utils/get-transaction-type-id"
 import { Transaction } from "../types"
 
 export const calculateBalance = (transactions: Transaction[]) => {
   let income = 0
   let expenses = 0
   for (const transaction of transactions) {
-    if (transaction.type === "INCOME") {
+    if (isIncome(transaction.type)) {
       income += transaction.amount
-    } else if (transaction.type === "EXPENSE") {
+    } else if (isExpense(transaction.type)) {
       expenses += transaction.amount
     }
   }

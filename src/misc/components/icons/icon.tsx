@@ -14,6 +14,8 @@ import { BankNotesIcon } from "./bank-notes-icon"
 import { CheckIcon } from "./check-icon"
 import { SparklesIcon } from "./sparkles-icon"
 import { PencilIcon } from "./pencil-icon"
+import { TagIcon } from "./tag-icon"
+import { TrashIcon } from "./trash-icon"
 
 const styles = {
   sm: "size-4",
@@ -37,6 +39,8 @@ const IconBuilder = (icon: IconType, internalProps: InternalIconProps) => {
     check: <CheckIcon {...internalProps} />,
     sparkles: <SparklesIcon {...internalProps} />,
     pencil: <PencilIcon {...internalProps} />,
+    tag: <TagIcon {...internalProps} />,
+    trash: <TrashIcon {...internalProps} />,
   }
   return icons[icon]
 }

@@ -1,5 +1,3 @@
-import { updateTransaction } from "../transactions/actions/update-transaction"
-
 const appRoot = "/dashboard"
 export const AppRoutes = {
   login: "/login",
@@ -12,4 +10,5 @@ export const AppRoutes = {
   feedback: `${appRoot}/feedback`,
   onboarding: `/onboarding`,
   updateTransaction: (id: number) => `${appRoot}/transactions/${id}`,
+  categories: `${appRoot}/categories`,
 }

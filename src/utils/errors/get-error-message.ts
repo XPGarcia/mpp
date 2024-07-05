@@ -1,7 +1,7 @@
-export const getErrorMessage = (error: unknown): string => {
+export const getErrorMessage = (error: unknown, defaultMessage?: string): string => {
   if (error instanceof Error) {
     return error.message
   }
 
-  return "Internal server error"
+  return defaultMessage ?? "Internal server error"
 }

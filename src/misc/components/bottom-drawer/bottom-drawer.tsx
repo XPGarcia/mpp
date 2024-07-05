@@ -9,7 +9,7 @@ interface Props {
   children: ReactNode
 }
 
-export const BottomDrawer = ({ isOpen, onClose, title = "", children }: Props) => {
+export const BottomDrawer = ({ isOpen, onClose, title, children }: Props) => {
   const styles = isOpen ? "transform-none" : "translate-y-full"
   const ariaProperties = isOpen ? { "aria-hidden": false, "aria-modal": true, role: "dialog" } : { "aria-hidden": true }
 
@@ -29,7 +29,7 @@ export const BottomDrawer = ({ isOpen, onClose, title = "", children }: Props) =
         </button>
 
         <div>
-          <p className='pb-2 text-lg font-medium'>{title}</p>
+          <p className={`pb-2 text-lg font-medium ${title ? "mt-0" : "mt-4"}`}>{title}</p>
           {children}
         </div>
       </div>

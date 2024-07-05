@@ -25,6 +25,13 @@ export default function Options() {
       },
     },
     {
+      label: "Categories",
+      icon: <Icon icon='tag' size='lg' />,
+      onClick: () => {
+        router.push(AppRoutes.categories)
+      },
+    },
+    {
       label: "Feedback",
       icon: <Icon icon='envelope-open' size='lg' />,
       onClick: () => {

@@ -1,12 +1,13 @@
 "use client"
 
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
-import { Transaction, TransactionType } from "../types"
+import { Transaction } from "../types"
 import { Button } from "@/src/misc"
 import { Icon } from "@/src/misc/components/icons/icon"
 import { useRouter } from "next/navigation"
 import { AppRoutes } from "@/src/utils/routes"
 import { useState } from "react"
+import { isIncome } from "@/src/utils/get-transaction-type-id"
 
 interface Props {
   transaction: Transaction
@@ -32,9 +33,7 @@ export const TransactionRow = ({ transaction }: Props) => {
           <p className='text-sm font-medium'>{transaction.category?.name ?? ""}</p>
           {transaction.description && <p className='text-sm font-light text-shades-50'>{transaction.description}</p>}
         </div>
-        <p
-          className={`text-sm font-medium ${transaction.type === TransactionType.INCOME ? "text-blue-500" : "text-red-500"}`}
-        >
+        <p className={`text-sm font-medium ${isIncome(transaction.type) ? "text-blue-500" : "text-red-500"}`}>
           {formatNumberToMoney(transaction.amount)}
         </p>
       </div>

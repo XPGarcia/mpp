@@ -1,9 +1,14 @@
 import { db } from "@/db"
 import { Category } from "../types"
 import { categories } from "@/db/schema"
-import { and, eq, isNull, or } from "drizzle-orm"
+import { and, asc, eq, isNull, or } from "drizzle-orm"
 import { TransactionType } from "@/src/transactions/types"
 import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
+
+type UpdateCategoryInput = {
+  transactionType: TransactionType
+  name: string
+}
 
 export class CategoryRepository {
   static async getUserCategoriesByTransaction({
@@ -24,6 +29,7 @@ export class CategoryRepository {
           eq(categories.transactionTypeId, transactionTypeId)
         )
       )
+      .orderBy(asc(categories.name))
   }
 
   static async createForUser({
@@ -36,9 +42,22 @@ export class CategoryRepository {
     name: string
   }): Promise<Category> {
     const transactionTypeId = getTransactionTypeId(transactionType)
-    console.log("transactionTypeId", transactionTypeId)
-
     const createdCategories = await db.insert(categories).values({ userId, transactionTypeId, name }).returning()
     return createdCategories[0]
+  }
+
+  static async findOneById(categoryId: number): Promise<Category | undefined> {
+    return await db.query.categories.findFirst({ where: eq(categories.id, categoryId) })
+  }
+
+  static async updateOne(categoryId: number, values: UpdateCategoryInput): Promise<Category> {
+    const { name, transactionType } = values
+    const transactionTypeId = getTransactionTypeId(transactionType)
+    const updatedCategories = await db
+      .update(categories)
+      .set({ name, transactionTypeId })
+      .where(eq(categories.id, categoryId))
+      .returning()
+    return updatedCategories[0]
   }
 }

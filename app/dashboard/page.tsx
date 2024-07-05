@@ -3,10 +3,10 @@
 import { FloatingAddButton } from "@/src/misc/components/floating-add-button/floating-add-button"
 import { LoadingIcon } from "@/src/misc/components/icons/loading-icon"
 import { TransactionRow } from "@/src/transactions/components/transaction-row"
-import { Transaction, TransactionType } from "@/src/transactions/types"
+import { Transaction } from "@/src/transactions/types"
 import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
-import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
+import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { AppRoutes } from "@/src/utils/routes"
 import dayjs from "dayjs"
 import { useSession } from "next-auth/react"
@@ -94,11 +94,7 @@ export default function Dashboard() {
             {Object.keys(groupedTransactionsByDate).map((date) => {
               const transactions = groupedTransactionsByDate[date]
               const transactionsTotal = transactions.reduce((acc, transaction) => {
-                const amount =
-                  transaction.typeId === getTransactionTypeId(TransactionType.INCOME)
-                    ? transaction.amount
-                    : transaction.amount * -1
-
+                const amount = isIncome(transaction.type) ? transaction.amount : transaction.amount * -1
                 return acc + amount
               }, 0)
               const isPositive = transactionsTotal >= 0
