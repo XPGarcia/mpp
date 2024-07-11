@@ -69,7 +69,7 @@ export const transactionRouter = router({
     .input(z.object({ month: z.string(), year: z.string() }))
     .query(async ({ input, ctx }) => {
       const { month, year } = input
-      const transactions = await TransactionRepository.findManyByUserIdAndMonthRange(ctx.user.id, month, year)
+      const transactions = await TransactionRepository.findManyByUserIdAndMonthRange(ctx.user.id, { month, year })
       const balance = calculateBalance(transactions)
       return { balance, transactions }
     }),

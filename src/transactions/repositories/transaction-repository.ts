@@ -31,7 +31,10 @@ export class TransactionRepository {
     return rows.map(TransactionMapper.toDomain)
   }
 
-  static async findManyByUserIdAndMonthRange(userId: number, month: string, year: string): Promise<Transaction[]> {
+  static async findManyByUserIdAndMonthRange(
+    userId: number,
+    options: { month: string; year: string }
+  ): Promise<Transaction[]> {
     const rows = await db
       .select()
       .from(transactions)
@@ -40,8 +43,8 @@ export class TransactionRepository {
       .where(
         and(
           eq(transactions.userId, userId),
-          sql`EXTRACT(YEAR FROM ${transactions.date}) = ${year}`,
-          sql`EXTRACT(MONTH FROM ${transactions.date}) = ${month}`
+          sql`EXTRACT(YEAR FROM ${transactions.date}) = ${options.year}`,
+          sql`EXTRACT(MONTH FROM ${transactions.date}) = ${options.month}`
         )
       )
       .orderBy(desc(transactions.date))

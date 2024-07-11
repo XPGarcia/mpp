@@ -2,9 +2,9 @@ export interface Budget {
   id: number
   userId: number
   name: string
-  living: number
+  necessity: number
   savings: number
-  entertainment: number
+  luxury: number
   createdAt: Date
   updatedAt: Date
 }

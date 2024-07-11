@@ -1,3 +1,4 @@
+import { budgetRouter } from "./routers/budget"
 import { categoryRouter } from "./routers/category"
 import { feedbackRouter } from "./routers/feedback"
 import { transactionRouter } from "./routers/transaction"
@@ -10,6 +11,7 @@ export const appRouter = router({
   transactions: transactionRouter,
   categories: categoryRouter,
   feedbacks: feedbackRouter,
+  budgets: budgetRouter,
 })
 
 export const createCaller = createCallerFactory(appRouter)
