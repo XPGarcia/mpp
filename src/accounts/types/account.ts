@@ -6,3 +6,9 @@ export interface Account {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface BalanceEntry {
+  id: number
+  accountId: number
+  amount: number
+}

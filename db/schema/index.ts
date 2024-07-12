@@ -9,6 +9,7 @@ import {
   integer,
   smallint,
   doublePrecision,
+  index,
 } from "drizzle-orm/pg-core"
 
 export const users = pgTable("User", {
@@ -58,6 +59,9 @@ export const transactions = pgTable("Transaction", {
   userId: integer("user_id")
     .references(() => users.id)
     .notNull(),
+  accountId: integer("account_id")
+    .references(() => accounts.id)
+    .notNull(),
   amount: doublePrecision("amount").notNull(),
   description: text("description"),
   date: timestamp("date").notNull(),
@@ -99,3 +103,25 @@ export const budgets = pgTable("Budget", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
+
+export const accountBalanceEntries = pgTable(
+  "AccountBalanceEntry",
+  {
+    id: serial("id").primaryKey(),
+    accountId: integer("account_id")
+      .notNull()
+      .references(() => accounts.id),
+    amount: doublePrecision("amount").notNull(),
+    description: text("description").notNull(),
+    dateFrom: timestamp("date_from"),
+    dateTo: timestamp("date_to"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => {
+    return {
+      dateFromIdx: index("date_from_idx").on(table.dateFrom),
+      dateToIdx: index("date_to_idx").on(table.dateTo),
+    }
+  }
+)

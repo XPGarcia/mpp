@@ -1,6 +1,8 @@
-import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
+import { getTransactionTypeId, isIncome } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "../repositories/transaction-repository"
 import { TransactionType } from "../types"
+import { getAccountBalanceEntryByDate } from "@/src/accounts/actions/get-account-balance-entry-by-date"
+import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
 
 interface CreateTransactionInput {
   userId: number
@@ -11,13 +13,23 @@ interface CreateTransactionInput {
   description?: string
 }
 
-export const createTransaction = (input: CreateTransactionInput) => {
+export const createTransaction = async (input: CreateTransactionInput) => {
   const typeId = getTransactionTypeId(input.type)
 
-  const createdTransaction = TransactionRepository.createOne({ ...input, typeId, date: new Date(input.date) })
+  const accountBalanceEntry = await getAccountBalanceEntryByDate({ userId: input.userId, date: input.date })
+
+  const createdTransaction = await TransactionRepository.createOne({
+    ...input,
+    typeId,
+    date: new Date(input.date),
+    accountId: accountBalanceEntry.accountId,
+  })
   if (!createdTransaction) {
     throw new Error("Failed to create transaction")
   }
+
+  const amount = isIncome(createdTransaction.type) ? createdTransaction.amount : createdTransaction.amount * -1
+  await updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
 
   return createdTransaction
 }

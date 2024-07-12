@@ -32,7 +32,7 @@ export const spendingTypeOptions: { value: SpendingType; label: string }[] = [
   { value: SpendingType.SAVINGS, label: SpendingTypeToLabel.SAVINGS },
 ]
 
-export type Transaction = {
+export interface Transaction {
   id: number
   date: Date
   amount: number
@@ -40,4 +40,5 @@ export type Transaction = {
   categoryId: number
   category?: Category
   description?: string | null
+  accountId: number
 }

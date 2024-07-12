@@ -30,6 +30,8 @@ export default function Dashboard() {
     }
   )
 
+  const { data: account } = trpc.accounts.findOneByUserId.useQuery()
+
   const addTransaction = () => {
     router.push(AppRoutes.addTransaction)
   }
@@ -52,8 +54,12 @@ export default function Dashboard() {
 
   return (
     <main className='flex w-full flex-col'>
-      <div className='pt-3'>
+      <div className='flex justify-between pt-3'>
         <MonthPicker onChange={setDate} />
+        <div className='flex flex-col justify-end text-right'>
+          <p className='text-xxs'>Your current account balance</p>
+          <p className='text-xs font-semibold'>{formatNumberToMoney(account?.balance ?? 0)}</p>
+        </div>
       </div>
       {isLoading && (
         <div className='mt-10 flex items-center justify-center'>
