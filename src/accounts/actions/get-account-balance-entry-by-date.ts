@@ -1,6 +1,6 @@
 import { InternalServerError, NotFoundError } from "@/src/utils/errors/errors"
 import { AccountRepository } from "../repositories/account-repository"
-import { BalanceEntryRepository } from "../repositories/balance-entry-repository"
+import { AccountBalanceEntryRepository } from "../repositories/account-balance-entry-repository"
 import dayjs from "dayjs"
 
 interface GetAccountBalanceEntryByDateInput {
@@ -13,7 +13,7 @@ export const getAccountBalanceEntryByDate = async ({ userId, date }: GetAccountB
   if (!account) {
     throw new NotFoundError(`Account not Found for User ${userId}`)
   }
-  const balanceEntry = await BalanceEntryRepository.findOneByAccountAndDate(account.id, date)
+  const balanceEntry = await AccountBalanceEntryRepository.findOneByAccountAndDate(account.id, date)
   if (!!balanceEntry) {
     return balanceEntry
   }
@@ -23,7 +23,7 @@ export const getAccountBalanceEntryByDate = async ({ userId, date }: GetAccountB
 
   const currentDate = dayjs(firstDayOfCurrentMonth).format("YYYY-MM")
 
-  const newBalanceEntry = await BalanceEntryRepository.createOne({
+  const newBalanceEntry = await AccountBalanceEntryRepository.createOne({
     accountId: account.id,
     amount: 0,
     description: `Account Balance entry for ${currentDate}`,

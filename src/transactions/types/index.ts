@@ -34,6 +34,7 @@ export const spendingTypeOptions: { value: SpendingType; label: string }[] = [
 
 export interface Transaction {
   id: number
+  userId: number
   date: Date
   amount: number
   type: TransactionType

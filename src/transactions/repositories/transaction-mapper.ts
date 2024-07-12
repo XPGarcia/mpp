@@ -34,6 +34,8 @@ export class TransactionMapper {
 function singleToDomain(dbTransaction: DrizzleTransaction): Transaction {
   return {
     id: dbTransaction.id,
+    userId: dbTransaction.userId,
+    accountId: dbTransaction.accountId,
     date: dbTransaction.date,
     amount: dbTransaction.amount,
     type: getTransactionTypeFromId(dbTransaction.typeId),

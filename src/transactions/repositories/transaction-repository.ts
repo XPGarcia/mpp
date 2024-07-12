@@ -1,5 +1,5 @@
 import { db } from "@/db"
-import { Transaction, TransactionType } from "../types"
+import { Transaction } from "../types"
 import { categories, transactionTypes, transactions } from "@/db/schema"
 import { and, count, desc, eq, sql } from "drizzle-orm"
 import { TransactionMapper } from "./transaction-mapper"

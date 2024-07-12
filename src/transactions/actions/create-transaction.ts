@@ -21,7 +21,6 @@ export const createTransaction = async (input: CreateTransactionInput) => {
   const createdTransaction = await TransactionRepository.createOne({
     ...input,
     typeId,
-    date: new Date(input.date),
     accountId: accountBalanceEntry.accountId,
   })
   if (!createdTransaction) {

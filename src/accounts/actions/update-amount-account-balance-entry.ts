@@ -1,10 +1,10 @@
 import { NotFoundError } from "@/src/utils/errors/errors"
-import { BalanceEntryRepository } from "../repositories/balance-entry-repository"
-import { BalanceEntry } from "../types/account"
+import { AccountBalanceEntryRepository } from "../repositories/account-balance-entry-repository"
+import { AccountBalanceEntry } from "../types/account"
 import { AccountRepository } from "../repositories/account-repository"
 
 interface Params {
-  accountBalanceEntry: BalanceEntry
+  accountBalanceEntry: AccountBalanceEntry
   amount: number
 }
 
@@ -18,7 +18,7 @@ export const updateAmountAccountBalanceEntry = async ({ accountBalanceEntry, amo
   const updatedAccountBalance = account.balance + amount
 
   await Promise.all([
-    BalanceEntryRepository.updateAmount(accountBalanceEntry.id, updatedBalanceEntryAmount),
+    AccountBalanceEntryRepository.updateAmount(accountBalanceEntry.id, updatedBalanceEntryAmount),
     AccountRepository.updateBalance(accountBalanceEntry.accountId, updatedAccountBalance),
   ])
 }

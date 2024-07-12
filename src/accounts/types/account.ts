@@ -7,7 +7,7 @@ export interface Account {
   updatedAt: Date
 }
 
-export interface BalanceEntry {
+export interface AccountBalanceEntry {
   id: number
   accountId: number
   amount: number
