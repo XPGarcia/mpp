@@ -31,6 +31,11 @@ export class TransactionRepository {
     return rows.map(TransactionMapper.toDomain)
   }
 
+  static async findAllByCategoryId(categoryId: number): Promise<Transaction[]> {
+    const rows = await db.select().from(transactions).where(eq(transactions.categoryId, categoryId))
+    return rows.map(TransactionMapper.toDomain)
+  }
+
   static async findManyByUserIdAndMonthRange(
     userId: number,
     options: { month: string; year: string }
@@ -66,5 +71,9 @@ export class TransactionRepository {
       .from(transactions)
       .where(eq(transactions.categoryId, categoryId))
     return rows[0]?.count ?? 0
+  }
+
+  static async updateManyByCategoryId(categoryId: number, input: UpdateTransactionInput): Promise<void> {
+    await db.update(transactions).set(input).where(eq(transactions.categoryId, categoryId))
   }
 }

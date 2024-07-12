@@ -18,8 +18,8 @@ export const getAccountBalanceEntryByDate = async ({ userId, date }: GetAccountB
     return balanceEntry
   }
 
-  const firstDayOfCurrentMonth = dayjs().startOf("month").toDate()
-  const lastDayOfCurrentMonth = dayjs().endOf("month").toDate()
+  const firstDayOfCurrentMonth = dayjs(date).startOf("month").toDate()
+  const lastDayOfCurrentMonth = dayjs(date).endOf("month").toDate()
 
   const currentDate = dayjs(firstDayOfCurrentMonth).format("YYYY-MM")
 
