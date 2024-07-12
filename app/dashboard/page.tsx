@@ -2,6 +2,7 @@
 
 import { FloatingAddButton } from "@/src/misc/components/floating-add-button/floating-add-button"
 import { LoadingIcon } from "@/src/misc/components/icons/loading-icon"
+import { MonthPicker, MonthPickerDate } from "@/src/misc/components/month-picker/month-picker"
 import { TransactionRow } from "@/src/transactions/components/transaction-row"
 import { Transaction } from "@/src/transactions/types"
 import { trpc } from "@/src/utils/_trpc/client"
@@ -11,20 +12,19 @@ import { AppRoutes } from "@/src/utils/routes"
 import dayjs from "dayjs"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { ChangeEvent, Fragment, useState } from "react"
+import { Fragment, useState } from "react"
 
 export default function Dashboard() {
   const { data: session } = useSession()
   const router = useRouter()
 
-  const [yearMonth, setYearMonth] = useState<string>(dayjs(new Date()).format("YYYY-MM"))
-  const range = {
-    month: yearMonth.split("-")[1],
-    year: yearMonth.split("-")[0],
-  }
+  const [date, setDate] = useState<MonthPickerDate>({
+    month: dayjs(new Date()).format("MM"),
+    year: dayjs(new Date()).format("YYYY"),
+  })
 
   const { data, isLoading } = trpc.transactions.getUserTransactionsWithBalance.useQuery(
-    { month: range.month, year: range.year },
+    { month: date.month, year: date.year },
     {
       enabled: Boolean(session?.user?.id),
     }
@@ -50,24 +50,10 @@ export default function Dashboard() {
 
   const groupedTransactionsByDate = groupTransactionsByDate(data?.transactions)
 
-  const handleChangeMonth = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    if (value === yearMonth) {
-      return
-    }
-    setYearMonth(value)
-  }
-
   return (
     <main className='flex w-full flex-col'>
       <div className='pt-3'>
-        <input
-          type='month'
-          value={yearMonth}
-          max={dayjs(new Date()).format("YYYY-MM")}
-          className='block h-[30px] w-fit rounded-md border border-shades-50 bg-white px-2 text-xs text-gray-700 placeholder-gray-400/70 hover:border-shades-400 focus:border-blue-400 focus:outline-none focus:outline-1 focus:-outline-offset-2 focus:outline-blue-400 focus:ring focus:ring-blue-300 focus:ring-opacity-40 sm:px-5'
-          onChange={handleChangeMonth}
-        />
+        <MonthPicker onChange={setDate} />
       </div>
       {isLoading && (
         <div className='mt-10 flex items-center justify-center'>
