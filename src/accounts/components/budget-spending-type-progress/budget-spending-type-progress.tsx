@@ -2,20 +2,31 @@ import { SpendingType, SpendingTypeToLabel } from "@/src/transactions/types"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { calculatePercentage, calculatePercentageFromTotal } from "@/src/utils/math"
 
+type ExpenseDistribution = {
+  total: number
+  percentage: number
+}
+
 interface Props {
   spendingType: SpendingType
   totalIncome: number
   budget: number
-  expenseDistribution: {
-    total: number
-    percentage: number
+  expenseDistribution: ExpenseDistribution
+}
+
+const getPercentage = (budget: number, expenseDistribution: ExpenseDistribution) => {
+  if (expenseDistribution.percentage > 0) {
+    return calculatePercentageFromTotal(budget, expenseDistribution.percentage)
   }
+
+  return expenseDistribution.total > 0 ? 100 : 0 // show 100% if there's no budget but there's spending
 }
 
 export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, expenseDistribution }: Props) => {
   const label = SpendingTypeToLabel[spendingType]
-  const percentage = calculatePercentageFromTotal(budget, expenseDistribution.percentage)
-  const maxToSpend = calculatePercentage(totalIncome, budget)
+
+  const percentage = getPercentage(budget, expenseDistribution)
+  const maxToSpend = totalIncome > 0 ? calculatePercentage(totalIncome, budget) : 0
 
   const colorScheme = percentage > 80 ? "bg-red-500" : percentage > 40 ? "bg-yellow-500" : "bg-blue-500"
 
@@ -32,7 +43,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
         />
         <p
           className='absolute mt-1 self-end text-xs font-medium'
-          style={{ left: `${percentage > 100 ? 93 : percentage <= 4 ? 0 : percentage - 4}%` }}
+          style={{ left: `${percentage >= 100 ? 92 : percentage <= 4 ? 0 : percentage - 4}%` }}
         >
           {`${percentage}%`}
         </p>

@@ -4,16 +4,12 @@ import { InternalServerError, NotFoundError } from "@/src/utils/errors/errors"
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { isLuxury, isNecessity, isSavings } from "@/src/utils/get-spending-type-id"
 import { SpendingType } from "@/src/transactions/types"
+import { calculatePercentageFromTotal } from "@/src/utils/math"
 
 interface GetMonthlyStatisticsForUserInput {
   userId: number
   month: string
   year: string
-}
-
-const calculatePercentageFromTotal = (total: number, amount: number) => {
-  const percentage = (amount * 100) / total
-  return Math.round(percentage)
 }
 
 export const getMonthlyExpensesDistributionForUser = async (input: GetMonthlyStatisticsForUserInput) => {
@@ -51,15 +47,15 @@ export const getMonthlyExpensesDistributionForUser = async (input: GetMonthlySta
   const expensesDistribution = {
     [SpendingType.NECESSITY]: {
       total: totalExpensesForNecessity,
-      percentage: calculatePercentageFromTotal(totalIncome, totalExpensesForNecessity),
+      percentage: totalIncome > 0 ? calculatePercentageFromTotal(totalIncome, totalExpensesForNecessity) : 0,
     },
     [SpendingType.LUXURY]: {
       total: totalExpensesForLuxury,
-      percentage: calculatePercentageFromTotal(totalIncome, totalExpensesForLuxury),
+      percentage: totalIncome > 0 ? calculatePercentageFromTotal(totalIncome, totalExpensesForLuxury) : 0,
     },
     [SpendingType.SAVINGS]: {
       total: totalExpensesForSavings,
-      percentage: calculatePercentageFromTotal(totalIncome, totalExpensesForSavings),
+      percentage: totalIncome > 0 ? calculatePercentageFromTotal(totalIncome, totalExpensesForSavings) : 0,
     },
   }
 
