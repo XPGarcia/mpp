@@ -2,7 +2,7 @@ import { SpendingType, Transaction, TransactionType } from "@/src/transactions/t
 import { CategoryRepository } from "../repositories/category-repository"
 import { Category } from "../types"
 import { InternalServerError, NotFoundError } from "@/src/utils/errors/errors"
-import { getTransactionTypeId, isExpense, isIncome } from "@/src/utils/get-transaction-type-id"
+import { isExpense, isIncome } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "@/src/transactions/repositories/transaction-repository"
 import {
   calculateAmountFromExpenseToIncome,
@@ -55,7 +55,7 @@ export const updateOneCategory = async (input: UpdateCategoryInput): Promise<Cat
   }
 
   await TransactionRepository.updateManyByCategoryId(updatedCategory.id, {
-    typeId: getTransactionTypeId(updatedCategory.transactionType),
+    type: updatedCategory.transactionType,
   })
 
   const transactions = await TransactionRepository.findAllByCategoryId(updatedCategory.id)

@@ -1,15 +1,23 @@
 import { db } from "@/db"
-import { Transaction } from "../types"
+import { Transaction, TransactionType } from "../types"
 import { categories, transactionTypes, transactions } from "@/db/schema"
 import { and, count, desc, eq, sql } from "drizzle-orm"
 import { TransactionMapper } from "./transaction-mapper"
+import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
 
-type CreateTransactionInput = typeof transactions.$inferInsert
+type CreateTransactionInput = Omit<typeof transactions.$inferInsert, "typeId"> & {
+  type: TransactionType
+}
+
 type UpdateTransactionInput = Partial<CreateTransactionInput>
 
 export class TransactionRepository {
   static async createOne(input: CreateTransactionInput): Promise<Transaction> {
-    const rows = await db.insert(transactions).values(input).returning()
+    const typeId = getTransactionTypeId(input.type)
+    const rows = await db
+      .insert(transactions)
+      .values({ ...input, typeId })
+      .returning()
     return TransactionMapper.toDomain(rows[0])
   }
 
@@ -57,9 +65,15 @@ export class TransactionRepository {
   }
 
   static async updateOne(transactionId: number, input: UpdateTransactionInput): Promise<Transaction | undefined> {
+    const typeId = !!input.type ? getTransactionTypeId(input.type) : undefined
+    const toUpdateValues = { ...input, typeId }
+    if (!typeId) {
+      delete toUpdateValues.typeId
+    }
+
     const updatedTransaction = await db
       .update(transactions)
-      .set(input)
+      .set(toUpdateValues)
       .where(eq(transactions.id, transactionId))
       .returning()
     return updatedTransaction.length > 0 ? TransactionMapper.toDomain(updatedTransaction[0]) : undefined
@@ -74,6 +88,12 @@ export class TransactionRepository {
   }
 
   static async updateManyByCategoryId(categoryId: number, input: UpdateTransactionInput): Promise<void> {
-    await db.update(transactions).set(input).where(eq(transactions.categoryId, categoryId))
+    const typeId = !!input.type ? getTransactionTypeId(input.type) : undefined
+    const toUpdateValues = { ...input, typeId }
+    if (!typeId) {
+      delete toUpdateValues.typeId
+    }
+
+    await db.update(transactions).set(toUpdateValues).where(eq(transactions.categoryId, categoryId))
   }
 }

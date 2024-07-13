@@ -14,13 +14,10 @@ interface CreateTransactionInput {
 }
 
 export const createTransaction = async (input: CreateTransactionInput) => {
-  const typeId = getTransactionTypeId(input.type)
-
   const accountBalanceEntry = await getAccountBalanceEntryByDate({ userId: input.userId, date: input.date })
 
   const createdTransaction = await TransactionRepository.createOne({
     ...input,
-    typeId,
     accountId: accountBalanceEntry.accountId,
   })
   if (!createdTransaction) {

@@ -23,8 +23,7 @@ export const updateTransaction = async (input: UpdateTransactionInput) => {
 
   const accountBalanceEntry = await getAccountBalanceEntryByDate({ userId: oldTransaction.userId, date: input.date })
 
-  const typeId = data.type ? getTransactionTypeId(data.type) : undefined
-  const updatedTransaction = await TransactionRepository.updateOne(oldTransaction.id, { ...data, typeId })
+  const updatedTransaction = await TransactionRepository.updateOne(oldTransaction.id, data)
   if (!updatedTransaction) {
     throw new Error("Failed to create transaction")
   }
