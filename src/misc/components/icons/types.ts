@@ -24,5 +24,6 @@ export const Icons = {
   pencil: "pencil",
   tag: "tag",
   trash: "trash",
+  "chevron-down": "chevron-down",
 } as const
 export type Icon = (typeof Icons)[keyof typeof Icons]

@@ -16,6 +16,7 @@ import { SparklesIcon } from "./sparkles-icon"
 import { PencilIcon } from "./pencil-icon"
 import { TagIcon } from "./tag-icon"
 import { TrashIcon } from "./trash-icon"
+import { ChevronDownIcon } from "./chevron-down-icon"
 
 const styles = {
   sm: "size-4",
@@ -41,6 +42,7 @@ const IconBuilder = (icon: IconType, internalProps: InternalIconProps) => {
     pencil: <PencilIcon {...internalProps} />,
     tag: <TagIcon {...internalProps} />,
     trash: <TrashIcon {...internalProps} />,
+    "chevron-down": <ChevronDownIcon {...internalProps} />,
   }
   return icons[icon]
 }
