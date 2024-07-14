@@ -61,12 +61,14 @@ export const categoryRouter = router({
     .input(
       z.object({
         spendingType: z.enum(getValues(SpendingType)),
+        date: z.object({ month: z.string(), year: z.string() }).optional(),
       })
     )
     .query(async ({ input, ctx }) => {
       return await getUserCategoriesBySpendingTypeWithTotalForUser({
         userId: ctx.user.id,
         spendingType: input.spendingType,
+        date: input.date,
       })
     }),
 })

@@ -88,11 +88,22 @@ export class CategoryRepository {
   static async getUserCategoriesBySpendingTypeWithTotalSpend({
     userId,
     spendingType,
+    date,
   }: {
     userId: number
     spendingType: SpendingType
+    date?: { month: string; year: string }
   }) {
     const spendingTypeId = getSPendingTypeId(spendingType)
+    const filters = [eq(categories.userId, userId), eq(categories.spendingTypeId, spendingTypeId)]
+    if (!!date) {
+      const dateFilters = [
+        sql`EXTRACT(YEAR FROM ${transactions.date}) = ${date.year}`,
+        sql`EXTRACT(MONTH FROM ${transactions.date}) = ${date.month}`,
+      ]
+      filters.push(...dateFilters)
+    }
+
     return await db
       .select({
         id: categories.id,
@@ -102,7 +113,7 @@ export class CategoryRepository {
       })
       .from(categories)
       .leftJoin(transactions, eq(categories.id, transactions.categoryId))
-      .where(and(eq(categories.userId, userId), eq(categories.spendingTypeId, spendingTypeId)))
+      .where(and(...filters))
       .groupBy(sql`${categories.id}`)
   }
 }

@@ -35,18 +35,21 @@ export default function Stats() {
               totalIncome={transactionDistribution.totalIncome}
               budget={budget.necessity}
               expenseDistribution={transactionDistribution.expensesDistribution.NECESSITY}
+              date={date}
             />
             <BudgetSpendingTypeProgress
               spendingType={SpendingType.SAVINGS}
               totalIncome={transactionDistribution.totalIncome}
               budget={budget.savings}
               expenseDistribution={transactionDistribution.expensesDistribution.SAVINGS}
+              date={date}
             />
             <BudgetSpendingTypeProgress
               spendingType={SpendingType.LUXURY}
               totalIncome={transactionDistribution.totalIncome}
               budget={budget.luxury}
               expenseDistribution={transactionDistribution.expensesDistribution.LUXURY}
+              date={date}
             />
           </div>
         )}

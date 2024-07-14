@@ -17,6 +17,10 @@ interface Props {
   totalIncome: number
   budget: number
   expenseDistribution: ExpenseDistribution
+  date: {
+    month: string
+    year: string
+  }
 }
 
 const getPercentage = (budget: number, expenseDistribution: ExpenseDistribution) => {
@@ -27,7 +31,7 @@ const getPercentage = (budget: number, expenseDistribution: ExpenseDistribution)
   return expenseDistribution.total > 0 ? 100 : 0 // show 100% if there's no budget but there's spending
 }
 
-export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, expenseDistribution }: Props) => {
+export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, expenseDistribution, date }: Props) => {
   const label = SpendingTypeToLabel[spendingType]
 
   const percentage = getPercentage(budget, expenseDistribution)
@@ -38,7 +42,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
   const { value: showCategories, toggle: toggleCategories } = useBoolean(false)
 
   const { data: categories, isLoading: isLoadingCategories } =
-    trpc.categories.findManyBySpendTypeWithTotalSpend.useQuery({ spendingType }, { enabled: showCategories })
+    trpc.categories.findManyBySpendTypeWithTotalSpend.useQuery({ spendingType, date }, { enabled: showCategories })
 
   const getOrderedCategoriesWithPercentage = () => {
     const orderedCategories = categories?.sort((a, b) => b.totalSpend - a.totalSpend)
