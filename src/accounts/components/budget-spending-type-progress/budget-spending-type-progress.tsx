@@ -1,5 +1,6 @@
 import { Icon } from "@/src/misc/components/icons/icon"
 import { LoadingIcon } from "@/src/misc/components/icons/loading-icon"
+import { Progress } from "@/src/misc/components/progress/progress"
 import { useBoolean } from "@/src/misc/hooks/use-boolean"
 import { SpendingType, SpendingTypeToLabel } from "@/src/transactions/types"
 import { trpc } from "@/src/utils/_trpc/client"
@@ -37,7 +38,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
   const percentage = getPercentage(budget, expenseDistribution)
   const maxToSpend = totalIncome > 0 ? calculatePercentage(totalIncome, budget) : 0
 
-  const colorScheme = percentage > 80 ? "bg-red-500" : percentage > 40 ? "bg-yellow-500" : "bg-blue-500"
+  const colorScheme = percentage > 80 ? "red" : percentage > 40 ? "yellow" : "blue"
 
   const { value: showCategories, toggle: toggleCategories } = useBoolean(false)
 
@@ -61,22 +62,13 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
 
   return (
     <div className='flex flex-col text-xs font-medium text-shades-500'>
-      <div className='mb-1 flex justify-between'>
-        <p>{label}</p>
-        <p className='self-end'>{formatNumberToMoney(maxToSpend)}</p>
-      </div>
-      <div className='relative mb-6 h-2.5 w-full rounded-full bg-gray-200'>
-        <div
-          className={`h-2.5 rounded-full ${colorScheme}`}
-          style={{ width: `${percentage > 100 ? 100 : percentage}%` }}
-        />
-        <p
-          className='absolute mt-1 self-end text-xs font-medium'
-          style={{ left: `${percentage >= 100 ? 92 : percentage <= 4 ? 0 : percentage - 4}%` }}
-        >
-          {`${percentage}%`}
-        </p>
-      </div>
+      <Progress
+        percentage={percentage}
+        color={colorScheme}
+        leftLabel={label}
+        rightLabel={formatNumberToMoney(maxToSpend)}
+        withPercentageLabel
+      />
       <p className='mt-1 text-xs font-light text-gray-600'>
         {`You've spent `}
         <span className='font-medium text-shades-500'>{formatNumberToMoney(expenseDistribution.total)}</span> on {label}
@@ -90,20 +82,15 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
             <Icon icon='chevron-down' size='sm' />
           </div>
           {showCategories && !isLoadingCategories && (
-            <div className='grid grid-cols-[auto_1fr] items-start gap-x-2 gap-y-2 py-2'>
+            <div className='grid grid-cols-[1fr_auto] items-start gap-x-2 gap-y-2 py-2'>
               {mappedCategories.map((category) => (
                 <Fragment key={category.id}>
-                  <div className='text-right'>
+                  <div key={category.id} className='mt-1'>
+                    <Progress percentage={category.percentage} flipX transparentBg />
+                  </div>
+                  <div className='text-left'>
                     <p>{category.name}</p>
                     <p className='text-xxs text-gray-400'>{formatNumberToMoney(category.totalSpend)}</p>
-                  </div>
-                  <div key={category.id} className='mt-1'>
-                    <div className='relative h-2.5 w-full rounded-full'>
-                      <div
-                        className={`h-2.5 rounded-full bg-shades-500`}
-                        style={{ width: `${category.percentage > 100 ? 100 : category.percentage}%` }}
-                      />
-                    </div>
                   </div>
                 </Fragment>
               ))}
