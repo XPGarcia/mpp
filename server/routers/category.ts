@@ -6,6 +6,7 @@ import { SpendingType, TransactionType } from "@/src/transactions/types"
 import { getValues } from "@/src/utils/format/zod-enums"
 import { updateOneCategory } from "@/src/categories/actions/update-one-category"
 import { deleteOneCategory } from "@/src/categories/actions/delete-one-category"
+import { getUserCategoriesBySpendingTypeWithTotalForUser } from "@/src/categories/actions/get-user-categories-by-spend-type-with-total-spend"
 
 export const categoryRouter = router({
   createOneForUser: privateProcedure
@@ -55,5 +56,17 @@ export const categoryRouter = router({
     )
     .mutation(async ({ input }) => {
       await deleteOneCategory(input.categoryId)
+    }),
+  findManyBySpendTypeWithTotalSpend: privateProcedure
+    .input(
+      z.object({
+        spendingType: z.enum(getValues(SpendingType)),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      return await getUserCategoriesBySpendingTypeWithTotalForUser({
+        userId: ctx.user.id,
+        spendingType: input.spendingType,
+      })
     }),
 })

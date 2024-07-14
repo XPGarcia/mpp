@@ -1,11 +1,11 @@
 import { db } from "@/db"
 import { Category } from "../types"
-import { categories } from "@/db/schema"
-import { and, asc, eq, isNull, or } from "drizzle-orm"
+import { categories, transactions } from "@/db/schema"
+import { and, asc, eq, isNull, or, sql } from "drizzle-orm"
 import { SpendingType, TransactionType } from "@/src/transactions/types"
-import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
+import { getTransactionTypeFromId, getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
 import { CategoryMapper } from "./category-mapper"
-import { getSPendingTypeId } from "@/src/utils/get-spending-type-id"
+import { getSpendingTypeFromId, getSPendingTypeId } from "@/src/utils/get-spending-type-id"
 
 type CreateCategoryInput = Omit<typeof categories.$inferInsert, "transactionTypeId" | "spendingTypeId"> & {
   transactionType: TransactionType
@@ -83,5 +83,26 @@ export class CategoryRepository {
 
   static async deleteOne(categoryId: number): Promise<void> {
     await db.delete(categories).where(eq(categories.id, categoryId))
+  }
+
+  static async getUserCategoriesBySpendingTypeWithTotalSpend({
+    userId,
+    spendingType,
+  }: {
+    userId: number
+    spendingType: SpendingType
+  }) {
+    const spendingTypeId = getSPendingTypeId(spendingType)
+    return await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        spendingTypeId: categories.spendingTypeId,
+        totalSpend: sql`sum(${transactions.amount})`.mapWith(Number),
+      })
+      .from(categories)
+      .leftJoin(transactions, eq(categories.id, transactions.categoryId))
+      .where(and(eq(categories.userId, userId), eq(categories.spendingTypeId, spendingTypeId)))
+      .groupBy(sql`${categories.id}`)
   }
 }
