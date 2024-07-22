@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/generateRecurrentTransactions",
+      "path": "/api/cron/generateRecurrentTransactions",
       "schedule": "0 5 * * *"
     }
   ]
