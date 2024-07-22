@@ -20,4 +20,10 @@ export class RecurrentTransactionMapper {
       nextDate: dbRecurrentTransaction.nextDate,
     }
   }
+
+  static toDomains(dbRecurrentTransactions: DrizzleRecurrentTransaction[]): RecurrentTransaction[] {
+    return dbRecurrentTransactions.map(
+      (dbRecurrentTransaction) => this.toDomain(dbRecurrentTransaction) as RecurrentTransaction
+    )
+  }
 }

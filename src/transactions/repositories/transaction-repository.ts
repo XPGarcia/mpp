@@ -1,12 +1,13 @@
 import { db } from "@/db"
 import { RecurrentTransaction, Transaction, TransactionFrequency, TransactionType } from "../types"
 import { categories, recurrentTransactions, transactionTypes, transactions } from "@/db/schema"
-import { and, count, desc, eq, sql } from "drizzle-orm"
+import { and, count, desc, eq, gte, lt, sql } from "drizzle-orm"
 import { TransactionMapper } from "./transaction-mapper"
 import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
 import { getTransactionFrequencyId } from "@/src/utils/mappers/transaction-frequency-mappers"
 import { calculateNextTransactionDate } from "../actions/calculate-next-transaction-date"
 import { RecurrentTransactionMapper } from "./recurrent-transaction-mapper"
+import dayjs from "dayjs"
 
 type CreateTransactionInput = Omit<typeof transactions.$inferInsert, "typeId"> & {
   type: TransactionType
@@ -159,5 +160,15 @@ export class TransactionRepository {
       .where(eq(recurrentTransactions.id, id))
       .returning()
     return RecurrentTransactionMapper.toDomain(updatedRecurrentTransaction[0])
+  }
+
+  static async findAllRecurrentForToday(): Promise<RecurrentTransaction[]> {
+    const today = dayjs().startOf("day").toDate()
+    const tomorrow = dayjs().add(1, "day").startOf("day").toDate()
+    const rows = await db
+      .select()
+      .from(recurrentTransactions)
+      .where(and(gte(recurrentTransactions.nextDate, today), lt(recurrentTransactions.nextDate, tomorrow)))
+    return RecurrentTransactionMapper.toDomains(rows)
   }
 }
