@@ -33,6 +33,10 @@ export class TransactionMapper {
 
     return transaction
   }
+
+  static toDomains(dbTransactions: (DrizzleTransaction | DrizzleTransactionWithRelations)[]): Transaction[] {
+    return dbTransactions.map((dbTransaction) => this.toDomain(dbTransaction) as Transaction)
+  }
 }
 
 function singleToDomain(dbTransaction: DrizzleTransaction): Transaction {

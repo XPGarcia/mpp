@@ -68,12 +68,12 @@ export class TransactionRepository {
       .leftJoin(transactionTypes, eq(transactionTypes.id, transactions.typeId))
       .where(eq(transactions.userId, userId))
       .orderBy(desc(transactions.date))
-    return rows.map(TransactionMapper.toDomain).filter((t) => !!t)
+    return TransactionMapper.toDomains(rows)
   }
 
   static async findAllByCategoryId(categoryId: number): Promise<Transaction[]> {
     const rows = await db.select().from(transactions).where(eq(transactions.categoryId, categoryId))
-    return rows.map(TransactionMapper.toDomain).filter((t) => !!t)
+    return TransactionMapper.toDomains(rows)
   }
 
   static async findManyByUserIdAndMonthRange(
@@ -93,7 +93,7 @@ export class TransactionRepository {
         )
       )
       .orderBy(desc(transactions.date))
-    return rows.map(TransactionMapper.toDomain).filter((t) => !!t)
+    return TransactionMapper.toDomains(rows)
   }
 
   static async updateOne(transactionId: number, input: UpdateTransactionInput): Promise<Transaction | undefined> {
