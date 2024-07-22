@@ -2,6 +2,7 @@ import { InternalServerError, NotFoundError } from "@/src/utils/errors/errors"
 import { TransactionRepository } from "../repositories/transaction-repository"
 import { RecurrentTransaction } from "../types"
 import { calculateNextTransactionDate } from "./calculate-next-transaction-date"
+import { createTransaction } from "./create-transaction"
 
 export const createTransactionFromRecurrent = async (recurrentTransaction: RecurrentTransaction) => {
   const oldTransaction = await TransactionRepository.findOneById(recurrentTransaction.transactionId)
@@ -10,10 +11,15 @@ export const createTransactionFromRecurrent = async (recurrentTransaction: Recur
     throw new NotFoundError("Transaction not found")
   }
 
-  const newTransaction = await TransactionRepository.createOne({
-    ...oldTransaction,
+  const newTransaction = await createTransaction({
+    amount: oldTransaction.amount,
+    categoryId: oldTransaction.categoryId,
+    type: oldTransaction.type,
+    userId: oldTransaction.userId,
+    description: oldTransaction.description,
     date: recurrentTransaction.nextDate,
-    id: undefined,
+    isRecurrent: true,
+    frequency: recurrentTransaction.frequency,
   })
   const updatedRecurrentTransaction = await TransactionRepository.updateRecurrent(recurrentTransaction.id, {
     transactionId: newTransaction.id,

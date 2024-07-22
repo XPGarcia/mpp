@@ -55,7 +55,7 @@ export interface Transaction {
   type: TransactionType
   categoryId: number
   category?: Category
-  description?: string | null
+  description?: string
   accountId: number
   isRecurrent: boolean
   frequency?: TransactionFrequency

@@ -48,7 +48,7 @@ function singleToDomain(dbTransaction: DrizzleTransaction): Transaction {
     amount: dbTransaction.amount,
     type: getTransactionTypeFromId(dbTransaction.typeId),
     categoryId: dbTransaction.categoryId,
-    description: dbTransaction.description,
+    description: dbTransaction.description ?? undefined,
     isRecurrent: false,
   }
 }
