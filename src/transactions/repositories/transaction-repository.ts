@@ -112,6 +112,14 @@ export class TransactionRepository {
     return TransactionMapper.toDomain(updatedTransaction[0])
   }
 
+  static async deleteOne(transactionId: number): Promise<void> {
+    const recurrentTransaction = await this.findRecurrentByParentId(transactionId)
+    if (!!recurrentTransaction) {
+      await this.deleteRecurrentByParentId(transactionId)
+    }
+    await db.delete(transactions).where(eq(transactions.id, transactionId))
+  }
+
   static async countByCategoryId(categoryId: number): Promise<number> {
     const rows = await db
       .select({ count: count(transactions.id) })

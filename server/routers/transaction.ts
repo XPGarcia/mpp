@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server"
 import { updateTransaction } from "@/src/transactions/actions/update-transaction"
 import { getValues } from "@/src/utils/format/zod-enums"
 import { TransactionFrequency, TransactionType } from "@/src/transactions/types"
+import { deleteTransaction } from "@/src/transactions/actions/delete-transaction"
 
 export const transactionRouter = router({
   findOneById: privateProcedure
@@ -73,4 +74,7 @@ export const transactionRouter = router({
       const balance = calculateBalance(transactions)
       return { balance, transactions }
     }),
+  deleteOne: privateProcedure.input(z.object({ transactionId: z.number() })).mutation(async ({ input, ctx }) => {
+    await deleteTransaction({ transactionId: input.transactionId })
+  }),
 })

@@ -23,17 +23,26 @@ export default function Dashboard() {
     year: dayjs(new Date()).format("YYYY"),
   })
 
-  const { data, isLoading } = trpc.transactions.getUserTransactionsWithBalance.useQuery(
+  const {
+    data,
+    refetch: refetchTransactions,
+    isLoading,
+  } = trpc.transactions.getUserTransactionsWithBalance.useQuery(
     { month: date.month, year: date.year },
     {
       enabled: Boolean(session?.user?.id),
     }
   )
 
-  const { data: account } = trpc.accounts.findOneByUserId.useQuery()
+  const { data: account, refetch: refetchAccount } = trpc.accounts.findOneByUserId.useQuery()
 
   const addTransaction = () => {
     router.push(AppRoutes.addTransaction)
+  }
+
+  const deleteTransaction = () => {
+    refetchTransactions()
+    refetchAccount()
   }
 
   const groupTransactionsByDate = (transactions?: Transaction[]): { [key: string]: Transaction[] } => {
@@ -103,7 +112,7 @@ export default function Dashboard() {
 
                   <div className='flex flex-col gap-2 pt-2'>
                     {transactions.map((transaction) => (
-                      <TransactionRow key={transaction.id} transaction={transaction} />
+                      <TransactionRow key={transaction.id} transaction={transaction} onDelete={deleteTransaction} />
                     ))}
                   </div>
                 </div>
