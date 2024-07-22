@@ -29,6 +29,13 @@ export const Progress = ({
   const rotate = flipX ? "rotate-180" : "rotate-0"
   const bg = transparentBg ? "bg-transparent" : "bg-gray-200"
 
+  const getWidthPercentage = () => {
+    if (percentage <= 0) return 0
+    if (percentage > 0 && percentage <= 1) return 1
+    if (percentage > 100) return 100
+    return percentage
+  }
+
   return (
     <div>
       {(leftLabel || rightLabel) && (
@@ -38,10 +45,7 @@ export const Progress = ({
         </div>
       )}
       <div className={`relative h-2.5 w-full rounded-full ${bg} ${mb} ${rotate}`}>
-        <div
-          className={`h-2.5 rounded-full ${colorScheme}`}
-          style={{ width: `${percentage > 100 ? 100 : percentage}%` }}
-        />
+        <div className={`h-2.5 rounded-full ${colorScheme}`} style={{ width: `${getWidthPercentage()}%` }} />
         {withPercentageLabel && (
           <p
             className='absolute mt-1 self-end text-xs font-medium'
