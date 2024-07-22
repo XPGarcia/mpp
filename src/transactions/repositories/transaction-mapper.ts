@@ -12,7 +12,11 @@ type DrizzleTransactionWithRelations = {
 type DrizzleTransaction = typeof transactions.$inferSelect
 
 export class TransactionMapper {
-  static toDomain(dbTransaction: DrizzleTransaction | DrizzleTransactionWithRelations): Transaction {
+  static toDomain(dbTransaction?: DrizzleTransaction | DrizzleTransactionWithRelations): Transaction | undefined {
+    if (!dbTransaction) {
+      return
+    }
+
     if ("id" in dbTransaction) {
       return singleToDomain(dbTransaction)
     }
@@ -41,5 +45,6 @@ function singleToDomain(dbTransaction: DrizzleTransaction): Transaction {
     type: getTransactionTypeFromId(dbTransaction.typeId),
     categoryId: dbTransaction.categoryId,
     description: dbTransaction.description,
+    isRecurrent: false,
   }
 }

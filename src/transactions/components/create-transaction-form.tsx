@@ -5,7 +5,7 @@ import { FormSelect } from "@/src/misc/components/form-select/form-select"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
-import { SpendingType, TransactionType } from "../types"
+import { SpendingType, TransactionType, TransactionFrequency, transactionFrequencyOptions } from "../types"
 import { useState } from "react"
 import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { Icon } from "@/src/misc/components/icons/icon"
@@ -16,6 +16,7 @@ import { getValues } from "@/src/utils/format/zod-enums"
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { SelectTransactionType } from "./select-transaction-type"
 import { CreateCategoryModalDrawer } from "@/src/categories/components/create-category-modal-drawer/create-category-modal-drawer"
+import { FormCheckbox } from "@/src/misc/components/form-checkbox/form-checkbox"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -26,17 +27,22 @@ const schema = z.object({
   type: z.enum(getValues(TransactionType), { message: "Select a valid type for transaction" }),
   categoryId: z.number().positive("Category is required").min(1, "Category is required"),
   description: z.string(),
+  isRecurrent: z.boolean().default(false),
+  frequency: z
+    .enum(getValues(TransactionFrequency), { message: "Select a valid frequency for transaction" })
+    .optional(),
 })
 
 export type CreateTransactionFormData = z.infer<typeof schema>
 
 interface Props {
   initialValues?: CreateTransactionFormData
+  withFrequency?: boolean
   onSubmit: (data: CreateTransactionFormData) => void
   onCancel: () => void
 }
 
-export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Props) => {
+export const CreateTransactionForm = ({ initialValues, withFrequency = true, onSubmit, onCancel }: Props) => {
   const [openCategoryForm, setOpenCategoryForm] = useState(false)
   const {
     register,
@@ -45,15 +51,18 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
     getValues,
     trigger,
     reset,
+    watch,
     control,
     formState: { errors, isSubmitting },
   } = useForm<CreateTransactionFormData>({
     defaultValues: {
       type: initialValues?.type ?? TransactionType.EXPENSE,
-      date: initialValueForFormDate(initialValues?.date ?? new Date()),
+      date: initialValueForFormDate(initialValues?.date ?? adjustTimezone(new Date())),
       amount: initialValues?.amount,
       categoryId: initialValues?.categoryId,
       description: initialValues?.description,
+      isRecurrent: initialValues?.isRecurrent ?? false,
+      frequency: initialValues?.frequency,
     },
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -69,7 +78,7 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
 
   const submit = (data: CreateTransactionFormData) => {
     reset()
-    onSubmit({ ...data, date: adjustTimezone(data.date) })
+    onSubmit(data)
   }
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
@@ -139,7 +148,44 @@ export const CreateTransactionForm = ({ initialValues, onSubmit, onCancel }: Pro
           {...register("description")}
         />
 
-        <div className='mt-2 flex flex-col gap-2'>
+        {withFrequency && (
+          <>
+            <Controller
+              control={control}
+              name='isRecurrent'
+              render={({ field }) => (
+                <FormCheckbox
+                  id='isRecurrent'
+                  label='Is a recurrent transaction?'
+                  isChecked={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+
+            {watch("isRecurrent") && (
+              <Controller
+                control={control}
+                name='frequency'
+                render={({ field }) => (
+                  <FormSelect
+                    id='frequencies'
+                    label='Frequency'
+                    defaultValue={field.value?.toString()}
+                    errorMessage={errors.frequency?.message}
+                    options={transactionFrequencyOptions.map((frequency) => ({
+                      value: frequency.value,
+                      label: frequency.label,
+                    }))}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            )}
+          </>
+        )}
+
+        <div className='mt-3 flex flex-col gap-2'>
           <Button type='submit' isLoading={isSubmitting}>
             Save {isIncome(transactionType) ? "Income" : "Expense"}
           </Button>

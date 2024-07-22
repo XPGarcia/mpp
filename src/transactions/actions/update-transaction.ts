@@ -1,9 +1,9 @@
-import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "../repositories/transaction-repository"
-import { TransactionType } from "../types"
+import { TransactionFrequency, TransactionType } from "../types"
 import { getAccountBalanceEntryByDate } from "@/src/accounts/actions/get-account-balance-entry-by-date"
 import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
 import { calculateAmountForBalance } from "./calculate-amount-for-balance"
+import { updateRecurrentTransaction } from "./update-recurrent-transaction"
 
 interface UpdateTransactionInput {
   id: number
@@ -12,10 +12,12 @@ interface UpdateTransactionInput {
   categoryId?: number
   type?: TransactionType
   description?: string
+  isRecurrent?: boolean
+  frequency?: TransactionFrequency
 }
 
 export const updateTransaction = async (input: UpdateTransactionInput) => {
-  const { id, ...data } = input
+  const { id, frequency, isRecurrent, ...data } = input
   const oldTransaction = await TransactionRepository.findOneById(id)
   if (!oldTransaction) {
     throw new Error("Transaction not found")
@@ -27,9 +29,29 @@ export const updateTransaction = async (input: UpdateTransactionInput) => {
   if (!updatedTransaction) {
     throw new Error("Failed to create transaction")
   }
-
   const amount = calculateAmountForBalance(oldTransaction, updatedTransaction)
   await updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
+
+  if (isRecurrent === undefined) {
+    return updatedTransaction
+  }
+
+  const oldRecurrentTransaction = await TransactionRepository.findRecurrentByParentId(oldTransaction.id)
+  if (!!oldRecurrentTransaction) {
+    oldTransaction.isRecurrent = true
+    oldTransaction.frequency = oldRecurrentTransaction.frequency
+  }
+
+  const updatedRecurrentTransaction = await updateRecurrentTransaction({
+    oldTransaction,
+    updatedTransaction,
+    newIsRecurrent: isRecurrent,
+    newFrequency: frequency,
+  })
+  if (!!updatedRecurrentTransaction) {
+    updatedTransaction.isRecurrent = true
+    updatedTransaction.frequency = updatedRecurrentTransaction.frequency
+  }
 
   return updatedTransaction
 }

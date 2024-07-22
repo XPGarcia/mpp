@@ -1,15 +1,26 @@
 import { db } from "@/db"
-import { Transaction, TransactionType } from "../types"
-import { categories, transactionTypes, transactions } from "@/db/schema"
+import { RecurrentTransaction, Transaction, TransactionFrequency, TransactionType } from "../types"
+import { categories, recurrentTransactions, transactionTypes, transactions } from "@/db/schema"
 import { and, count, desc, eq, sql } from "drizzle-orm"
 import { TransactionMapper } from "./transaction-mapper"
 import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
+import { getTransactionFrequencyId } from "@/src/utils/mappers/transaction-frequency-mappers"
+import { calculateNextTransactionDate } from "../actions/calculate-next-transaction-date"
+import { RecurrentTransactionMapper } from "./recurrent-transaction-mapper"
 
 type CreateTransactionInput = Omit<typeof transactions.$inferInsert, "typeId"> & {
   type: TransactionType
+  isRecurrent: boolean
+  frequency?: TransactionFrequency
 }
 
 type UpdateTransactionInput = Partial<CreateTransactionInput>
+
+type CreateRecurrentTransactionInput = Omit<typeof recurrentTransactions.$inferInsert, "frequencyId"> & {
+  frequency: TransactionFrequency
+}
+
+type UpdateRecurrentTransactionInput = Partial<CreateRecurrentTransactionInput>
 
 export class TransactionRepository {
   static async createOne(input: CreateTransactionInput): Promise<Transaction> {
@@ -18,14 +29,35 @@ export class TransactionRepository {
       .insert(transactions)
       .values({ ...input, typeId })
       .returning()
-    return TransactionMapper.toDomain(rows[0])
+    const createdTransaction = TransactionMapper.toDomain(rows[0])
+    if (!createdTransaction) {
+      throw new Error("Failed to create transaction")
+    }
+    if (!input.isRecurrent) {
+      return createdTransaction
+    }
+    if (!input.frequency) {
+      console.error("Frequency is required for recurrent transactions", { input })
+      throw new Error("Frequency is required for recurrent transactions")
+    }
+    const frequencyId = getTransactionFrequencyId(input.frequency)
+    const nextDate = calculateNextTransactionDate(createdTransaction.date, input.frequency)
+    const cratedRows = await db
+      .insert(recurrentTransactions)
+      .values({ transactionId: createdTransaction.id, frequencyId, startDate: createdTransaction.date, nextDate })
+      .returning()
+    if (cratedRows.length === 0) {
+      console.error("Failed to create recurrent transaction", { input })
+      throw new Error("Failed to create recurrent transaction")
+    }
+    return createdTransaction
   }
 
   static async findOneById(transactionId: number): Promise<Transaction | undefined> {
     const transaction = await db.query.transactions.findFirst({
       where: eq(transactions.id, transactionId),
     })
-    return transaction ? TransactionMapper.toDomain(transaction) : undefined
+    return TransactionMapper.toDomain(transaction)
   }
 
   static async findAllByUserId(userId: number): Promise<Transaction[]> {
@@ -36,12 +68,12 @@ export class TransactionRepository {
       .leftJoin(transactionTypes, eq(transactionTypes.id, transactions.typeId))
       .where(eq(transactions.userId, userId))
       .orderBy(desc(transactions.date))
-    return rows.map(TransactionMapper.toDomain)
+    return rows.map(TransactionMapper.toDomain).filter((t) => !!t)
   }
 
   static async findAllByCategoryId(categoryId: number): Promise<Transaction[]> {
     const rows = await db.select().from(transactions).where(eq(transactions.categoryId, categoryId))
-    return rows.map(TransactionMapper.toDomain)
+    return rows.map(TransactionMapper.toDomain).filter((t) => !!t)
   }
 
   static async findManyByUserIdAndMonthRange(
@@ -61,7 +93,7 @@ export class TransactionRepository {
         )
       )
       .orderBy(desc(transactions.date))
-    return rows.map(TransactionMapper.toDomain)
+    return rows.map(TransactionMapper.toDomain).filter((t) => !!t)
   }
 
   static async updateOne(transactionId: number, input: UpdateTransactionInput): Promise<Transaction | undefined> {
@@ -76,7 +108,7 @@ export class TransactionRepository {
       .set(toUpdateValues)
       .where(eq(transactions.id, transactionId))
       .returning()
-    return updatedTransaction.length > 0 ? TransactionMapper.toDomain(updatedTransaction[0]) : undefined
+    return TransactionMapper.toDomain(updatedTransaction[0])
   }
 
   static async countByCategoryId(categoryId: number): Promise<number> {
@@ -95,5 +127,37 @@ export class TransactionRepository {
     }
 
     await db.update(transactions).set(toUpdateValues).where(eq(transactions.categoryId, categoryId))
+  }
+
+  static async findRecurrentByParentId(parentId: number): Promise<RecurrentTransaction | undefined> {
+    const recurrentTransaction = await db.query.recurrentTransactions.findFirst({
+      where: eq(recurrentTransactions.transactionId, parentId),
+    })
+    if (!recurrentTransaction) {
+      return
+    }
+    return RecurrentTransactionMapper.toDomain(recurrentTransaction)
+  }
+
+  static async deleteRecurrentByParentId(parentId: number): Promise<void> {
+    await db.delete(recurrentTransactions).where(eq(recurrentTransactions.transactionId, parentId))
+  }
+
+  static async updateRecurrent(
+    id: number,
+    input: UpdateRecurrentTransactionInput
+  ): Promise<RecurrentTransaction | undefined> {
+    const frequencyId = !!input.frequency ? getTransactionFrequencyId(input.frequency) : undefined
+    const toUpdateValues = { ...input, frequencyId }
+    if (!frequencyId) {
+      delete toUpdateValues.frequencyId
+    }
+
+    const updatedRecurrentTransaction = await db
+      .update(recurrentTransactions)
+      .set(toUpdateValues)
+      .where(eq(recurrentTransactions.id, id))
+      .returning()
+    return RecurrentTransactionMapper.toDomain(updatedRecurrentTransaction[0])
   }
 }

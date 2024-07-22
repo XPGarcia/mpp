@@ -6,16 +6,25 @@ import { calculateBalance } from "@/src/transactions/actions/calculate-balance"
 import { TRPCError } from "@trpc/server"
 import { updateTransaction } from "@/src/transactions/actions/update-transaction"
 import { getValues } from "@/src/utils/format/zod-enums"
-import { TransactionType } from "@/src/transactions/types"
+import { TransactionFrequency, TransactionType } from "@/src/transactions/types"
 
 export const transactionRouter = router({
-  findOneById: privateProcedure.input(z.object({ id: z.number() })).query(async ({ input }) => {
-    const transaction = await TransactionRepository.findOneById(input.id)
-    if (!transaction) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "Transaction not found" })
-    }
-    return transaction
-  }),
+  findOneById: privateProcedure
+    .input(z.object({ id: z.number(), withRecurrentTransaction: z.boolean().default(false) }))
+    .query(async ({ input }) => {
+      const transaction = await TransactionRepository.findOneById(input.id)
+      if (!transaction) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Transaction not found" })
+      }
+      if (input.withRecurrentTransaction) {
+        const recurrentTransaction = await TransactionRepository.findRecurrentByParentId(transaction.id)
+        if (!!recurrentTransaction) {
+          transaction.isRecurrent = true
+          transaction.frequency = recurrentTransaction.frequency
+        }
+      }
+      return transaction
+    }),
   findManyByUserId: privateProcedure.input(z.void()).query(async ({ ctx }) => {
     const transactions = await TransactionRepository.findAllByUserId(ctx.user.id)
     return transactions
@@ -28,17 +37,14 @@ export const transactionRouter = router({
         categoryId: z.number().min(1),
         type: z.enum(getValues(TransactionType)),
         description: z.string(),
+        isRecurrent: z.boolean(),
+        frequency: z.enum(getValues(TransactionFrequency)).optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { date, amount, categoryId, type, description } = input
       const createdTransaction = await createTransaction({
         userId: ctx.user.id,
-        date,
-        amount,
-        categoryId,
-        type,
-        description,
+        ...input,
       })
       return createdTransaction
     }),
@@ -51,18 +57,12 @@ export const transactionRouter = router({
         categoryId: z.number().min(1),
         type: z.enum(getValues(TransactionType)),
         description: z.string(),
+        isRecurrent: z.boolean(),
+        frequency: z.enum(getValues(TransactionFrequency)).optional(),
       })
     )
     .mutation(async ({ input }) => {
-      const { id, date, amount, categoryId, type, description } = input
-      const createdTransaction = await updateTransaction({
-        id,
-        date,
-        amount,
-        categoryId,
-        type,
-        description,
-      })
+      const createdTransaction = await updateTransaction(input)
       return createdTransaction
     }),
   getUserTransactionsWithBalance: privateProcedure

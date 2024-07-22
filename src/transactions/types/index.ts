@@ -19,6 +19,21 @@ export const SpendingType = {
 } as const
 export type SpendingType = (typeof SpendingType)[keyof typeof SpendingType]
 
+export const TransactionFrequency = {
+  DAILY: "DAILY",
+  WEEKLY: "WEEKLY",
+  MONTHLY: "MONTHLY",
+  YEARLY: "YEARLY",
+} as const
+export type TransactionFrequency = (typeof TransactionFrequency)[keyof typeof TransactionFrequency]
+
+export const transactionFrequencyOptions: { value: TransactionFrequency; label: string }[] = [
+  { value: TransactionFrequency.DAILY, label: "Daily" },
+  { value: TransactionFrequency.WEEKLY, label: "Weekly" },
+  { value: TransactionFrequency.MONTHLY, label: "Monthly" },
+  { value: TransactionFrequency.YEARLY, label: "Yearly" },
+]
+
 export const SpendingTypeToLabel: Record<SpendingType, string> = {
   NECESSITY: "Need for Living",
   LUXURY: "Entertainment",
@@ -42,4 +57,14 @@ export interface Transaction {
   category?: Category
   description?: string | null
   accountId: number
+  isRecurrent: boolean
+  frequency?: TransactionFrequency
+}
+
+export interface RecurrentTransaction {
+  id: number
+  transactionId: number
+  frequency: TransactionFrequency
+  startDate: Date
+  nextDate: Date
 }

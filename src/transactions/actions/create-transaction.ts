@@ -1,6 +1,6 @@
-import { getTransactionTypeId, isIncome } from "@/src/utils/get-transaction-type-id"
+import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "../repositories/transaction-repository"
-import { TransactionType } from "../types"
+import { TransactionFrequency, TransactionType } from "../types"
 import { getAccountBalanceEntryByDate } from "@/src/accounts/actions/get-account-balance-entry-by-date"
 import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
 
@@ -11,6 +11,8 @@ interface CreateTransactionInput {
   categoryId: number
   type: TransactionType
   description?: string
+  isRecurrent: boolean
+  frequency?: TransactionFrequency
 }
 
 export const createTransaction = async (input: CreateTransactionInput) => {

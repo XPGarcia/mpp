@@ -125,3 +125,30 @@ export const accountBalanceEntries = pgTable(
     }
   }
 )
+
+export const transactionFrequencies = pgTable("TransactionFrequency", {
+  id: smallserial("id").primaryKey(),
+  name: varchar("name", { length: 20 }).notNull(),
+})
+
+export const recurrentTransactions = pgTable(
+  "RecurrentTransaction",
+  {
+    id: serial("id").primaryKey(),
+    transactionId: integer("transaction_id")
+      .notNull()
+      .references(() => transactions.id),
+    frequencyId: smallint("frequency_id")
+      .notNull()
+      .references(() => transactionFrequencies.id),
+    startDate: timestamp("start_date").notNull(),
+    nextDate: timestamp("next_date").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => {
+    return {
+      dateFromIdx: index("next_date_idx").on(table.nextDate),
+    }
+  }
+)

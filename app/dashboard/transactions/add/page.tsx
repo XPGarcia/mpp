@@ -22,7 +22,7 @@ export default function AddTransaction() {
 
   return (
     <main className='flex w-full justify-center'>
-      <div className='flex w-full max-w-slim flex-col px-4 py-8'>
+      <div className='flex w-full max-w-slim flex-col px-4 pt-8'>
         <CreateTransactionForm onSubmit={submit} onCancel={cancel} />
       </div>
     </main>
