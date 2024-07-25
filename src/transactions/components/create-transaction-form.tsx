@@ -23,7 +23,7 @@ const schema = z.object({
   amount: z
     .number({ message: "Amount must be a number" })
     .positive("Amount must be positive")
-    .min(1, "Amount is required"),
+    .gt(0, "Amount is required"),
   type: z.enum(getValues(TransactionType), { message: "Select a valid type for transaction" }),
   categoryId: z.number().positive("Category is required").min(1, "Category is required"),
   description: z.string(),
