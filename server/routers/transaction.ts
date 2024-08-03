@@ -74,7 +74,7 @@ export const transactionRouter = router({
       const balance = calculateBalance(transactions)
       return { balance, transactions }
     }),
-  deleteOne: privateProcedure.input(z.object({ transactionId: z.number() })).mutation(async ({ input, ctx }) => {
+  deleteOne: privateProcedure.input(z.object({ transactionId: z.number() })).mutation(async ({ input }) => {
     await deleteTransaction({ transactionId: input.transactionId })
   }),
 })

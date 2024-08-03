@@ -1,6 +1,15 @@
-export const adjustTimezone = (date: Date) => {
-  const parsedDate = new Date(date)
-  const offset = parsedDate.getTimezoneOffset()
-  const newDate = new Date(parsedDate.getTime() + offset * 60 * 1000)
-  return newDate
+import dayjs from "dayjs"
+
+export const adjustTimezoneFromUTCToLocal = (date: Date): Date => {
+  const parsedDate = dayjs(date)
+  const offset = parsedDate.utcOffset()
+  const adjustedDate = parsedDate.add(offset, "minute").toDate()
+  return adjustedDate
+}
+
+export const adjustTimezoneFromLocalToUTC = (date: Date): Date => {
+  const parsedDate = dayjs(date)
+  const offset = parsedDate.utcOffset()
+  const adjustedDate = parsedDate.add(offset * -1, "minute").toDate()
+  return adjustedDate
 }

@@ -11,7 +11,7 @@ import { CreateCategoryFormData } from "@/src/categories/components/create-categ
 import { Icon } from "@/src/misc/components/icons/icon"
 import { trpc } from "@/src/utils/_trpc/client"
 import { initialValueForFormDate } from "@/src/utils/format/forms"
-import { adjustTimezone } from "@/src/utils/format/dates"
+import { adjustTimezoneFromLocalToUTC, adjustTimezoneFromUTCToLocal } from "@/src/utils/format/dates"
 import { getValues } from "@/src/utils/format/zod-enums"
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { SelectTransactionType } from "./select-transaction-type"
@@ -57,7 +57,7 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
   } = useForm<CreateTransactionFormData>({
     defaultValues: {
       type: initialValues?.type ?? TransactionType.EXPENSE,
-      date: initialValueForFormDate(initialValues?.date ?? adjustTimezone(new Date())),
+      date: initialValueForFormDate(initialValues?.date ?? adjustTimezoneFromUTCToLocal(new Date())),
       amount: initialValues?.amount,
       categoryId: initialValues?.categoryId,
       description: initialValues?.description,
@@ -78,7 +78,7 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
 
   const submit = (data: CreateTransactionFormData) => {
     reset()
-    onSubmit(data)
+    onSubmit({ ...data, date: adjustTimezoneFromLocalToUTC(data.date) })
   }
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
