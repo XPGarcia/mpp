@@ -170,13 +170,47 @@ export class TransactionRepository {
     return RecurrentTransactionMapper.toDomain(updatedRecurrentTransaction[0])
   }
 
-  static async findAllRecurrentForToday(): Promise<RecurrentTransaction[]> {
-    const today = dayjs().startOf("day").toDate()
-    const tomorrow = dayjs().add(1, "day").startOf("day").toDate()
+  static async findManyRecurrentByRangeAndFrequency(input: {
+    fromDate: Date
+    toDate: Date
+    frequency: TransactionFrequency
+  }): Promise<RecurrentTransaction[]> {
     const rows = await db
       .select()
       .from(recurrentTransactions)
-      .where(and(gte(recurrentTransactions.nextDate, today), lt(recurrentTransactions.nextDate, tomorrow)))
+      .where(
+        and(
+          gte(recurrentTransactions.nextDate, input.fromDate),
+          lt(recurrentTransactions.nextDate, input.toDate),
+          eq(recurrentTransactions.frequencyId, getTransactionFrequencyId(input.frequency))
+        )
+      )
     return RecurrentTransactionMapper.toDomains(rows)
+  }
+
+  static async findAllDailyRecurrentForToday(): Promise<RecurrentTransaction[]> {
+    const today = dayjs().startOf("day").toDate()
+    const tomorrow = dayjs().add(1, "day").startOf("day").toDate()
+    return this.findManyRecurrentByRangeAndFrequency({ fromDate: today, toDate: tomorrow, frequency: "DAILY" })
+  }
+
+  static async findAllWeeklyRecurrentForThisWeek(): Promise<RecurrentTransaction[]> {
+    const startOfWeek = dayjs().startOf("week").toDate()
+    const endOfWeek = dayjs().endOf("week").toDate()
+    return this.findManyRecurrentByRangeAndFrequency({
+      fromDate: startOfWeek,
+      toDate: endOfWeek,
+      frequency: "WEEKLY",
+    })
+  }
+
+  static async findAllMonthlyRecurrentForThisWeek(): Promise<RecurrentTransaction[]> {
+    const startOfMonth = dayjs().startOf("month").toDate()
+    const endOfMonth = dayjs().endOf("month").toDate()
+    return this.findManyRecurrentByRangeAndFrequency({
+      fromDate: startOfMonth,
+      toDate: endOfMonth,
+      frequency: "MONTHLY",
+    })
   }
 }
