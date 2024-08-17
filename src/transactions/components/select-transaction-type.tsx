@@ -1,6 +1,6 @@
+import { TransactionType } from "@/modules/transactions/types"
 import { Button } from "@/src/misc"
-import { isExpense, isIncome } from "@/src/utils/get-transaction-type-id"
-import { TransactionType } from "../types"
+import { isExpense, isIncome } from "@/utils"
 
 interface Props {
   selectedType: TransactionType

@@ -1,12 +1,12 @@
 import { Icon } from "@/src/misc/components/icons/icon"
-import { LoadingIcon } from "@/src/misc/components/icons/loading-icon"
 import { Progress } from "@/src/misc/components/progress/progress"
 import { useBoolean } from "@/src/misc/hooks/use-boolean"
-import { SpendingType, SpendingTypeToLabel } from "@/src/transactions/types"
+import { SpendingType } from "@/modules/transactions/types"
 import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { calculatePercentage, calculatePercentageFromTotal } from "@/src/utils/math"
 import { Fragment } from "react"
+import { SpendingTypeToLabel } from "@/src/transactions/constants"
 
 type ExpenseDistribution = {
   total: number

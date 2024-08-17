@@ -1,4 +1,4 @@
-import { generateRecurrentTransactions } from "@/src/transactions/actions/generate-recurrent-transactions"
+import { transactionsClient } from "@/modules/transactions"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { getStatusError } from "@/src/utils/errors/get-status-status"
 import type { NextRequest } from "next/server"
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   console.log("Generating recurrent transactions")
   const transactions = []
   try {
-    const newTransactions = await generateRecurrentTransactions()
+    const newTransactions = await transactionsClient.generateRecurrentTransactions()
     transactions.push(...newTransactions)
   } catch (e) {
     return new Response(getErrorMessage(e), {

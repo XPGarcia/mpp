@@ -1,17 +1,17 @@
 "use client"
 
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
-import { Transaction } from "../types"
 import { Button } from "@/src/misc"
 import { Icon } from "@/src/misc/components/icons/icon"
 import { useRouter } from "next/navigation"
 import { AppRoutes } from "@/src/utils/routes"
-import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { useBoolean } from "@/src/misc/hooks/use-boolean"
 import { BottomDrawer } from "@/src/misc/components/bottom-drawer/bottom-drawer"
 import { trpc } from "@/src/utils/_trpc/client"
 import toast from "react-hot-toast"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
+import { Transaction } from "@/modules/transactions/types"
+import { isIncome } from "@/utils"
 
 interface Props {
   transaction: Transaction

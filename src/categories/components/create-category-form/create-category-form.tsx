@@ -1,12 +1,13 @@
 import { Button, FormInput } from "@/src/misc"
 import { FormSelect } from "@/src/misc/components/form-select/form-select"
-import { SpendingType, TransactionType, spendingTypeOptions, transactionTypeOptions } from "@/src/transactions/types"
+import { SpendingType, TransactionType } from "@/modules/transactions/types"
 import { getValues } from "@/src/utils/format/zod-enums"
-import { isExpense, isIncome } from "@/src/utils/get-transaction-type-id"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
+import { spendingTypeOptions, transactionTypeOptions } from "@/src/transactions/constants"
+import { isExpense, isIncome } from "@/utils"
 
 const schema = z.object({
   name: z.string().min(1, "Category Name is required"),
@@ -30,6 +31,7 @@ export const CreateCategoryForm = ({ defaultValues, onSubmit }: Props) => {
     getValues,
     setValue,
     trigger,
+    resetField,
     formState: { errors, isSubmitting },
   } = useForm<CreateCategoryFormData>({
     defaultValues: {
@@ -78,8 +80,7 @@ export const CreateCategoryForm = ({ defaultValues, onSubmit }: Props) => {
               if (isIncome(type)) {
                 setValue("spendingType", SpendingType.NO_APPLY)
               } else if (isExpense(type)) {
-                // @ts-ignore - we want to reset the spendingType
-                setValue("spendingType", undefined)
+                resetField("spendingType", { defaultValue: undefined })
               }
               trigger("spendingType")
             }}
