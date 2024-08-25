@@ -29,7 +29,7 @@ export const createTransaction = async (input: CreateTransactionInput) => {
   }
 
   const amount = isIncome(createdTransaction.type) ? createdTransaction.amount : createdTransaction.amount * -1
-  await accountsClient.updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
+  await accountsClient.updateBalance({ accountBalanceEntry, amount })
 
   return createdTransaction
 }

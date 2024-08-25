@@ -1,12 +1,8 @@
 import { z } from "zod"
 import { privateProcedure, router } from "../trpc"
-import { createCategoryForUser } from "@/src/categories/actions/create-category-for-user"
-import { CategoryRepository } from "@/src/categories/repositories/category-repository"
 import { SpendingType, TransactionType } from "@/src/transactions/types"
 import { getValues } from "@/src/utils/format/zod-enums"
-import { updateOneCategory } from "@/src/categories/actions/update-one-category"
-import { deleteOneCategory } from "@/src/categories/actions/delete-one-category"
-import { getUserCategoriesBySpendingTypeWithTotalForUser } from "@/src/categories/actions/get-user-categories-by-spend-type-with-total-spend"
+import { categoriesClient } from "@/modules/transactions"
 
 export const categoryRouter = router({
   createOneForUser: privateProcedure
@@ -19,7 +15,12 @@ export const categoryRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const { transactionType, name, spendingType } = input
-      const category = await createCategoryForUser({ userId: ctx.user.id, transactionType, name, spendingType })
+      const category = await categoriesClient.createCategoryForUser({
+        userId: ctx.user.id,
+        transactionType,
+        name,
+        spendingType,
+      })
       return category
     }),
   findManyByUser: privateProcedure
@@ -29,7 +30,7 @@ export const categoryRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      const categories = await CategoryRepository.getUserCategoriesByTransaction({
+      const categories = await categoriesClient.getUserCategoriesByTransaction({
         userId: ctx.user.id,
         transactionType: input.transactionType,
       })
@@ -45,7 +46,7 @@ export const categoryRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const category = await updateOneCategory(input)
+      const category = await categoriesClient.updateOne(input)
       return category
     }),
   deleteOne: privateProcedure
@@ -55,7 +56,7 @@ export const categoryRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      await deleteOneCategory(input.categoryId)
+      await categoriesClient.deleteOne({ categoryId: input.categoryId })
     }),
   findManyBySpendTypeWithTotalSpend: privateProcedure
     .input(
@@ -65,7 +66,7 @@ export const categoryRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      return await getUserCategoriesBySpendingTypeWithTotalForUser({
+      return await categoriesClient.getUserCategoriesBySpendingType({
         userId: ctx.user.id,
         spendingType: input.spendingType,
         date: input.date,

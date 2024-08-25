@@ -22,5 +22,5 @@ export const deleteTransaction = async (input: DeleteTransactionInput) => {
   await TransactionRepository.deleteOne(transaction.id)
 
   const amount = isIncome(transaction.type) ? transaction.amount * -1 : transaction.amount
-  await accountsClient.updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
+  await accountsClient.updateBalance({ accountBalanceEntry, amount })
 }

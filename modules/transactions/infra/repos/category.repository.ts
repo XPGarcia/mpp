@@ -1,21 +1,22 @@
-import { db } from "@/db"
-import { Category } from "../types"
+import { injectable } from "inversify"
+import {
+  Category,
+  CategoryRepository,
+  CreateCategoryInput,
+  SpendingType,
+  TransactionType,
+  UpdateCategoryInput,
+} from "@/modules/transactions/domain"
+import { getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
 import { categories, transactions } from "@/db/schema"
+import { db } from "@/db"
 import { and, asc, eq, isNull, or, sql } from "drizzle-orm"
-import { SpendingType, TransactionType } from "@/src/transactions/types"
-import { getTransactionTypeFromId, getTransactionTypeId } from "@/src/utils/get-transaction-type-id"
-import { CategoryMapper } from "./category-mapper"
-import { getSpendingTypeFromId, getSPendingTypeId } from "@/src/utils/get-spending-type-id"
+import { getSPendingTypeId } from "@/src/utils/get-spending-type-id"
+import { CategoryMapper } from "../mappers"
 
-type CreateCategoryInput = Omit<typeof categories.$inferInsert, "transactionTypeId" | "spendingTypeId"> & {
-  transactionType: TransactionType
-  spendingType: SpendingType
-}
-
-type UpdateCategoryInput = Omit<Partial<CreateCategoryInput>, "userId" | "id">
-
-export class CategoryRepository {
-  static async getUserCategoriesByTransaction({
+@injectable()
+export class DrizzleCategoryRepository implements CategoryRepository {
+  async getUserCategoriesByTransaction({
     userId,
     transactionType,
   }: {
@@ -33,10 +34,10 @@ export class CategoryRepository {
         )
       )
       .orderBy(asc(categories.name))
-    return userCategories.map(CategoryMapper.toDomain)
+    return CategoryMapper.toDomains(userCategories)
   }
 
-  static async createForUser(values: CreateCategoryInput): Promise<Category | undefined> {
+  async createForUser(values: CreateCategoryInput): Promise<Category | undefined> {
     const transactionTypeId = getTransactionTypeId(values.transactionType)
     const spendingTypeId = getSPendingTypeId(values.spendingType)
     const createdCategories = await db
@@ -46,22 +47,22 @@ export class CategoryRepository {
     return createdCategories.length > 0 ? CategoryMapper.toDomain(createdCategories[0]) : undefined
   }
 
-  static async createManyForUser(values: CreateCategoryInput[]): Promise<Category[]> {
+  async createManyForUser(values: CreateCategoryInput[]): Promise<Category[]> {
     const mappedValues = values.map((value) => ({
       ...value,
       transactionTypeId: getTransactionTypeId(value.transactionType),
       spendingTypeId: getSPendingTypeId(value.spendingType),
     }))
     const createdCategories = await db.insert(categories).values(mappedValues).returning()
-    return createdCategories.map(CategoryMapper.toDomain)
+    return CategoryMapper.toDomains(createdCategories)
   }
 
-  static async findOneById(categoryId: number): Promise<Category | undefined> {
+  async findOneById(categoryId: number): Promise<Category | undefined> {
     const category = await db.query.categories.findFirst({ where: eq(categories.id, categoryId) })
-    return category ? CategoryMapper.toDomain(category) : undefined
+    return CategoryMapper.toDomain(category)
   }
 
-  static async updateOne(categoryId: number, values: UpdateCategoryInput): Promise<Category | undefined> {
+  async updateOne(categoryId: number, values: UpdateCategoryInput): Promise<Category | undefined> {
     const toUpdateValues = {
       ...values,
       transactionTypeId: values.transactionType ? getTransactionTypeId(values.transactionType) : undefined,
@@ -78,14 +79,14 @@ export class CategoryRepository {
       .set(toUpdateValues)
       .where(eq(categories.id, categoryId))
       .returning()
-    return updatedCategories.length > 0 ? CategoryMapper.toDomain(updatedCategories[0]) : undefined
+    return CategoryMapper.toDomain(updatedCategories[0])
   }
 
-  static async deleteOne(categoryId: number): Promise<void> {
+  async deleteOne(categoryId: number): Promise<void> {
     await db.delete(categories).where(eq(categories.id, categoryId))
   }
 
-  static async getUserCategoriesBySpendingTypeWithTotalSpend({
+  async getUserCategoriesBySpendingTypeWithTotalSpend({
     userId,
     spendingType,
     date,

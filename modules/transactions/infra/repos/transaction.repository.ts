@@ -20,6 +20,7 @@ export class DrizzleTransactionRepository implements TransactionRepository {
       .values({ ...input, typeId })
       .returning()
     return TransactionMapper.toDomain(rows[0])
+    // TODO: Implement recurrent transactions in another repository or use logic
     // if (!input.isRecurrent) {
     //   return createdTransaction
     // }

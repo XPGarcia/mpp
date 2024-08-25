@@ -18,9 +18,19 @@ const TYPES = {
   // repositories
   TransactionRepository: Symbol.for("TransactionRepository"),
   RecurrentTransactionRepository: Symbol.for("RecurrentTransactionRepository"),
+  CategoryRepository: Symbol.for("CategoryRepository"),
+  // services
+  AccountsService: Symbol.for("AccountsService"),
+  AccountBalanceEntriesService: Symbol.for("AccountBalanceEntriesService"),
   // use-cases
   GetMonthlyExpensesDistributionForUser: Symbol.for("GetMonthlyExpensesDistributionForUser"),
-  UpdateAmountAccountBalanceEntry: Symbol.for("UpdateAmountAccountBalanceEntry"),
+  UpdateAccountBalance: Symbol.for("UpdateAccountBalance"),
+  CreateCategoryForUser: Symbol.for("CreateCategoryForUser"),
+  CreateInitialCategoriesForUser: Symbol.for("CreateInitialCategoriesForUser"),
+  DeleteOneCategory: Symbol.for("DeleteOneCategory"),
+  GetUserCategoriesBySpendingType: Symbol.for("GetUserCategoriesBySpendingType"),
+  UpdateOneCategory: Symbol.for("UpdateOneCategory"),
+  GetUserCategoriesByTransaction: Symbol.for("GetUserCategoriesByTransaction"),
   /*********** Transactions **********/
 }
 

@@ -3,24 +3,24 @@ import { inject, injectable } from "inversify"
 import { AccountBalanceEntry, AccountBalanceEntryRepository, AccountRepository } from "@/modules/accounts/domain"
 import { TYPES } from "@/modules/container/types"
 
-export type UpdateAmountAccountBalanceEntryInput = {
+export type UpdateAccountBalanceInput = {
   accountBalanceEntry: AccountBalanceEntry
   amount: number
 }
 
-export type UpdateAmountAccountBalanceEntryOutput = Promise<void>
+export type UpdateAccountBalanceOutput = Promise<void>
 
-export interface UpdateAmountAccountBalanceEntryUseCase {
-  execute(input: UpdateAmountAccountBalanceEntryInput): UpdateAmountAccountBalanceEntryOutput
+export interface UpdateAccountBalanceUseCase {
+  execute(input: UpdateAccountBalanceInput): UpdateAccountBalanceOutput
 }
 
 @injectable()
-export class UpdateAmountAccountBalanceEntry implements UpdateAmountAccountBalanceEntryUseCase {
+export class UpdateAccountBalance implements UpdateAccountBalanceUseCase {
   @inject(TYPES.AccountRepository) private readonly _accountRepository!: AccountRepository
   @inject(TYPES.AccountBalanceEntryRepository)
   private readonly _accountBalanceEntryRepository!: AccountBalanceEntryRepository
 
-  async execute(input: UpdateAmountAccountBalanceEntryInput): UpdateAmountAccountBalanceEntryOutput {
+  async execute(input: UpdateAccountBalanceInput): UpdateAccountBalanceOutput {
     const { accountBalanceEntry, amount } = input
     const account = await this._accountRepository.findOneById(accountBalanceEntry.accountId)
     if (!account) {

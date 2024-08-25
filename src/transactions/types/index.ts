@@ -1,4 +1,4 @@
-import { Category } from "@/src/categories/types"
+import { Category } from "@/modules/transactions/types"
 
 export const TransactionType = {
   INCOME: "INCOME",

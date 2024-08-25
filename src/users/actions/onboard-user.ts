@@ -1,6 +1,6 @@
 import { BadRequestError } from "@/src/utils/errors/errors"
 import { UserRepository } from "../repositories/user-repository"
-import { createInitialCategoriesForUser } from "@/src/categories/actions/create-initial-categories-for-user"
+import { categoriesClient } from "@/modules/transactions"
 import { accountBalanceEntriesClient, accountsClient, budgetsClient } from "@/modules/accounts"
 
 interface OnboardUserInput {
@@ -46,7 +46,7 @@ export const onboardUser = async (input: OnboardUserInput): Promise<void> => {
     throw new BadRequestError("Failed to create budget")
   }
 
-  await createInitialCategoriesForUser(input.userId)
+  await categoriesClient.createInitialCategoriesForUser({ userId: input.userId })
 
   const updatedUser = await UserRepository.update(input.userId, { onboardedAt: new Date() })
   if (!updatedUser) {

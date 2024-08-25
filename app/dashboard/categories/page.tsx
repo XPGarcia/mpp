@@ -1,9 +1,9 @@
 "use client"
 
+import { Category } from "@/modules/transactions/types"
 import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { CreateCategoryModalDrawer } from "@/src/categories/components/create-category-modal-drawer/create-category-modal-drawer"
 import { DeleteCategoryModalDrawer } from "@/src/categories/components/delete-category-modal-drawer/delete-category-modal-drawer"
-import { Category } from "@/src/categories/types"
 import { Button } from "@/src/misc"
 import { Icon } from "@/src/misc/components/icons/icon"
 import { useBoolean } from "@/src/misc/hooks/use-boolean"

@@ -1,7 +1,7 @@
 import { categories, transactionTypes, transactions } from "@/db/schema"
 import { Transaction, TransactionType } from "../types"
 import { getTransactionTypeFromId } from "@/src/utils/get-transaction-type-id"
-import { CategoryMapper } from "@/src/categories/repositories/category-mapper"
+import { CategoryMapper } from "@/modules/transactions/infra/mappers"
 
 type DrizzleTransactionWithRelations = {
   Transaction: typeof transactions.$inferSelect
