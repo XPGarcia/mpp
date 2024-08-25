@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { privateProcedure, router } from "../trpc"
-import { BudgetRepository } from "@/src/accounts/repositories/budget-repository"
 import { transactionsClient } from "@/modules/transactions"
+import { budgetsClient } from "@/modules/accounts"
 
 export const budgetRouter = router({
   getMonthlyExpensesDistribution: privateProcedure
@@ -16,7 +16,7 @@ export const budgetRouter = router({
       return monthlyExpensesDistribution
     }),
   findOneByUserId: privateProcedure.input(z.void()).query(async ({ ctx }) => {
-    const budget = await BudgetRepository.findOneByUserId(ctx.user.id)
+    const budget = await budgetsClient.findOneByUserId({ userId: ctx.user.id })
     return budget
   }),
 })

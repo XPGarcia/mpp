@@ -1,9 +1,7 @@
 import { BadRequestError } from "@/src/utils/errors/errors"
 import { UserRepository } from "../repositories/user-repository"
-import { AccountRepository } from "@/src/accounts/repositories/account-repository"
-import { BudgetRepository } from "@/src/accounts/repositories/budget-repository"
 import { createInitialCategoriesForUser } from "@/src/categories/actions/create-initial-categories-for-user"
-import { accountBalanceEntriesClient } from "@/modules/accounts"
+import { accountBalanceEntriesClient, accountsClient, budgetsClient } from "@/modules/accounts"
 
 interface OnboardUserInput {
   userId: number
@@ -21,7 +19,7 @@ interface OnboardUserInput {
 }
 
 export const onboardUser = async (input: OnboardUserInput): Promise<void> => {
-  const createdAccount = await AccountRepository.create({
+  const createdAccount = await accountsClient.createOne({
     userId: input.userId,
     name: input.account.name,
     balance: input.account.startingBalance,
@@ -40,7 +38,7 @@ export const onboardUser = async (input: OnboardUserInput): Promise<void> => {
     throw new BadRequestError("Failed to create account balance entry")
   }
 
-  const createdBudget = await BudgetRepository.create({
+  const createdBudget = await budgetsClient.createOne({
     ...input.budget,
     userId: input.userId,
   })

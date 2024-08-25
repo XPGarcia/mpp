@@ -1,17 +1,23 @@
 import { Container } from "inversify"
 import { TYPES } from "./types"
 import { AccountRepository } from "@/modules/accounts/domain"
-import { DrizzleAccountBalanceEntryRepository, DrizzleAccountRepository } from "@/modules/accounts/infra"
 import {
+  DrizzleAccountBalanceEntryRepository,
+  DrizzleAccountRepository,
+  DrizzleBudgetRepository,
+} from "@/modules/accounts/infra"
+import {
+  CreateOneAccount,
   CreateOneAccountBalanceEntry,
   GetAccountBalanceEntryByDate,
   GetUserAccount,
   UpdateAmountAccountBalanceEntry,
+  FindOneAccountBalanceEntryByAccountAndDate,
+  FindOneBudgetByUserId,
 } from "@/modules/accounts/use-cases"
 import { RecurrentTransactionRepository, TransactionRepository } from "@/modules/transactions/domain"
 import { DrizzleRecurrentTransactionRepository, DrizzleTransactionRepository } from "@/modules/transactions/infra"
 import { GetMonthlyExpensesDistributionForUser } from "@/modules/transactions/use-cases"
-import { FindOneAccountBalanceEntryByAccountAndDate } from "../accounts/use-cases/find-one-account-balance-entry-by-account-and-date"
 
 const myContainer = new Container()
 
@@ -19,12 +25,15 @@ const myContainer = new Container()
 // repositories
 myContainer.bind<AccountRepository>(TYPES.AccountRepository).to(DrizzleAccountRepository)
 myContainer.bind(TYPES.AccountBalanceEntryRepository).to(DrizzleAccountBalanceEntryRepository)
+myContainer.bind(TYPES.BudgetRepository).to(DrizzleBudgetRepository)
 // use-cases
 myContainer.bind(TYPES.GetAccountBalanceEntryByDate).to(GetAccountBalanceEntryByDate)
 myContainer.bind(TYPES.GetUserAccount).to(GetUserAccount)
 myContainer.bind(TYPES.UpdateAmountAccountBalanceEntry).to(UpdateAmountAccountBalanceEntry)
 myContainer.bind(TYPES.FindOneAccountBalanceEntryByAccountAndDate).to(FindOneAccountBalanceEntryByAccountAndDate)
 myContainer.bind(TYPES.CreateOneAccountBalanceEntry).to(CreateOneAccountBalanceEntry)
+myContainer.bind(TYPES.CreateOneAccount).to(CreateOneAccount)
+myContainer.bind(TYPES.FindOneBudgetByUserId).to(FindOneBudgetByUserId)
 /*********** Accounts **********/
 
 /*********** Transactions **********/

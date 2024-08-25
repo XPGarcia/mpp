@@ -1,5 +1,5 @@
 import { budgets } from "@/db/schema"
-import { Budget } from "../types/budget"
+import { Budget } from "@/modules/accounts/domain"
 
 type DrizzleBudget = typeof budgets.$inferSelect
 
