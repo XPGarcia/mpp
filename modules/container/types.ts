@@ -39,6 +39,10 @@ const TYPES = {
   FeedbackRepository: Symbol.for("FeedbackRepository"),
   // use-cases
   SubmitFeedback: Symbol.for("SubmitFeedback"),
+  CreateUser: Symbol.for("CreateUser"),
+  Login: Symbol.for("Login"),
+  FindOneUserById: Symbol.for("FindOneUserById"),
+  UpdateUser: Symbol.for("UpdateUser"),
   /*********** Users **********/
 }
 

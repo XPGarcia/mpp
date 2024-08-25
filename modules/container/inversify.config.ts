@@ -1,6 +1,6 @@
 import { Container } from "inversify"
 import { TYPES } from "./types"
-import { AccountRepository } from "@/modules/accounts/domain"
+import { AccountBalanceEntryRepository, AccountRepository, BudgetRepository } from "@/modules/accounts/domain"
 import {
   DrizzleAccountBalanceEntryRepository,
   DrizzleAccountRepository,
@@ -14,6 +14,7 @@ import {
   UpdateAccountBalance,
   FindOneAccountBalanceEntryByAccountAndDate,
   FindOneBudgetByUserId,
+  CreateOneBudget,
 } from "@/modules/accounts/use-cases"
 import { RecurrentTransactionRepository, TransactionRepository } from "@/modules/transactions/domain"
 import {
@@ -32,16 +33,19 @@ import {
   GetUserCategoriesByTransaction,
   UpdateOneCategory,
 } from "@/modules/transactions/use-cases"
-import { DrizzleFeedbackRepository } from "@/modules/users/infra"
-import { SubmitFeedback } from "@/modules/users/use-cases"
+import { DrizzleFeedbackRepository, DrizzleUserRepository } from "@/modules/users/infra"
+import { CreateUser, FindOneUserById, Login, SubmitFeedback, UpdateUser } from "@/modules/users/use-cases"
+import { FeedbackRepository, UserRepository } from "@/modules/users/domain"
 
 const myContainer = new Container()
 
 /*********** Accounts **********/
 // repositories
 myContainer.bind<AccountRepository>(TYPES.AccountRepository).to(DrizzleAccountRepository)
-myContainer.bind(TYPES.AccountBalanceEntryRepository).to(DrizzleAccountBalanceEntryRepository)
-myContainer.bind(TYPES.BudgetRepository).to(DrizzleBudgetRepository)
+myContainer
+  .bind<AccountBalanceEntryRepository>(TYPES.AccountBalanceEntryRepository)
+  .to(DrizzleAccountBalanceEntryRepository)
+myContainer.bind<BudgetRepository>(TYPES.BudgetRepository).to(DrizzleBudgetRepository)
 // use-cases
 myContainer.bind(TYPES.GetAccountBalanceEntryByDate).to(GetAccountBalanceEntryByDate)
 myContainer.bind(TYPES.GetUserAccount).to(GetUserAccount)
@@ -50,6 +54,7 @@ myContainer.bind(TYPES.FindOneAccountBalanceEntryByAccountAndDate).to(FindOneAcc
 myContainer.bind(TYPES.CreateOneAccountBalanceEntry).to(CreateOneAccountBalanceEntry)
 myContainer.bind(TYPES.CreateOneAccount).to(CreateOneAccount)
 myContainer.bind(TYPES.FindOneBudgetByUserId).to(FindOneBudgetByUserId)
+myContainer.bind(TYPES.CreateOneBudget).to(CreateOneBudget)
 /*********** Accounts **********/
 
 /*********** Transactions **********/
@@ -74,9 +79,14 @@ myContainer.bind(TYPES.GetUserCategoriesByTransaction).to(GetUserCategoriesByTra
 
 /*********** Users **********/
 // repositories
-myContainer.bind(TYPES.FeedbackRepository).to(DrizzleFeedbackRepository)
+myContainer.bind<FeedbackRepository>(TYPES.FeedbackRepository).to(DrizzleFeedbackRepository)
+myContainer.bind<UserRepository>(TYPES.UserRepository).to(DrizzleUserRepository)
 // use-cases
 myContainer.bind(TYPES.SubmitFeedback).to(SubmitFeedback)
+myContainer.bind(TYPES.CreateUser).to(CreateUser)
+myContainer.bind(TYPES.Login).to(Login)
+myContainer.bind(TYPES.FindOneUserById).to(FindOneUserById)
+myContainer.bind(TYPES.UpdateUser).to(UpdateUser)
 /*********** Users **********/
 
 export { myContainer }

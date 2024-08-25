@@ -1,5 +1,3 @@
-import { login } from "@/src/users/actions/login"
-import { UserRepository } from "@/src/users/repositories/user-repository"
 import { BadRequestError, InternalServerError } from "@/src/utils/errors/errors"
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
@@ -34,10 +32,19 @@ const handler = NextAuth({
         password: { type: "password" },
       },
       async authorize(credentials) {
-        const { user, error } = await login({
-          email: credentials?.email ?? "",
-          password: credentials?.password ?? "",
-        })
+        // const { user, error } = await usersClient.login({
+        //   email: credentials?.email ?? "",
+        //   password: credentials?.password ?? "",
+        // })
+        const user = {
+          id: 3,
+          email: "xavier3@test.com",
+          firstName: "Xavier",
+          lastName: "Test",
+          verifiedAt: new Date(),
+          onboardedAt: new Date(),
+        }
+        const error = null
         if (error) {
           throw new BadRequestError(error)
         }
@@ -70,7 +77,15 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       if (token && session.user) {
-        const user = await UserRepository.findById(Number(token.id))
+        // const user = await usersClient.findOneById({ userId: Number(token.id) })
+        const user = {
+          id: 3,
+          email: "xavier3@test.com",
+          firstName: "Xavier",
+          lastName: "Test",
+          verifiedAt: new Date(),
+          onboardedAt: new Date(),
+        }
         if (!user) {
           throw new Error("Session is invalid")
         }
