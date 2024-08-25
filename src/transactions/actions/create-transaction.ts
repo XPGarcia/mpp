@@ -1,7 +1,6 @@
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "../repositories/transaction-repository"
 import { TransactionFrequency, TransactionType } from "../types"
-import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
 import { accountsClient } from "@/modules/accounts"
 
 interface CreateTransactionInput {
@@ -30,7 +29,7 @@ export const createTransaction = async (input: CreateTransactionInput) => {
   }
 
   const amount = isIncome(createdTransaction.type) ? createdTransaction.amount : createdTransaction.amount * -1
-  await updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
+  await accountsClient.updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
 
   return createdTransaction
 }

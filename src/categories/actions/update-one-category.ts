@@ -9,8 +9,7 @@ import {
   calculateAmountFromIncomeToExpense,
 } from "@/src/transactions/actions/calculate-amount-for-balance"
 import dayjs from "dayjs"
-import { AccountBalanceEntryRepository } from "@/src/accounts/repositories/account-balance-entry-repository"
-import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
+import { accountBalanceEntriesClient, accountsClient } from "@/modules/accounts"
 
 const groupTransactionsByDate = (transactions: Transaction[]): { [key: string]: Transaction[] } => {
   const groupedTransactionsByDate: { [key: string]: Transaction[] } = {}
@@ -82,15 +81,15 @@ export const updateOneCategory = async (input: UpdateCategoryInput): Promise<Cat
       }
     }
 
-    const accountBalanceEntry = await AccountBalanceEntryRepository.findOneByAccountAndDate(
-      transactionsByDate[0].accountId,
-      new Date(`${year}-${month}-15`) // search in the middle of the month
-    )
+    const accountBalanceEntry = await accountBalanceEntriesClient.findOneByAccountAndDate({
+      accountId: transactionsByDate[0].accountId,
+      date: new Date(`${year}-${month}-15`), // search in the middle of the month, we just care that there is a balance entry for that month
+    })
     if (!accountBalanceEntry) {
       throw new NotFoundError("Account balance entry not found")
     }
 
-    await updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
+    await accountsClient.updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
   }
 
   return updatedCategory

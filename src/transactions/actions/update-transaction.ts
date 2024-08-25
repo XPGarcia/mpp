@@ -1,6 +1,5 @@
 import { TransactionRepository } from "../repositories/transaction-repository"
 import { TransactionFrequency, TransactionType } from "../types"
-import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
 import { calculateAmountForBalance } from "./calculate-amount-for-balance"
 import { updateRecurrentTransaction } from "./update-recurrent-transaction"
 import { accountsClient } from "@/modules/accounts"
@@ -33,7 +32,7 @@ export const updateTransaction = async (input: UpdateTransactionInput) => {
     throw new Error("Failed to create transaction")
   }
   const amount = calculateAmountForBalance(oldTransaction, updatedTransaction)
-  await updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
+  await accountsClient.updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
 
   if (isRecurrent === undefined) {
     return updatedTransaction

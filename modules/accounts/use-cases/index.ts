@@ -1,1 +1,5 @@
 export * from "./get-account-balance-entry-by-date"
+export * from "./get-user-account"
+export * from "./update-amount-account-balance-entry"
+export * from "./find-one-account-balance-entry-by-account-and-date"
+export * from "./create-one-account-balance-entry"

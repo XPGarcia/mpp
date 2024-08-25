@@ -4,7 +4,10 @@ const TYPES = {
   AccountRepository: Symbol.for("AccountRepository"),
   AccountBalanceEntryRepository: Symbol.for("AccountBalanceEntryRepository"),
   // use-cases
-  GetAccountBalanceEntryByDate: Symbol.for("GetAccountBalanceEntryByDateUseCase"),
+  GetAccountBalanceEntryByDate: Symbol.for("GetAccountBalanceEntryByDate"),
+  GetUserAccount: Symbol.for("GetUserAccount"),
+  FindOneAccountBalanceEntryByAccountAndDate: Symbol.for("FindOneAccountBalanceEntryByAccountAndDate"),
+  CreateOneAccountBalanceEntry: Symbol.for("CreateOneAccountBalanceEntry"),
   /*********** Accounts **********/
 
   /*********** Transactions **********/
@@ -12,7 +15,8 @@ const TYPES = {
   TransactionRepository: Symbol.for("TransactionRepository"),
   RecurrentTransactionRepository: Symbol.for("RecurrentTransactionRepository"),
   // use-cases
-  GetMonthlyExpensesDistributionForUser: Symbol.for("GetMonthlyExpensesDistributionForUserUseCase"),
+  GetMonthlyExpensesDistributionForUser: Symbol.for("GetMonthlyExpensesDistributionForUser"),
+  UpdateAmountAccountBalanceEntry: Symbol.for("UpdateAmountAccountBalanceEntry"),
   /*********** Transactions **********/
 }
 

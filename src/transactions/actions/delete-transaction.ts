@@ -1,6 +1,5 @@
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "../repositories/transaction-repository"
-import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
 import { NotFoundError } from "@/src/utils/errors/errors"
 import { accountsClient } from "@/modules/accounts"
 
@@ -23,5 +22,5 @@ export const deleteTransaction = async (input: DeleteTransactionInput) => {
   await TransactionRepository.deleteOne(transaction.id)
 
   const amount = isIncome(transaction.type) ? transaction.amount * -1 : transaction.amount
-  await updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
+  await accountsClient.updateAmountAccountBalanceEntry({ accountBalanceEntry, amount })
 }
