@@ -32,6 +32,8 @@ import {
   GetUserCategoriesByTransaction,
   UpdateOneCategory,
 } from "@/modules/transactions/use-cases"
+import { DrizzleFeedbackRepository } from "@/modules/users/infra"
+import { SubmitFeedback } from "@/modules/users/use-cases"
 
 const myContainer = new Container()
 
@@ -69,5 +71,12 @@ myContainer.bind(TYPES.GetUserCategoriesBySpendingType).to(GetUserCategoriesBySp
 myContainer.bind(TYPES.UpdateOneCategory).to(UpdateOneCategory)
 myContainer.bind(TYPES.GetUserCategoriesByTransaction).to(GetUserCategoriesByTransaction)
 /*********** Transactions **********/
+
+/*********** Users **********/
+// repositories
+myContainer.bind(TYPES.FeedbackRepository).to(DrizzleFeedbackRepository)
+// use-cases
+myContainer.bind(TYPES.SubmitFeedback).to(SubmitFeedback)
+/*********** Users **********/
 
 export { myContainer }

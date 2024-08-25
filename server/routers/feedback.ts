@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { privateProcedure, router } from "../trpc"
-import { submitFeedback } from "@/src/feedback/actions/subtmit-feedback"
+import { feedbacksClient } from "@/modules/users"
 
 export const feedbackRouter = router({
   submitOne: privateProcedure
@@ -10,7 +10,7 @@ export const feedbackRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const feedback = await submitFeedback({ userId: ctx.user.id, message: input.message })
+      const feedback = await feedbacksClient.submitOne({ userId: ctx.user.id, message: input.message })
       return { id: feedback.id }
     }),
 })

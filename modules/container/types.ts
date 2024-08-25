@@ -32,6 +32,14 @@ const TYPES = {
   UpdateOneCategory: Symbol.for("UpdateOneCategory"),
   GetUserCategoriesByTransaction: Symbol.for("GetUserCategoriesByTransaction"),
   /*********** Transactions **********/
+
+  /*********** Users **********/
+  // repositories
+  UserRepository: Symbol.for("UserRepository"),
+  FeedbackRepository: Symbol.for("FeedbackRepository"),
+  // use-cases
+  SubmitFeedback: Symbol.for("SubmitFeedback"),
+  /*********** Users **********/
 }
 
 export { TYPES }
