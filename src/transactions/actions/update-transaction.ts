@@ -1,9 +1,9 @@
 import { TransactionRepository } from "../repositories/transaction-repository"
 import { TransactionFrequency, TransactionType } from "../types"
-import { getAccountBalanceEntryByDate } from "@/src/accounts/actions/get-account-balance-entry-by-date"
 import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
 import { calculateAmountForBalance } from "./calculate-amount-for-balance"
 import { updateRecurrentTransaction } from "./update-recurrent-transaction"
+import { accountsClient } from "@/modules/accounts"
 
 interface UpdateTransactionInput {
   id: number
@@ -23,7 +23,10 @@ export const updateTransaction = async (input: UpdateTransactionInput) => {
     throw new Error("Transaction not found")
   }
 
-  const accountBalanceEntry = await getAccountBalanceEntryByDate({ userId: oldTransaction.userId, date: input.date })
+  const accountBalanceEntry = await accountsClient.getAccountBalanceEntryByDate({
+    userId: oldTransaction.userId,
+    date: input.date,
+  })
 
   const updatedTransaction = await TransactionRepository.updateOne(oldTransaction.id, data)
   if (!updatedTransaction) {

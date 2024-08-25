@@ -1,14 +1,14 @@
 import { z } from "zod"
 import { privateProcedure, router } from "../trpc"
-import { getMonthlyExpensesDistributionForUser } from "@/src/accounts/actions/get-monthly-expenses-distribution"
 import { BudgetRepository } from "@/src/accounts/repositories/budget-repository"
+import { transactionsClient } from "@/modules/transactions"
 
 export const budgetRouter = router({
   getMonthlyExpensesDistribution: privateProcedure
     .input(z.object({ month: z.string(), year: z.string() }))
     .query(async ({ input, ctx }) => {
       const { month, year } = input
-      const monthlyExpensesDistribution = await getMonthlyExpensesDistributionForUser({
+      const monthlyExpensesDistribution = await transactionsClient.getMonthlyExpensesDistributionForUser({
         userId: ctx.user.id,
         month,
         year,

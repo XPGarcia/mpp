@@ -21,6 +21,7 @@ export const createTransactionFromRecurrent = async (recurrentTransaction: Recur
     isRecurrent: true,
     frequency: recurrentTransaction.frequency,
   })
+  // TODO: Change to upsert
   const updatedRecurrentTransaction = await TransactionRepository.updateRecurrent(recurrentTransaction.id, {
     transactionId: newTransaction.id,
     nextDate: calculateNextTransactionDate(recurrentTransaction.nextDate, recurrentTransaction.frequency),

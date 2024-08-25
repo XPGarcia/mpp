@@ -1,8 +1,8 @@
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "../repositories/transaction-repository"
 import { TransactionFrequency, TransactionType } from "../types"
-import { getAccountBalanceEntryByDate } from "@/src/accounts/actions/get-account-balance-entry-by-date"
 import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
+import { accountsClient } from "@/modules/accounts"
 
 interface CreateTransactionInput {
   userId: number
@@ -16,7 +16,10 @@ interface CreateTransactionInput {
 }
 
 export const createTransaction = async (input: CreateTransactionInput) => {
-  const accountBalanceEntry = await getAccountBalanceEntryByDate({ userId: input.userId, date: input.date })
+  const accountBalanceEntry = await accountsClient.getAccountBalanceEntryByDate({
+    userId: input.userId,
+    date: input.date,
+  })
 
   const createdTransaction = await TransactionRepository.createOne({
     ...input,

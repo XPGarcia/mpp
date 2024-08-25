@@ -1,8 +1,8 @@
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "../repositories/transaction-repository"
-import { getAccountBalanceEntryByDate } from "@/src/accounts/actions/get-account-balance-entry-by-date"
 import { updateAmountAccountBalanceEntry } from "@/src/accounts/actions/update-amount-account-balance-entry"
 import { NotFoundError } from "@/src/utils/errors/errors"
+import { accountsClient } from "@/modules/accounts"
 
 interface DeleteTransactionInput {
   transactionId: number
@@ -15,7 +15,10 @@ export const deleteTransaction = async (input: DeleteTransactionInput) => {
     throw new NotFoundError("Transaction not found to delete")
   }
 
-  const accountBalanceEntry = await getAccountBalanceEntryByDate({ userId: transaction.userId, date: transaction.date })
+  const accountBalanceEntry = await accountsClient.getAccountBalanceEntryByDate({
+    userId: transaction.userId,
+    date: transaction.date,
+  })
 
   await TransactionRepository.deleteOne(transaction.id)
 
