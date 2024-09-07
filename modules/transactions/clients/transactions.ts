@@ -5,11 +5,11 @@ import {
   GetMonthlyExpensesDistributionInput,
 } from "@/modules/transactions/use-cases"
 
-const getMonthlyExpensesDistributionForUser = myContainer.get<GetMonthlyExpensesDistributionForUser>(
-  TYPES.GetMonthlyExpensesDistributionForUser
-)
-
 export const transactionsClient = {
-  getMonthlyExpensesDistributionForUser: (input: GetMonthlyExpensesDistributionInput) =>
-    getMonthlyExpensesDistributionForUser.execute(input),
+  getMonthlyExpensesDistributionForUser: (input: GetMonthlyExpensesDistributionInput) => {
+    const getMonthlyExpensesDistributionForUser = myContainer.get<GetMonthlyExpensesDistributionForUser>(
+      TYPES.GetMonthlyExpensesDistributionForUser
+    )
+    return getMonthlyExpensesDistributionForUser.execute(input)
+  },
 }

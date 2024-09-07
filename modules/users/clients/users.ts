@@ -11,14 +11,21 @@ import {
 } from "../use-cases"
 import { TYPES } from "@/modules/container/types"
 
-const createUser = myContainer.get<CreateUser>(TYPES.CreateUser)
-const login = myContainer.get<Login>(TYPES.Login)
-const findOneUserById = myContainer.get<FindOneUserById>(TYPES.FindOneUserById)
-const updateUser = myContainer.get<UpdateUser>(TYPES.UpdateUser)
-
 export const usersClient = {
-  createOne: (input: CreateUserInput) => createUser.execute(input),
-  login: (input: LoginInput) => login.execute(input),
-  findOneById: (input: FindOneUserByIdInput) => findOneUserById.execute(input),
-  updateOne: (input: UpdateUserInput) => updateUser.execute(input),
+  createOne: (input: CreateUserInput) => {
+    const createUser = myContainer.get<CreateUser>(TYPES.CreateUser)
+    return createUser.execute(input)
+  },
+  login: (input: LoginInput) => {
+    const login = myContainer.get<Login>(TYPES.Login)
+    return login.execute(input)
+  },
+  findOneById: (input: FindOneUserByIdInput) => {
+    const findOneUserById = myContainer.get<FindOneUserById>(TYPES.FindOneUserById)
+    return findOneUserById.execute(input)
+  },
+  updateOne: (input: UpdateUserInput) => {
+    const updateUser = myContainer.get<UpdateUser>(TYPES.UpdateUser)
+    return updateUser.execute(input)
+  },
 }

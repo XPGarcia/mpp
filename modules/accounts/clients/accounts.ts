@@ -11,14 +11,21 @@ import {
 } from "../use-cases"
 import { TYPES } from "@/modules/container/types"
 
-const getAccountBalanceEntry = myContainer.get<GetAccountBalanceEntryByDate>(TYPES.GetAccountBalanceEntryByDate)
-const getUserAccount = myContainer.get<GetUserAccount>(TYPES.GetUserAccount)
-const updateAccountBalance = myContainer.get<UpdateAccountBalance>(TYPES.UpdateAccountBalance)
-const createOneAccount = myContainer.get<CreateOneAccount>(TYPES.CreateOneAccount)
-
 export const accountsClient = {
-  getAccountBalanceEntryByDate: (input: GetAccountBalanceEntryByDateInput) => getAccountBalanceEntry.execute(input),
-  getUserAccount: (input: GetUserAccountInput) => getUserAccount.execute(input),
-  updateBalance: (input: UpdateAccountBalanceInput) => updateAccountBalance.execute(input),
-  createOne: (input: CreateOneAccountInput) => createOneAccount.execute(input),
+  getAccountBalanceEntryByDate: (input: GetAccountBalanceEntryByDateInput) => {
+    const getAccountBalanceEntry = myContainer.get<GetAccountBalanceEntryByDate>(TYPES.GetAccountBalanceEntryByDate)
+    return getAccountBalanceEntry.execute(input)
+  },
+  getUserAccount: (input: GetUserAccountInput) => {
+    const getUserAccount = myContainer.get<GetUserAccount>(TYPES.GetUserAccount)
+    return getUserAccount.execute(input)
+  },
+  updateBalance: (input: UpdateAccountBalanceInput) => {
+    const updateAccountBalance = myContainer.get<UpdateAccountBalance>(TYPES.UpdateAccountBalance)
+    return updateAccountBalance.execute(input)
+  },
+  createOne: (input: CreateOneAccountInput) => {
+    const createOneAccount = myContainer.get<CreateOneAccount>(TYPES.CreateOneAccount)
+    return createOneAccount.execute(input)
+  },
 }
