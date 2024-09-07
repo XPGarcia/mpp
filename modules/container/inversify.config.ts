@@ -28,7 +28,9 @@ import {
   CreateCategoryForUser,
   CreateInitialCategoriesForUser,
   CreateTransaction,
+  CreateTransactionFromRecurrent,
   DeleteOneCategory,
+  GenerateRecurrentTransactions,
   GetMonthlyExpensesDistributionForUser,
   GetUserCategoriesBySpendingType,
   GetUserCategoriesByTransaction,
@@ -77,6 +79,8 @@ myContainer.bind(TYPES.GetUserCategoriesBySpendingType).to(GetUserCategoriesBySp
 myContainer.bind(TYPES.UpdateOneCategory).to(UpdateOneCategory)
 myContainer.bind(TYPES.GetUserCategoriesByTransaction).to(GetUserCategoriesByTransaction)
 myContainer.bind(TYPES.CreateTransaction).to(CreateTransaction)
+myContainer.bind(TYPES.CreateTransactionFromRecurrent).to(CreateTransactionFromRecurrent)
+myContainer.bind(TYPES.GenerateRecurrentTransactions).to(GenerateRecurrentTransactions)
 /*********** Transactions **********/
 
 /*********** Users **********/

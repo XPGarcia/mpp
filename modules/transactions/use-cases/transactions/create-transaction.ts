@@ -11,7 +11,6 @@ import {
 import { TYPES } from "@/modules/container/types"
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { BadRequestError } from "@/src/utils/errors/errors"
-import { getTransactionFrequencyId } from "@/src/utils/mappers/transaction-frequency-mappers"
 import { calculateNextTransactionDate } from "@/src/transactions/actions/calculate-next-transaction-date"
 
 export type CreateTransactionInput = {

@@ -1,7 +1,7 @@
 import { isIncome } from "@/src/utils/get-transaction-type-id"
 import { TransactionRepository } from "../repositories/transaction-repository"
 import { NotFoundError } from "@/src/utils/errors/errors"
-import { accountsClient } from "@/modules/accounts"
+import { accountBalanceEntriesClient, accountsClient } from "@/modules/accounts"
 
 interface DeleteTransactionInput {
   transactionId: number

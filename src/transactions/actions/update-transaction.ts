@@ -1,4 +1,4 @@
-import { accountsClient } from "@/modules/accounts"
+import { accountBalanceEntriesClient, accountsClient } from "@/modules/accounts"
 import { TransactionRepository } from "../repositories/transaction-repository"
 import { TransactionFrequency, TransactionType } from "../types"
 import { calculateAmountForBalance } from "./calculate-amount-for-balance"
