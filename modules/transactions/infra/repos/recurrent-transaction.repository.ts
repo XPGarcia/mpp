@@ -1,5 +1,6 @@
 import { injectable } from "inversify"
 import {
+  CreateRecurrentTransactionInput,
   RecurrentTransaction,
   RecurrentTransactionRepository,
   TransactionFrequency,
@@ -14,6 +15,15 @@ import { RecurrentTransactionMapper } from "../mappers"
 
 @injectable()
 export class DrizzleRecurrentTransactionRepository implements RecurrentTransactionRepository {
+  async createOne(input: CreateRecurrentTransactionInput): Promise<RecurrentTransaction | undefined> {
+    const frequencyId = getTransactionFrequencyId(input.frequency)
+    const createdRows = await db
+      .insert(recurrentTransactions)
+      .values({ ...input, frequencyId })
+      .returning()
+    return RecurrentTransactionMapper.toDomain(createdRows[0])
+  }
+
   async findRecurrentByParentId(parentId: number): Promise<RecurrentTransaction | undefined> {
     const recurrentTransaction = await db.query.recurrentTransactions.findFirst({
       where: eq(recurrentTransactions.transactionId, parentId),

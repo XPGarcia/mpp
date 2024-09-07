@@ -31,6 +31,7 @@ const TYPES = {
   GetUserCategoriesBySpendingType: Symbol.for("GetUserCategoriesBySpendingType"),
   UpdateOneCategory: Symbol.for("UpdateOneCategory"),
   GetUserCategoriesByTransaction: Symbol.for("GetUserCategoriesByTransaction"),
+  CreateTransaction: Symbol.for("CreateTransaction"),
   /*********** Transactions **********/
 
   /*********** Users **********/

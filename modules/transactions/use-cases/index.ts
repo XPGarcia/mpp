@@ -1,2 +1,2 @@
-export * from "./get-monthly-expenses-distribution"
+export * from "./transactions"
 export * from "./category"

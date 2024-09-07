@@ -27,6 +27,7 @@ import {
 import {
   CreateCategoryForUser,
   CreateInitialCategoriesForUser,
+  CreateTransaction,
   DeleteOneCategory,
   GetMonthlyExpensesDistributionForUser,
   GetUserCategoriesBySpendingType,
@@ -75,6 +76,7 @@ myContainer.bind(TYPES.DeleteOneCategory).to(DeleteOneCategory)
 myContainer.bind(TYPES.GetUserCategoriesBySpendingType).to(GetUserCategoriesBySpendingType)
 myContainer.bind(TYPES.UpdateOneCategory).to(UpdateOneCategory)
 myContainer.bind(TYPES.GetUserCategoriesByTransaction).to(GetUserCategoriesByTransaction)
+myContainer.bind(TYPES.CreateTransaction).to(CreateTransaction)
 /*********** Transactions **********/
 
 /*********** Users **********/

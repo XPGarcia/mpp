@@ -5,9 +5,15 @@ import {
   CreateOneAccountBalanceEntryInput,
   FindOneAccountBalanceEntryByAccountAndDate,
   FindOneAccountBalanceEntryByAccountAndDateInput,
+  GetAccountBalanceEntryByDate,
+  GetAccountBalanceEntryByDateInput,
 } from "../use-cases"
 
 export const accountBalanceEntriesClient = {
+  getAccountBalanceEntryByDate: (input: GetAccountBalanceEntryByDateInput) => {
+    const getAccountBalanceEntry = myContainer.get<GetAccountBalanceEntryByDate>(TYPES.GetAccountBalanceEntryByDate)
+    return getAccountBalanceEntry.execute(input)
+  },
   findOneByAccountAndDate: (input: FindOneAccountBalanceEntryByAccountAndDateInput) => {
     const findOneAccountBalanceEntryByAccountAndDate = myContainer.get<FindOneAccountBalanceEntryByAccountAndDate>(
       TYPES.FindOneAccountBalanceEntryByAccountAndDate

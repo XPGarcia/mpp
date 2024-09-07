@@ -14,7 +14,7 @@ export const deleteTransaction = async (input: DeleteTransactionInput) => {
     throw new NotFoundError("Transaction not found to delete")
   }
 
-  const accountBalanceEntry = await accountsClient.getAccountBalanceEntryByDate({
+  const accountBalanceEntry = await accountBalanceEntriesClient.getAccountBalanceEntryByDate({
     userId: transaction.userId,
     date: transaction.date,
   })

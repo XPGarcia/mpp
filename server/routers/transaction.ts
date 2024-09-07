@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { privateProcedure, router } from "../trpc"
 import { TransactionRepository } from "@/src/transactions/repositories/transaction-repository"
-import { createTransaction } from "@/src/transactions/actions/create-transaction"
 import { calculateBalance } from "@/src/transactions/actions/calculate-balance"
 import { TRPCError } from "@trpc/server"
 import { updateTransaction } from "@/src/transactions/actions/update-transaction"
 import { getValues } from "@/src/utils/format/zod-enums"
 import { TransactionFrequency, TransactionType } from "@/src/transactions/types"
 import { deleteTransaction } from "@/src/transactions/actions/delete-transaction"
+import { transactionsClient } from "@/modules/transactions"
 
 export const transactionRouter = router({
   findOneById: privateProcedure
@@ -43,7 +43,7 @@ export const transactionRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const createdTransaction = await createTransaction({
+      const createdTransaction = await transactionsClient.createOne({
         userId: ctx.user.id,
         ...input,
       })

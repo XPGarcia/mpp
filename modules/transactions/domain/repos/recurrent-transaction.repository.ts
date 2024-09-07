@@ -1,6 +1,7 @@
 import { RecurrentTransaction, TransactionFrequency } from "../entities"
 
 export interface RecurrentTransactionRepository {
+  createOne(input: CreateRecurrentTransactionInput): Promise<RecurrentTransaction | undefined>
   findRecurrentByParentId(parentId: number): Promise<RecurrentTransaction | undefined>
   deleteRecurrentByParentId(parentId: number): Promise<void>
   updateRecurrent(id: number, input: UpdateRecurrentTransactionInput): Promise<RecurrentTransaction | undefined>

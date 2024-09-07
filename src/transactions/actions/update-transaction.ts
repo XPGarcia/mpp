@@ -22,7 +22,7 @@ export const updateTransaction = async (input: UpdateTransactionInput) => {
     throw new Error("Transaction not found")
   }
 
-  const accountBalanceEntry = await accountsClient.getAccountBalanceEntryByDate({
+  const accountBalanceEntry = await accountBalanceEntriesClient.getAccountBalanceEntryByDate({
     userId: oldTransaction.userId,
     date: input.date,
   })
