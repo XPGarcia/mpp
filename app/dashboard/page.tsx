@@ -8,7 +8,7 @@ import { TransactionRow } from "@/src/transactions/components/transaction-row"
 import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { AppRoutes } from "@/src/utils/routes"
-import { isIncome } from "@/utils"
+import { groupTransactionsByDate, isIncome } from "@/utils"
 import dayjs from "dayjs"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -45,21 +45,7 @@ export default function Dashboard() {
     refetchAccount()
   }
 
-  const groupTransactionsByDate = (transactions?: Transaction[]): { [key: string]: Transaction[] } => {
-    const groupedTransactionsByDate: { [key: string]: Transaction[] } = {}
-
-    for (const transaction of transactions ?? []) {
-      const formattedDate = dayjs(transaction.date).format("YYYY-MM-DD")
-      if (!groupedTransactionsByDate[formattedDate]) {
-        groupedTransactionsByDate[formattedDate] = []
-      }
-      groupedTransactionsByDate[formattedDate].push(transaction)
-    }
-
-    return groupedTransactionsByDate
-  }
-
-  const groupedTransactionsByDate = groupTransactionsByDate(data?.transactions)
+  const groupedTransactionsByDate = groupTransactionsByDate(data?.transactions ?? [], "YYYY-MM-DD")
 
   return (
     <main className='flex w-full flex-col'>

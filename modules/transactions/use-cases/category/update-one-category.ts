@@ -13,22 +13,7 @@ import {
 import { TYPES } from "@/modules/container/types"
 import { InternalServerError, NotFoundError } from "@/src/utils/errors/errors"
 import { calculateAmountFromExpenseToIncome, calculateAmountFromIncomeToExpense } from "@/modules/transactions/utils"
-import { isExpense, isIncome } from "@/utils"
-
-// TODO: Move this function to a helper file
-const groupTransactionsByDate = (transactions: Transaction[]): { [key: string]: Transaction[] } => {
-  const groupedTransactionsByDate: { [key: string]: Transaction[] } = {}
-
-  for (const transaction of transactions ?? []) {
-    const formattedDate = dayjs(transaction.date).format("YYYY-MM")
-    if (!groupedTransactionsByDate[formattedDate]) {
-      groupedTransactionsByDate[formattedDate] = []
-    }
-    groupedTransactionsByDate[formattedDate].push(transaction)
-  }
-
-  return groupedTransactionsByDate
-}
+import { groupTransactionsByDate, isExpense, isIncome } from "@/utils"
 
 export type UpdateOneCategoryInput = {
   categoryId: number

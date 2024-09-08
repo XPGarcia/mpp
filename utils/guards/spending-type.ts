@@ -1,4 +1,10 @@
-import { SpendingType } from "@/modules/transactions/types"
+const SpendingType = {
+  NECESSITY: "NECESSITY",
+  LUXURY: "LUXURY",
+  SAVINGS: "SAVINGS",
+  NO_APPLY: "NO_APPLY",
+} as const
+type SpendingType = (typeof SpendingType)[keyof typeof SpendingType]
 
 export const isNecessity = (spendingType: SpendingType) => {
   return spendingType === SpendingType.NECESSITY

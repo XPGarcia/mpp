@@ -1,5 +1,4 @@
 import { injectable } from "inversify"
-import "reflect-metadata"
 
 import { Account, AccountRepository, CreateAccountInput } from "@/modules/accounts/domain"
 import { db } from "@/db"

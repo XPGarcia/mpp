@@ -1,4 +1,5 @@
 import { Container } from "inversify"
+import "reflect-metadata"
 import { TYPES } from "./types"
 import { AccountBalanceEntryRepository, AccountRepository, BudgetRepository } from "@/modules/accounts/domain"
 import {

@@ -1,6 +1,5 @@
 import { TYPES } from "@/modules/container/types"
 import { injectable, inject } from "inversify"
-import "reflect-metadata"
 import { AccountBalanceEntryRepository, AccountRepository } from "@/modules/accounts/domain/repos"
 import { InternalServerError, NotFoundError } from "@/src/utils/errors/errors"
 import dayjs from "dayjs"
@@ -24,7 +23,7 @@ export class GetAccountBalanceEntryByDate implements GetAccountBalanceEntryByDat
     const { userId, date } = input
     const account = await this._accountRepository.findByUserId(userId)
     if (!account) {
-      throw new NotFoundError(`Account not Found for User ${userId}`)
+      throw new NotFoundError(`Account not found for user ${userId}`)
     }
     const balanceEntry = await this._accountBalanceEntryRepository.findOneByAccountAndDate(account.id, date)
     if (!!balanceEntry) {

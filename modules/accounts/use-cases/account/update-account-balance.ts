@@ -16,9 +16,8 @@ export interface UpdateAccountBalanceUseCase {
 
 @injectable()
 export class UpdateAccountBalance implements UpdateAccountBalanceUseCase {
-  @inject(TYPES.AccountRepository) private readonly _accountRepository!: AccountRepository
-  @inject(TYPES.AccountBalanceEntryRepository)
-  private readonly _accountBalanceEntryRepository!: AccountBalanceEntryRepository
+  @inject(TYPES.AccountRepository) _accountRepository!: AccountRepository
+  @inject(TYPES.AccountBalanceEntryRepository) _accountBalanceEntryRepository!: AccountBalanceEntryRepository
 
   async execute(input: UpdateAccountBalanceInput): UpdateAccountBalanceOutput {
     const { accountBalanceEntry, amount } = input
