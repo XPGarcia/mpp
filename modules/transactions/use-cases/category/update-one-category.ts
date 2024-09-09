@@ -1,4 +1,3 @@
-import dayjs from "dayjs"
 import { inject, injectable } from "inversify"
 import {
   AccountsBalanceEntriesService,
@@ -6,7 +5,6 @@ import {
   Category,
   CategoryRepository,
   SpendingType,
-  Transaction,
   TransactionRepository,
   TransactionType,
 } from "@/modules/transactions/domain"
@@ -57,14 +55,14 @@ export class UpdateOneCategory implements UpdateOneCategoryUseCase {
       return updatedCategory
     }
 
-    await this._transactionRepository.updateManyByCategoryId(updatedCategory.id, {
-      type: updatedCategory.transactionType,
-    })
-
     const transactions = await this._transactionRepository.findAllByCategoryId(updatedCategory.id)
     if (transactions.length === 0) {
       return updatedCategory
     }
+
+    await this._transactionRepository.updateManyByCategoryId(updatedCategory.id, {
+      type: updatedCategory.transactionType,
+    })
 
     const fromExpenseToIncome = isExpense(oldCategory.transactionType) && isIncome(updatedCategory.transactionType)
     const fromIncomeToExpense = isIncome(oldCategory.transactionType) && isExpense(updatedCategory.transactionType)
