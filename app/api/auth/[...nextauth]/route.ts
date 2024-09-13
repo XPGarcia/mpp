@@ -70,14 +70,6 @@ const handler = NextAuth({
     async session({ session, token }) {
       if (token && session.user) {
         const user = await usersClient.findOneById({ userId: Number(token.id) })
-        // const user = {
-        //   id: 3,
-        //   email: "xavier3@test.com",
-        //   firstName: "Xavier",
-        //   lastName: "Test",
-        //   verifiedAt: new Date(),
-        //   onboardedAt: new Date(),
-        // }
         if (!user) {
           throw new Error("Session is invalid")
         }

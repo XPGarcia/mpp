@@ -12,7 +12,7 @@ export const config = {
 }
 
 export function withSessionRedirectsMiddleware(middleware: CustomMiddleware) {
-  const witheListedPaths = ["/login", "/sign-up"]
+  const witheListedPaths = ["/login", "/sign-up", "/verify-email"]
 
   return async (request: NextRequest, event: NextFetchEvent) => {
     const response = NextResponse.next()
