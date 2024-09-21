@@ -6,7 +6,7 @@ import { TYPES } from "@/modules/container/types"
 const LOGIN_ERRORS = {
   USER_NOT_FOUND: "Invalid credentials",
   INCORRECT_PASSWORD: "Invalid credentials",
-  USER_NOT_VERIFIED: "Please verify your email address with an admin",
+  USER_NOT_VERIFIED: "Please verify your email address",
   INTERNAL_SERVER_ERROR: "Something went wrong. Please try again later.",
 }
 
