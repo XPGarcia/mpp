@@ -24,7 +24,7 @@ export class DeleteTransaction implements DeleteTransactionUseCase {
   @inject(TYPES.TransactionRepository) private readonly _transactionRepository!: TransactionRepository
   @inject(TYPES.RecurrentTransactionRepository)
   private readonly _recurrentTransactionRepository!: RecurrentTransactionRepository
-  @inject(TYPES.AccountBalanceEntryRepository)
+  @inject(TYPES.AccountBalanceEntriesService)
   private readonly _accountBalanceEntryService!: AccountsBalanceEntriesService
   @inject(TYPES.AccountsService) private readonly _accountsService!: AccountsService
 
