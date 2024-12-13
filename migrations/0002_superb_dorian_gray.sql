@@ -11,6 +11,10 @@ CREATE TABLE IF NOT EXISTS "TransactionType" (
 	"id" "smallserial" PRIMARY KEY NOT NULL,
 	"name" varchar(10) NOT NULL
 );
+INSERT INTO "TransactionType" ("name")
+VALUES 
+    ('INCOME'),
+    ('EXPENSE');
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Transaction" (
 	"id" serial PRIMARY KEY NOT NULL,
