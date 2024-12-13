@@ -50,7 +50,7 @@ const executeForMonthlyTransactions = async (
   recurrentTransactionRepo: RecurrentTransactionRepository,
   createTransactionFromRecurrent: CreateTransactionFromRecurrent
 ): Promise<Transaction[]> => {
-  const recurrentTransactions = await recurrentTransactionRepo.findAllMonthlyRecurrentForThisWeek()
+  const recurrentTransactions = await recurrentTransactionRepo.findAllMonthlyRecurrentForThisMonth()
   return await createTransactionsFromRecurrent(recurrentTransactions, createTransactionFromRecurrent)
 }
 

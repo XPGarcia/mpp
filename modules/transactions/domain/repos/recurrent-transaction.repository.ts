@@ -12,7 +12,7 @@ export interface RecurrentTransactionRepository {
   }): Promise<RecurrentTransaction[]>
   findAllDailyRecurrentForToday(): Promise<RecurrentTransaction[]>
   findAllWeeklyRecurrentForThisWeek(): Promise<RecurrentTransaction[]>
-  findAllMonthlyRecurrentForThisWeek(): Promise<RecurrentTransaction[]>
+  findAllMonthlyRecurrentForThisMonth(): Promise<RecurrentTransaction[]>
 }
 
 export type CreateRecurrentTransactionInput = {

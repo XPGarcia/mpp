@@ -87,7 +87,7 @@ export class DrizzleRecurrentTransactionRepository implements RecurrentTransacti
     })
   }
 
-  async findAllMonthlyRecurrentForThisWeek(): Promise<RecurrentTransaction[]> {
+  async findAllMonthlyRecurrentForThisMonth(): Promise<RecurrentTransaction[]> {
     const startOfMonth = dayjs().startOf("month").toDate()
     const endOfMonth = dayjs().endOf("month").toDate()
     return this.findManyRecurrentByRangeAndFrequency({
