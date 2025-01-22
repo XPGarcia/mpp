@@ -25,6 +25,7 @@ export const LoginForm = () => {
   } = useForm<LoginFormData>({
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(schema),
+    mode: "onChange",
   })
   const router = useRouter()
 
