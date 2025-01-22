@@ -38,7 +38,7 @@ export const LoginForm = () => {
       toast.error(response?.error || "An error occurred")
     } else {
       toast.success("Logged in successfully")
-      router.replace(AppRoutes.dashboard)
+      router.replace(AppRoutes.landing)
     }
   }
 

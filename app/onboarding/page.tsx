@@ -2,7 +2,6 @@
 
 import { CreateAccountFormData } from "@/src/accounts/components/create-account-form/create-account-form"
 import { CreateBudgetFormData } from "@/src/accounts/components/create-budget-form/create-budget-form"
-import { Button } from "@/src/misc"
 import { OnboardingCreateAccount } from "@/src/onboarding/components/onboarding-create-account"
 import { OnboardingCreateBudget } from "@/src/onboarding/components/onboarding-create-budget"
 import { OnboardingIntroduction } from "@/src/onboarding/components/onboarding-introduction"
@@ -10,9 +9,11 @@ import { OnboardingReview } from "@/src/onboarding/components/onboarding-review"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { AppRoutes } from "@/src/utils/routes"
+import { getSession, signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import toast from "react-hot-toast"
+import { set } from "zod"
 
 type OnboardingSteps = "introduction" | "create-account" | "select-budget" | "review"
 
@@ -34,7 +35,7 @@ export default function OnboardingPage() {
     },
   })
 
-  const { mutateAsync: onboardUser } = trpc.users.onboardUser.useMutation()
+  const { mutateAsync: onboardUser, isPending } = trpc.users.onboardUser.useMutation()
 
   const handleCreateAccount = (data: CreateAccountFormData) => {
     setOnboardFormData((prev) => ({
@@ -55,6 +56,7 @@ export default function OnboardingPage() {
   const handleOnboardUser = async () => {
     try {
       await onboardUser(onboardFormData)
+      await getSession()
       router.push(AppRoutes.dashboard)
     } catch (error) {
       const message = getErrorMessage(error)
@@ -71,7 +73,7 @@ export default function OnboardingPage() {
       {currentStep === "select-budget" && (
         <OnboardingCreateBudget initialValues={onboardFormData.budget} onContinue={handleCreateBudget} />
       )}
-      {currentStep === "review" && <OnboardingReview onContinue={handleOnboardUser} />}
+      {currentStep === "review" && <OnboardingReview isLoading={isPending} onFinish={handleOnboardUser} />}
     </>
   )
 }

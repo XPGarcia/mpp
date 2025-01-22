@@ -2,6 +2,7 @@ const appRoot = "/dashboard"
 export const AppRoutes = {
   login: "/login",
   register: "/sign-up",
+  landing: "/",
   dashboard: appRoot,
   accounts: `${appRoot}/accounts`,
   stats: `${appRoot}/stats`,
