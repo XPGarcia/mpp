@@ -1,6 +1,8 @@
 "use client"
 
-import { FormInput, Button } from "@/src/misc"
+import { Button } from "@/src/ui-lib/components/ui/button"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/ui-lib/components/ui/form"
+import { Input } from "@/src/ui-lib/components/ui/input"
 import { AppRoutes } from "@/src/utils/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
@@ -18,14 +20,9 @@ const schema = z.object({
 type LoginFormData = z.infer<typeof schema>
 
 export const LoginForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({
+  const form = useForm<LoginFormData>({
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(schema),
-    mode: "onChange",
   })
   const router = useRouter()
 
@@ -44,32 +41,44 @@ export const LoginForm = () => {
   }
 
   return (
-    <form className='flex flex-col gap-y-4 py-5' onSubmit={handleSubmit(submit)}>
-      <FormInput
-        size='lg'
-        label='Email'
-        type='email'
-        placeholder='Email'
-        errorMessage={errors.email?.message}
-        {...register("email")}
-      />
-      <FormInput
-        size='lg'
-        label='Password'
-        type='password'
-        placeholder='Password'
-        errorMessage={errors.password?.message}
-        {...register("password")}
-      />
-      <Button type='submit' size='lg' className='mt-1' isLoading={isSubmitting}>
-        Login
-      </Button>
-      <div className='text-center text-xs text-neutral-500'>
-        {`Don't have an account yet? `}
-        <Link href='/sign-up' className='underline'>
-          Create an account
-        </Link>
-      </div>
-    </form>
+    <Form {...form}>
+      <form className='flex flex-col gap-y-4 py-5' onSubmit={form.handleSubmit(submit)}>
+        <FormField
+          control={form.control}
+          name='email'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder='Email' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='password'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input type='password' placeholder='Password' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type='submit' className='mt-1' isLoading={form.formState.isSubmitting}>
+          Login
+        </Button>
+        <div className='text-center text-xs text-neutral-500'>
+          {`Don't have an account yet? `}
+          <Link href='/sign-up' className='underline'>
+            Create an account
+          </Link>
+        </div>
+      </form>
+    </Form>
   )
 }

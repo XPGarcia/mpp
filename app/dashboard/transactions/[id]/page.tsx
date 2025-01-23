@@ -3,6 +3,7 @@
 import { CreateTransactionForm, CreateTransactionFormData } from "@/src/transactions/components/create-transaction-form"
 import { trpc } from "@/src/utils/_trpc/client"
 import { AppRoutes } from "@/src/utils/routes"
+import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 
@@ -55,7 +56,7 @@ export default function UpdateTransaction({ params }: Props) {
             onCancel={cancel}
           />
         )}
-        {!transaction && isLoading && <p>Loading...</p>}
+        {!transaction && isLoading && <Loader2 size={32} className='mx-auto animate-spin' />}
       </div>
     </main>
   )

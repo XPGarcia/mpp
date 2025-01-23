@@ -3,14 +3,14 @@
 import { Category, TransactionType } from "@/modules/transactions/types"
 import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { CreateCategoryModalDrawer } from "@/src/categories/components/create-category-modal-drawer/create-category-modal-drawer"
-import { DeleteCategoryModalDrawer } from "@/src/categories/components/delete-category-modal-drawer/delete-category-modal-drawer"
-import { Button } from "@/src/misc"
-import { Icon } from "@/src/misc/components/icons/icon"
+import { DeleteCategoryDialogDrawer } from "@/src/categories/components/delete-category-dialog-drawer/delete-category-dialog-drawer"
 import { useBoolean } from "@/src/misc/hooks/use-boolean"
 import { SelectTransactionType } from "@/src/transactions/components/select-transaction-type"
 import { useTransactionType } from "@/src/transactions/hooks/use-transaction-type"
+import { Button } from "@/src/ui-lib/components/ui/button"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
+import { Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import toast from "react-hot-toast"
 
@@ -121,13 +121,13 @@ export default function CategoriesPage() {
                 style={{ borderRadius: "100%", padding: "0", height: "32px", width: "32px" }}
                 onClick={() => onUpdateCategoryClicked(category)}
               >
-                <Icon icon='pencil' size='sm' />
+                <Pencil size={16} />
               </Button>
               <Button
                 style={{ borderRadius: "100%", padding: "0", height: "32px", width: "32px" }}
                 onClick={() => onDeleteCategoryClicked(category)}
               >
-                <Icon icon='trash' size='sm' />
+                <Trash2 size={16} />
               </Button>
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function CategoriesPage() {
         onClose={closeCategoryForm}
         onSubmit={handleSetCategory}
       />
-      <DeleteCategoryModalDrawer isOpen={isOpenDelete} onClose={closeDeleteAction} onAccept={handleDeleteCategory} />
+      <DeleteCategoryDialogDrawer isOpen={isOpenDelete} onClose={closeDeleteAction} onAccept={handleDeleteCategory} />
     </main>
   )
 }

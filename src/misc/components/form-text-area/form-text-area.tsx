@@ -1,5 +1,5 @@
+import { FormLabel } from "@/src/ui-lib/components/ui/form"
 import { forwardRef, TextareaHTMLAttributes } from "react"
-import { FormLabel } from "../form-label/form-label"
 
 const styles = {
   default: "border-shades-50 focus:border-blue-400 focus:ring-blue-300 focus:outline-blue-400",

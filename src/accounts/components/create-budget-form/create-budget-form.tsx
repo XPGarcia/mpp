@@ -1,4 +1,6 @@
-import { Button, FormInput } from "@/src/misc"
+import { Button } from "@/src/ui-lib/components/ui/button"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/ui-lib/components/ui/form"
+import { Input } from "@/src/ui-lib/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -24,11 +26,7 @@ interface Props {
 }
 
 export const CreateBudgetForm = ({ initialValues, onSubmit }: Props) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<CreateBudgetFormData>({
+  const form = useForm<CreateBudgetFormData>({
     defaultValues: {
       name: initialValues?.name ?? "Balanced",
       living: initialValues?.living ?? 50,
@@ -43,45 +41,95 @@ export const CreateBudgetForm = ({ initialValues, onSubmit }: Props) => {
   }
 
   return (
-    <form className='mt-4 flex w-full flex-col gap-4' onSubmit={handleSubmit(submit)}>
-      <FormInput label='Name' errorMessage={errors.name?.message} {...register("name")} />
-      <FormInput
-        type='number'
-        step='5'
-        min='0'
-        max='100'
-        label='Living'
-        errorMessage={errors.living?.message}
-        {...register("living", { valueAsNumber: true })}
-      />
-      <FormInput
-        type='number'
-        step='5'
-        min='0'
-        max='100'
-        label='Savings/Investments'
-        errorMessage={errors.savings?.message}
-        {...register("savings", { valueAsNumber: true })}
-      />
-      <FormInput
-        type='number'
-        step='5'
-        min='0'
-        max='100'
-        label='Entertainment'
-        errorMessage={errors.entertainment?.message}
-        {...register("entertainment", { valueAsNumber: true })}
-      />
-      {!errors.total && (
-        <p className='text-xs text-gray-500'>
-          *Living, expenses, and entertainment categories divide your monthly budget. Ensure their total equals 100% of
-          your monthly expenses
-        </p>
-      )}
-      {errors.total && <p className='text-sm text-red-500'>{errors.total.message}</p>}
-      <Button type='submit' isLoading={isSubmitting}>
-        Save
-      </Button>
-    </form>
+    <Form {...form}>
+      <form className='mt-4 flex w-full flex-col gap-4' onSubmit={form.handleSubmit(submit)}>
+        <FormField
+          control={form.control}
+          name='name'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder='Balanced Budget' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='living'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Living</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  step='5'
+                  min='0'
+                  max='100'
+                  {...field}
+                  value={field.value || ""}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='savings'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Savings/Investments</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  step='5'
+                  min='0'
+                  max='100'
+                  {...field}
+                  value={field.value || ""}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='entertainment'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Entertainment</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  step='5'
+                  min='0'
+                  max='100'
+                  {...field}
+                  value={field.value || ""}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {!form.formState.errors.total && (
+          <p className='text-xs text-gray-500'>
+            *Living, expenses, and entertainment categories divide your monthly budget. Ensure their total equals 100%
+            of your monthly expenses
+          </p>
+        )}
+        {form.formState.errors.total && <p className='text-sm text-red-500'>{form.formState.errors.total.message}</p>}
+        <Button type='submit' isLoading={form.formState.isSubmitting}>
+          Save
+        </Button>
+      </form>
+    </Form>
   )
 }

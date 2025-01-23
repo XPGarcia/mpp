@@ -1,8 +1,5 @@
 "use client"
-
-import { Transaction } from "@/modules/transactions/types"
 import { FloatingAddButton } from "@/src/misc/components/floating-add-button/floating-add-button"
-import { LoadingIcon } from "@/src/misc/components/icons/loading-icon"
 import { MonthPicker, MonthPickerDate } from "@/src/misc/components/month-picker/month-picker"
 import { TransactionRow } from "@/src/transactions/components/transaction-row"
 import { trpc } from "@/src/utils/_trpc/client"
@@ -10,6 +7,7 @@ import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { AppRoutes } from "@/src/utils/routes"
 import { groupTransactionsByDate, isIncome } from "@/utils"
 import dayjs from "dayjs"
+import { Loader2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Fragment, useState } from "react"
@@ -56,12 +54,12 @@ export default function Dashboard() {
           <p className='text-xs font-semibold'>{formatNumberToMoney(account?.balance ?? 0)}</p>
         </div>
       </div>
-      {isLoading && (
+      {(isLoading || !data?.transactions) && (
         <div className='mt-10 flex items-center justify-center'>
-          <LoadingIcon className='size-10' />
+          <Loader2 className='size-10 animate-spin' />
         </div>
       )}
-      {!isLoading && (
+      {!isLoading && !!data?.transactions && (
         <Fragment>
           <div className='flex w-full justify-between px-8 pt-3'>
             <div className='block text-center'>

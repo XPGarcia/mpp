@@ -1,5 +1,5 @@
-import { Button } from "@/src/misc"
-import { Icon } from "@/src/misc/components/icons/icon"
+import { Button } from "@/src/ui-lib/components/ui/button"
+import { Banknote, Newspaper, WandSparkles } from "lucide-react"
 
 interface Props {
   onContinue: () => void
@@ -20,15 +20,15 @@ export const OnboardingIntroduction = ({ onContinue }: Props) => {
       <p className='font-medium text-shades-300'>{`Let's get started:`}</p>
       <ol className='flex flex-col gap-3 py-2 pl-4'>
         <li className='flex items-center'>
-          <Icon icon='newspaper' />
+          <Newspaper size={16} />
           <p className='pl-2'>Create your first account</p>
         </li>
         <li className='flex items-center'>
-          <Icon icon='bank-notes' />
+          <Banknote size={16} />
           <p className='pl-2'>Select your budget</p>
         </li>
         <li className='flex items-center'>
-          <Icon icon='sparkles' />
+          <WandSparkles size={16} />
           <p className='pl-2'>{`You're all set`}</p>
         </li>
       </ol>

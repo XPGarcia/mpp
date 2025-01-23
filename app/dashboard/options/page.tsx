@@ -1,9 +1,7 @@
 "use client"
 
-import { AccountsIcon } from "@/src/misc/components/icons/accounts-icon"
-import { DangerIcon } from "@/src/misc/components/icons/danger-icon"
-import { Icon } from "@/src/misc/components/icons/icon"
 import { AppRoutes } from "@/src/utils/routes"
+import { Layers, Tag, MailOpen, TriangleAlert } from "lucide-react"
 import { signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { MouseEvent } from "react"
@@ -19,28 +17,28 @@ export default function Options() {
   const options = [
     {
       label: "Accounts",
-      icon: <Icon icon='accounts' size='lg' />,
+      icon: <Layers />,
       onClick: () => {
         router.push(AppRoutes.accounts)
       },
     },
     {
       label: "Categories",
-      icon: <Icon icon='tag' size='lg' />,
+      icon: <Tag />,
       onClick: () => {
         router.push(AppRoutes.categories)
       },
     },
     {
       label: "Feedback",
-      icon: <Icon icon='envelope-open' size='lg' />,
+      icon: <MailOpen />,
       onClick: () => {
         router.push(AppRoutes.feedback)
       },
     },
     {
       label: "Logout",
-      icon: <Icon icon='danger' size='lg' />,
+      icon: <TriangleAlert />,
       onClick: logout,
     },
   ]

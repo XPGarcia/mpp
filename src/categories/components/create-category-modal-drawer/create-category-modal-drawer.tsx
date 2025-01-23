@@ -1,6 +1,7 @@
-import { BottomDrawer } from "@/src/misc/components/bottom-drawer/bottom-drawer"
 import { CreateCategoryForm, CreateCategoryFormData } from "../create-category-form/create-category-form"
-import { Modal } from "@/src/misc/components/modal/modal"
+import useMediaQuery from "@/src/ui-lib/hooks/use-media-query"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/src/ui-lib/components/ui/dialog"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/src/ui-lib/components/ui/drawer"
 
 interface Props {
   defaultValues?: CreateCategoryFormData
@@ -10,18 +11,34 @@ interface Props {
 }
 
 export const CreateCategoryModalDrawer = ({ defaultValues, isOpen, onClose, onSubmit }: Props) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)")
+  const title = defaultValues ? "Edit category" : "Create a new category"
+
+  if (isDesktop) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className='p-4 sm:max-w-[425px]'>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogClose />
+          </DialogHeader>
+          <CreateCategoryForm defaultValues={defaultValues} onSubmit={onSubmit} />
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
-    <>
-      <div className='block md:hidden'>
-        <BottomDrawer isOpen={isOpen} onClose={onClose}>
+    <Drawer open={isOpen} onOpenChange={onClose}>
+      <DrawerClose />
+      <DrawerContent>
+        <DrawerHeader className='text-left'>
+          <DrawerTitle>{title}</DrawerTitle>
+        </DrawerHeader>
+        <div className='p-4 pt-2'>
           <CreateCategoryForm defaultValues={defaultValues} onSubmit={onSubmit} />
-        </BottomDrawer>
-      </div>
-      <div className='hidden md:block'>
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
-          <CreateCategoryForm defaultValues={defaultValues} onSubmit={onSubmit} />
-        </Modal>
-      </div>
-    </>
+        </div>
+      </DrawerContent>
+    </Drawer>
   )
 }

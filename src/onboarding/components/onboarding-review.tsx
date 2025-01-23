@@ -1,4 +1,4 @@
-import { Button } from "@/src/misc"
+import { Button } from "@/src/ui-lib/components/ui/button"
 
 interface Props {
   isLoading: boolean

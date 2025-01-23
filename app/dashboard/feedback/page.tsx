@@ -1,7 +1,7 @@
 "use client"
 
-import { Button } from "@/src/misc"
 import { FormTextArea } from "@/src/misc/components/form-text-area/form-text-area"
+import { Button } from "@/src/ui-lib/components/ui/button"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { zodResolver } from "@hookform/resolvers/zod"

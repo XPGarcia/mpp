@@ -1,17 +1,18 @@
 import { ButtonHTMLAttributes } from "react"
-import { Icon } from "../icons/icon"
+import { Button } from "@/src/ui-lib/components/ui/button"
+import { Plus } from "lucide-react"
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export const FloatingAddButton = (props: Props) => {
   return (
-    <button
-      className='fixed bottom-16 right-6 flex size-12 items-center justify-center rounded-full bg-shades-500'
+    <Button
+      variant='default'
+      size='icon'
+      className='fixed bottom-16 right-6 h-12 w-12 rounded-full [&_svg]:size-6'
       {...props}
     >
-      <span className='text-white'>
-        <Icon icon='plus' size='lg' />
-      </span>
-    </button>
+      <Plus />
+    </Button>
   )
 }

@@ -1,8 +1,10 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Icon } from "../icons/icon"
 import { AppRoutes } from "@/src/utils/routes"
+import { BookOpen, ChartNoAxesColumnIncreasing, Layers, Ellipsis } from "lucide-react"
+
+const ICON_SIZE = 20
 
 export const BottomNavigation = () => {
   const router = useRouter()
@@ -10,28 +12,28 @@ export const BottomNavigation = () => {
   const options = [
     {
       label: "Trans.",
-      icon: <Icon icon='book' />,
+      icon: <BookOpen size={ICON_SIZE} />,
       onClick: () => {
         router.push(AppRoutes.dashboard)
       },
     },
     {
       label: "Stats",
-      icon: <Icon icon='stats' />,
+      icon: <ChartNoAxesColumnIncreasing size={ICON_SIZE} />,
       onClick: () => {
         router.push(AppRoutes.stats)
       },
     },
     {
       label: "Accounts",
-      icon: <Icon icon='accounts' />,
+      icon: <Layers size={ICON_SIZE} />,
       onClick: () => {
         router.push(AppRoutes.accounts)
       },
     },
     {
       label: "More",
-      icon: <Icon icon='horizontal-dots' />,
+      icon: <Ellipsis size={ICON_SIZE} />,
       onClick: () => {
         router.push(AppRoutes.options)
       },

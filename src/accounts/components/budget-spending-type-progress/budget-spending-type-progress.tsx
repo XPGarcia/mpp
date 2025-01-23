@@ -1,12 +1,12 @@
-import { Icon } from "@/src/misc/components/icons/icon"
-import { Progress } from "@/src/misc/components/progress/progress"
-import { useBoolean } from "@/src/misc/hooks/use-boolean"
 import { SpendingType } from "@/modules/transactions/types"
 import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { calculatePercentage, calculatePercentageFromTotal } from "@/src/utils/math"
-import { Fragment } from "react"
+import { Fragment, useState } from "react"
 import { SpendingTypeToLabel } from "@/src/transactions/constants"
+import { Progress } from "@/src/ui-lib/components/ui/progress"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/src/ui-lib/components/ui/accordion"
+import { Loader2 } from "lucide-react"
 
 type ExpenseDistribution = {
   total: number
@@ -40,8 +40,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
 
   const colorScheme = percentage > 80 ? "red" : percentage > 40 ? "yellow" : "blue"
 
-  const { value: showCategories, toggle: toggleCategories } = useBoolean(false)
-
+  const [showCategories, setShowCategories] = useState(false)
   const { data: categories, isLoading: isLoadingCategories } =
     trpc.categories.findManyBySpendTypeWithTotalSpend.useQuery({ spendingType, date }, { enabled: showCategories })
 
@@ -62,13 +61,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
 
   return (
     <div className='flex flex-col text-xs font-medium text-shades-500'>
-      <Progress
-        percentage={percentage}
-        color={colorScheme}
-        leftLabel={label}
-        rightLabel={formatNumberToMoney(maxToSpend)}
-        withPercentageLabel
-      />
+      <Progress value={percentage} indicatorColor={`bg-${colorScheme}-500`} />
       <p className='mt-1 text-xs font-light text-gray-600'>
         {`You've spent `}
         <span className='font-medium text-shades-500'>{formatNumberToMoney(expenseDistribution.total)}</span> on {label}
@@ -76,32 +69,39 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
         <span className='font-medium text-shades-500'>{budget}%</span> of your total income) budget.
       </p>
       {expenseDistribution.total > 0 && (
-        <div className='mt-2 px-4'>
-          <div className='flex items-center text-xs text-gray-500 hover:cursor-pointer' onClick={toggleCategories}>
-            <p className='mr-1'>View details</p>
-            <Icon icon='chevron-down' size='sm' />
-          </div>
-          {showCategories && !isLoadingCategories && (
-            <div className='grid grid-cols-[1fr_auto] items-start gap-x-2 gap-y-2 py-2'>
-              {mappedCategories.map((category) => (
-                <Fragment key={category.id}>
-                  <div key={category.id} className='mt-1'>
-                    <Progress percentage={category.percentage} flipX transparentBg />
-                  </div>
-                  <div className='text-left'>
-                    <p>{category.name}</p>
-                    <p className='text-xxs text-gray-400'>{formatNumberToMoney(category.totalSpend)}</p>
-                  </div>
-                </Fragment>
-              ))}
-            </div>
-          )}
-          {showCategories && isLoadingCategories && (
-            <div className='mt-2 flex w-full justify-center text-shades-500'>
-              <Icon icon='loading' size='lg' />
-            </div>
-          )}
-        </div>
+        <Accordion
+          type='single'
+          collapsible
+          onValueChange={(value) => {
+            setShowCategories(value !== "0")
+          }}
+        >
+          <AccordionItem value='1' className='border-none'>
+            <AccordionTrigger className='justify-start gap-1 hover:no-underline'>View details</AccordionTrigger>
+            <AccordionContent>
+              {!isLoadingCategories && (
+                <div className='grid grid-cols-[1fr_auto] items-start gap-x-2 gap-y-2 py-2'>
+                  {mappedCategories.map((category) => (
+                    <Fragment key={category.id}>
+                      <div key={category.id} className='mt-1 rotate-180'>
+                        <Progress value={percentage} withBackground={false} />
+                      </div>
+                      <div className='text-left'>
+                        <p>{category.name}</p>
+                        <p className='text-xxs text-gray-400'>{formatNumberToMoney(category.totalSpend)}</p>
+                      </div>
+                    </Fragment>
+                  ))}
+                </div>
+              )}
+              {isLoadingCategories && (
+                <div className='mt-2 flex w-full justify-center'>
+                  <Loader2 className='animate-spin' />
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       )}
     </div>
   )
