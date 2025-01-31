@@ -17,7 +17,8 @@ export const userRouter = router({
     )
     .mutation(async ({ input }) => {
       const { firstName, lastName, email, password } = input
-      await usersClient.createOne({ firstName, lastName, email, password })
+      const user = await usersClient.createOne({ firstName, lastName, email, password })
+      await usersClient.sendVerificationEmail({ userId: user.id })
       return { firstName, lastName, email }
     }),
   onboardUser: privateProcedure
@@ -73,4 +74,15 @@ export const userRouter = router({
         throw new BadRequestError("User not found")
       }
     }),
+  resendOTP: privateProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.user.id
+    return await usersClient.sendVerificationEmail({ userId })
+  }),
+  verifyOTP: privateProcedure.input(z.object({ code: z.string() })).mutation(async ({ input, ctx }) => {
+    const userId = ctx.user.id
+    return await usersClient.verifyOTP({
+      userId,
+      code: input.code,
+    })
+  }),
 })

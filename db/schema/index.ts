@@ -24,6 +24,17 @@ export const users = pgTable("User", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const otpCodes = pgTable("OTPCode", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  code: varchar("code", { length: 6 }).notNull(),
+  expiredAt: timestamp("expired_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  usedAt: timestamp("used_at"),
+})
+
 export const transactionTypes = pgTable("TransactionType", {
   id: smallserial("id").primaryKey(),
   name: varchar("name", { length: 10 }).notNull(),

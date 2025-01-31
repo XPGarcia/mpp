@@ -7,7 +7,7 @@ import { z } from "zod"
 import { useState } from "react"
 import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { trpc } from "@/src/utils/_trpc/client"
-import { adjustTimezoneFromLocalToUTC } from "@/src/utils/format/dates"
+import { adjustTimezoneFromLocalToUTC, adjustTimezoneFromUTCToLocal } from "@/src/utils/format/dates"
 import { getValues } from "@/src/utils/format/zod-enums"
 import { SelectTransactionType } from "./select-transaction-type"
 import { SpendingType, TransactionFrequency, TransactionType } from "@/modules/transactions/types"
@@ -23,6 +23,7 @@ import { Calendar } from "@/src/ui-lib/components/ui/calendar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/ui-lib/components/ui/select"
 import { Checkbox } from "@/src/ui-lib/components/ui/checkbox"
 import { CreateCategoryModalDrawer } from "@/src/categories/components/create-category-modal-drawer/create-category-modal-drawer"
+import { initialValueForFormDate } from "@/src/utils/format/forms"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -53,7 +54,7 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
   const form = useForm<CreateTransactionFormData>({
     defaultValues: {
       type: initialValues?.type ?? TransactionType.EXPENSE,
-      date: initialValues?.date ?? new Date(),
+      date: initialValues?.date ?? adjustTimezoneFromUTCToLocal(new Date()),
       amount: initialValues?.amount,
       categoryId: initialValues?.categoryId,
       description: initialValues?.description ?? "",

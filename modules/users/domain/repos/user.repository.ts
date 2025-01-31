@@ -5,6 +5,8 @@ export interface UserRepository {
   findByEmail(email: string): Promise<User | undefined>
   findById(id: number): Promise<User | undefined>
   update(id: number, input: UpdateUserInput): Promise<User | undefined>
+  createOTP(userId: number): Promise<string>
+  verifyOTP(userId: number, code: string): Promise<boolean>
 }
 
 export type CreateUserInput = {

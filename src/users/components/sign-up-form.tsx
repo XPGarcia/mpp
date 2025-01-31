@@ -50,7 +50,7 @@ export const SignUpForm = () => {
     try {
       await registerUser(formData)
       toast.success("Account created successfully")
-      router.push(AppRoutes.login)
+      router.push(AppRoutes.verifyEmail)
     } catch (error) {
       const message = getErrorMessage(error)
       toast.error(message)

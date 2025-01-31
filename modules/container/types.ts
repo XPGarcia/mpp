@@ -46,12 +46,16 @@ const TYPES = {
   // repositories
   UserRepository: Symbol.for("UserRepository"),
   FeedbackRepository: Symbol.for("FeedbackRepository"),
+  // services
+  EmailService: Symbol.for("EmailService"),
   // use-cases
   SubmitFeedback: Symbol.for("SubmitFeedback"),
   CreateUser: Symbol.for("CreateUser"),
   Login: Symbol.for("Login"),
   FindOneUserById: Symbol.for("FindOneUserById"),
   UpdateUser: Symbol.for("UpdateUser"),
+  SendVerificationEmail: Symbol.for("SendVerificationEmail"),
+  VerifyOTP: Symbol.for("VerifyOTP"),
   /*********** Users **********/
 }
 

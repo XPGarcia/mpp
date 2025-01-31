@@ -44,8 +44,17 @@ import {
   UpdateTransaction,
 } from "@/modules/transactions/use-cases"
 import { DrizzleFeedbackRepository, DrizzleUserRepository } from "@/modules/users/infra"
-import { CreateUser, FindOneUserById, Login, SubmitFeedback, UpdateUser } from "@/modules/users/use-cases"
+import {
+  CreateUser,
+  FindOneUserById,
+  Login,
+  SubmitFeedback,
+  UpdateUser,
+  SendVerificationEmail,
+  VerifyOTP,
+} from "@/modules/users/use-cases"
 import { FeedbackRepository, UserRepository } from "@/modules/users/domain"
+import { ImplEmailService } from "@/modules/users/infra"
 
 const myContainer = new Container()
 
@@ -100,12 +109,16 @@ myContainer.bind(TYPES.FindTransactionsByUserAndMonth).to(FindTransactionsByUser
 // repositories
 myContainer.bind<FeedbackRepository>(TYPES.FeedbackRepository).to(DrizzleFeedbackRepository)
 myContainer.bind<UserRepository>(TYPES.UserRepository).to(DrizzleUserRepository)
+// services
+myContainer.bind(TYPES.EmailService).to(ImplEmailService)
 // use-cases
 myContainer.bind(TYPES.SubmitFeedback).to(SubmitFeedback)
 myContainer.bind(TYPES.CreateUser).to(CreateUser)
 myContainer.bind(TYPES.Login).to(Login)
 myContainer.bind(TYPES.FindOneUserById).to(FindOneUserById)
 myContainer.bind(TYPES.UpdateUser).to(UpdateUser)
+myContainer.bind(TYPES.SendVerificationEmail).to(SendVerificationEmail)
+myContainer.bind(TYPES.VerifyOTP).to(VerifyOTP)
 /*********** Users **********/
 
 export { myContainer }

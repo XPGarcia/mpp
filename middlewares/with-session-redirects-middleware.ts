@@ -12,17 +12,12 @@ export const config = {
 }
 
 export function withSessionRedirectsMiddleware(middleware: CustomMiddleware) {
-  const witheListedPaths = ["/login", "/sign-up"]
+  const witheListedPaths = ["/login", "/sign-up", "/verify-email"]
 
   return async (request: NextRequest, event: NextFetchEvent) => {
     const response = NextResponse.next()
 
     const pathname = request.nextUrl.pathname
-
-    if (witheListedPaths.some((path) => pathname.startsWith(path))) {
-      return middleware(request, event, response)
-    }
-
     const session = await getSession({
       req: {
         ...request,
@@ -32,13 +27,35 @@ export function withSessionRedirectsMiddleware(middleware: CustomMiddleware) {
       },
     })
 
-    if (!session || !session.user || !session.user.verifiedAt) {
-      const signInUrl = new URL(AppRoutes.login, request.url)
-      signInUrl.searchParams.set("callbackUrl", pathname)
-      return NextResponse.redirect(signInUrl)
+    const isAuthenticationRoute = pathname.startsWith(AppRoutes.login) || pathname.startsWith(AppRoutes.register)
+    if ((!session || !session.user) && !isAuthenticationRoute) {
+      const loginUrl = new URL(AppRoutes.login, request.url)
+      loginUrl.searchParams.set("callbackUrl", pathname)
+      return NextResponse.redirect(loginUrl)
     }
 
-    const user = session.user
+    const user = session?.user
+
+    if (user && isAuthenticationRoute) {
+      const dashboardUrl = new URL(AppRoutes.dashboard, request.url)
+      return NextResponse.redirect(dashboardUrl)
+    }
+
+    const isVerifyEmailRoute = pathname.startsWith(AppRoutes.verifyEmail)
+    if (user?.verifiedAt && isVerifyEmailRoute) {
+      const dashboardUrl = new URL(AppRoutes.dashboard, request.url)
+      return NextResponse.redirect(dashboardUrl)
+    }
+
+    if (witheListedPaths.some((path) => pathname.startsWith(path))) {
+      return middleware(request, event, response)
+    }
+
+    if (!user?.verifiedAt) {
+      const verifyEmailUrl = new URL(AppRoutes.verifyEmail, request.url)
+      verifyEmailUrl.searchParams.set("callbackUrl", pathname)
+      return NextResponse.redirect(verifyEmailUrl)
+    }
 
     const dashboardUrl = new URL(AppRoutes.dashboard, request.url)
 

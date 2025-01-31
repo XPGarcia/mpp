@@ -38,9 +38,6 @@ export class Login implements LoginUseCase {
       if (!correctPassword) {
         return { error: LOGIN_ERRORS.INCORRECT_PASSWORD, user: null }
       }
-      if (!user.verifiedAt) {
-        return { error: LOGIN_ERRORS.USER_NOT_VERIFIED, user: null }
-      }
       return { user }
     } catch (error) {
       console.error(error)

@@ -66,7 +66,6 @@ export const CreateAccountForm = ({ initialValues, onSubmit }: Props) => {
                 <Input
                   type='number'
                   step='0.01'
-                  placeholder='My personal account'
                   {...field}
                   value={field.value || ""}
                   onChange={(e) => field.onChange(e.target.valueAsNumber)}

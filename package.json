@@ -9,7 +9,8 @@
     "lint": "next lint",
     "db:migrate": "drizzle-kit migrate",
     "db:generate": "drizzle-kit generate",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@faker-js/faker": "^9.0.0",
@@ -38,6 +39,7 @@
     "lucide-react": "^0.473.0",
     "next": "14.2.3",
     "next-auth": "^4.24.7",
+    "otp-generator": "^4.0.1",
     "postgres": "^3.4.4",
     "react": "^18",
     "react-day-picker": "8.10.1",
@@ -58,6 +60,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/jest": "^29.5.12",
     "@types/node": "^20",
+    "@types/otp-generator": "^4.0.2",
     "@types/pg": "^8.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",

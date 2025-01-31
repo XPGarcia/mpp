@@ -9,11 +9,10 @@ import { OnboardingReview } from "@/src/onboarding/components/onboarding-review"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { AppRoutes } from "@/src/utils/routes"
-import { getSession, signIn } from "next-auth/react"
+import { getSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import toast from "react-hot-toast"
-import { set } from "zod"
 
 type OnboardingSteps = "introduction" | "create-account" | "select-budget" | "review"
 
