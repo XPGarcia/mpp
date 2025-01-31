@@ -61,7 +61,6 @@ export class DrizzleUserRepository implements UserRepository {
         gt(otpCodes.createdAt, dayjs().subtract(10, "minute").toDate())
       ),
     })
-    console.log(otp)
     if (!otp) {
       return false
     }

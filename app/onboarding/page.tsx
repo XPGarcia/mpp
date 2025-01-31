@@ -8,8 +8,6 @@ import { OnboardingIntroduction } from "@/src/onboarding/components/onboarding-i
 import { OnboardingReview } from "@/src/onboarding/components/onboarding-review"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
-import { AppRoutes } from "@/src/utils/routes"
-import { getSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import toast from "react-hot-toast"
@@ -55,8 +53,7 @@ export default function OnboardingPage() {
   const handleOnboardUser = async () => {
     try {
       await onboardUser(onboardFormData)
-      await getSession()
-      router.push(AppRoutes.dashboard)
+      router.refresh()
     } catch (error) {
       const message = getErrorMessage(error)
       toast.error(message)
