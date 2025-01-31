@@ -38,7 +38,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
   const percentage = getPercentage(budget, expenseDistribution)
   const maxToSpend = totalIncome > 0 ? calculatePercentage(totalIncome, budget) : 0
 
-  const colorScheme = percentage > 80 ? "red" : percentage > 40 ? "yellow" : "blue"
+  const colorScheme = percentage > 80 ? "bg-red-500" : percentage > 40 ? "bg-amber-500" : "bg-blue-500"
 
   const [showCategories, setShowCategories] = useState(false)
   const { data: categories, isLoading: isLoadingCategories } =
@@ -61,7 +61,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
 
   return (
     <div className='flex flex-col text-xs font-medium text-shades-500'>
-      <Progress value={percentage} indicatorColor={`bg-${colorScheme}-500`} />
+      <Progress value={percentage} indicatorColor={colorScheme} />
       <p className='mt-1 text-xs font-light text-gray-600'>
         {`You've spent `}
         <span className='font-medium text-shades-500'>{formatNumberToMoney(expenseDistribution.total)}</span> on {label}
@@ -84,7 +84,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
                   {mappedCategories.map((category) => (
                     <Fragment key={category.id}>
                       <div key={category.id} className='mt-1 rotate-180'>
-                        <Progress value={percentage} withBackground={false} />
+                        <Progress value={category.percentage} withBackground={false} />
                       </div>
                       <div className='text-left'>
                         <p>{category.name}</p>

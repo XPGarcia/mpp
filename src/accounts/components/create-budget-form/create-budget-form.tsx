@@ -1,6 +1,7 @@
 import { Button } from "@/src/ui-lib/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/ui-lib/components/ui/form"
 import { Input } from "@/src/ui-lib/components/ui/input"
+import { Slider } from "@/src/ui-lib/components/ui/slider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -63,14 +64,12 @@ export const CreateBudgetForm = ({ initialValues, onSubmit }: Props) => {
             <FormItem>
               <FormLabel>Living</FormLabel>
               <FormControl>
-                <Input
-                  type='number'
-                  step='5'
-                  min='0'
-                  max='100'
-                  {...field}
-                  value={field.value || ""}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                <Slider
+                  defaultValue={[field.value]}
+                  max={100}
+                  step={1}
+                  onValueChange={(e) => field.onChange(e[0])}
+                  showValue
                 />
               </FormControl>
               <FormMessage />
@@ -84,14 +83,12 @@ export const CreateBudgetForm = ({ initialValues, onSubmit }: Props) => {
             <FormItem>
               <FormLabel>Savings/Investments</FormLabel>
               <FormControl>
-                <Input
-                  type='number'
-                  step='5'
-                  min='0'
-                  max='100'
-                  {...field}
-                  value={field.value || ""}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                <Slider
+                  defaultValue={[field.value]}
+                  max={100}
+                  step={1}
+                  onValueChange={(e) => field.onChange(e[0])}
+                  showValue
                 />
               </FormControl>
               <FormMessage />
@@ -105,14 +102,12 @@ export const CreateBudgetForm = ({ initialValues, onSubmit }: Props) => {
             <FormItem>
               <FormLabel>Entertainment</FormLabel>
               <FormControl>
-                <Input
-                  type='number'
-                  step='5'
-                  min='0'
-                  max='100'
-                  {...field}
-                  value={field.value || ""}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                <Slider
+                  defaultValue={[field.value]}
+                  max={100}
+                  step={1}
+                  onValueChange={(e) => field.onChange(e[0])}
+                  showValue
                 />
               </FormControl>
               <FormMessage />
@@ -125,7 +120,7 @@ export const CreateBudgetForm = ({ initialValues, onSubmit }: Props) => {
             of your monthly expenses
           </p>
         )}
-        {form.formState.errors.total && <p className='text-sm text-red-500'>{form.formState.errors.total.message}</p>}
+        {form.formState.errors.total && <p className='text-xs text-red-500'>{form.formState.errors.total.message}</p>}
         <Button type='submit' isLoading={form.formState.isSubmitting}>
           Save
         </Button>
