@@ -54,7 +54,7 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
   const form = useForm<CreateTransactionFormData>({
     defaultValues: {
       type: initialValues?.type ?? TransactionType.EXPENSE,
-      date: initialValues?.date ?? adjustTimezoneFromUTCToLocal(new Date()),
+      date: initialValues?.date ?? new Date(),
       amount: initialValues?.amount,
       categoryId: initialValues?.categoryId,
       description: initialValues?.description ?? "",
@@ -63,6 +63,7 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
     },
     resolver: zodResolver(schema),
   })
+  console.log(form.getValues())
 
   const transactionType = form.watch("type")
 
@@ -76,7 +77,7 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
     if (!initialValues) {
       form.reset()
     }
-    onSubmit({ ...data, date: adjustTimezoneFromLocalToUTC(data.date) })
+    onSubmit(data)
   }
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
