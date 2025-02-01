@@ -9,6 +9,7 @@ import { FilterCategoriesTabs } from "./filter-categories-tabs"
 import { MonthPickerDate } from "@/src/misc/components/month-picker/month-picker"
 import { useState } from "react"
 import { Button } from "@/src/ui-lib/components/ui/button"
+import { Filter } from "lucide-react"
 
 interface InnerProps {
   date: MonthPickerDate
@@ -45,8 +46,14 @@ const InnerComponent = ({ date, onClose, onAccept }: InnerProps) => {
       categoriesIds,
       date,
     })
-    const incomePercentage = Math.round((balances.filteredBalance.income * 100) / balances.totalBalance.income)
-    const expensesPercentage = Math.round((balances.filteredBalance.expenses * 100) / balances.totalBalance.expenses)
+    const incomePercentage =
+      balances.totalBalance.income === 0
+        ? 0
+        : Math.round((balances.filteredBalance.income * 100) / balances.totalBalance.income)
+    const expensesPercentage =
+      balances.totalBalance.expenses === 0
+        ? 0
+        : Math.round((balances.filteredBalance.expenses * 100) / balances.totalBalance.expenses)
     setTotals({
       income: { percentage: incomePercentage, selectedAmount: balances.filteredBalance.income },
       expenses: { percentage: expensesPercentage, selectedAmount: balances.filteredBalance.expenses },
@@ -61,8 +68,9 @@ const InnerComponent = ({ date, onClose, onAccept }: InnerProps) => {
 
   return (
     <div className='scroll-y flex h-[90vh] flex-col overflow-y-auto py-2'>
-      <div className='flex w-full justify-end bg-secondary p-1'>
+      <div className='flex w-full justify-end px-4 py-2'>
         <Button variant='default' className='h-[28px]' onClick={applyFilters}>
+          <Filter />
           Filter
         </Button>
       </div>
