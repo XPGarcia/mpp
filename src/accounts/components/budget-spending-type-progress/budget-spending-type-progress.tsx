@@ -41,8 +41,10 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
   const colorScheme = percentage > 80 ? "bg-red-500" : percentage > 40 ? "bg-amber-500" : "bg-blue-500"
 
   const [showCategories, setShowCategories] = useState(false)
-  const { data: categories, isLoading: isLoadingCategories } =
-    trpc.categories.findManyBySpendTypeWithTotalSpend.useQuery({ spendingType, date }, { enabled: showCategories })
+  const { data: categories, isLoading: isLoadingCategories } = trpc.categories.findUserCategoriesWithSpend.useQuery(
+    { spendingTypes: [spendingType], date },
+    { enabled: showCategories }
+  )
 
   const getOrderedCategoriesWithPercentage = () => {
     const orderedCategories = categories?.sort((a, b) => b.totalSpend - a.totalSpend)

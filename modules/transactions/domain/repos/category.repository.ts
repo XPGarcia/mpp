@@ -13,22 +13,6 @@ export interface CategoryRepository {
   findOneById(categoryId: number): Promise<Category | undefined>
   updateOne(categoryId: number, values: UpdateCategoryInput): Promise<Category | undefined>
   deleteOne(categoryId: number): Promise<void>
-  getUserCategoriesBySpendingTypeWithTotalSpend({
-    userId,
-    spendingType,
-    date,
-  }: {
-    userId: number
-    spendingType: SpendingType
-    date?: { month: string; year: string }
-  }): Promise<
-    {
-      id: number
-      name: string
-      spendingTypeId: number
-      totalSpend: number
-    }[]
-  >
   findUserCategoriesWithSpend({
     userId,
     filters,

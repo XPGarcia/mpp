@@ -35,30 +35,31 @@ const InnerComponent = ({ date, onClose, onAccept }: InnerProps) => {
     transactionTypes: [TransactionType.EXPENSE],
   })
 
-  const { mutateAsync: getBalances } = trpc.transactions.getBalance.useMutation()
+  const { mutateAsync: getFilteredBalances } = trpc.transactions.getFilteredBalances.useMutation()
 
   const changeTotals = async (categoriesIds: number[]) => {
     if (categoriesIds.length === 0) {
       setTotals(initialTotals)
       return
     }
-    const balances = await getBalances({
+    const totals = await getTotals(date, categoriesIds)
+    setTotals(totals)
+    setSelectedCategories(() => [...categoriesIds])
+  }
+
+  const getTotals = async (date: MonthPickerDate, categoriesIds: number[]) => {
+    const { totalBalance, filteredBalance } = await getFilteredBalances({
       categoriesIds,
       date,
     })
     const incomePercentage =
-      balances.totalBalance.income === 0
-        ? 0
-        : Math.round((balances.filteredBalance.income * 100) / balances.totalBalance.income)
+      totalBalance.income === 0 ? 0 : Math.round((filteredBalance.income * 100) / totalBalance.income)
     const expensesPercentage =
-      balances.totalBalance.expenses === 0
-        ? 0
-        : Math.round((balances.filteredBalance.expenses * 100) / balances.totalBalance.expenses)
-    setTotals({
-      income: { percentage: incomePercentage, selectedAmount: balances.filteredBalance.income },
-      expenses: { percentage: expensesPercentage, selectedAmount: balances.filteredBalance.expenses },
-    })
-    setSelectedCategories(() => [...categoriesIds])
+      totalBalance.expenses === 0 ? 0 : Math.round((filteredBalance.expenses * 100) / totalBalance.expenses)
+    return {
+      income: { percentage: incomePercentage, selectedAmount: filteredBalance.income },
+      expenses: { percentage: expensesPercentage, selectedAmount: filteredBalance.expenses },
+    }
   }
 
   const applyFilters = () => {

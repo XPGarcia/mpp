@@ -19,10 +19,6 @@ export const transactionRouter = router({
       }
       return transaction
     }),
-  findManyByUserId: privateProcedure.input(z.void()).query(async ({ ctx }) => {
-    const transactions = await transactionsClient.findManyByUser({ userId: ctx.user.id })
-    return transactions
-  }),
   createOne: privateProcedure
     .input(
       z.object({
@@ -59,7 +55,7 @@ export const transactionRouter = router({
       const createdTransaction = await transactionsClient.updateOne(input)
       return createdTransaction
     }),
-  getUserTransactionsWithBalance: privateProcedure
+  findUserTransactionsWithBalance: privateProcedure
     .input(
       z.object({
         categoriesIds: z.array(z.number()),
@@ -78,7 +74,7 @@ export const transactionRouter = router({
   deleteOne: privateProcedure.input(z.object({ transactionId: z.number() })).mutation(async ({ input }) => {
     await transactionsClient.deleteOne({ transactionId: input.transactionId })
   }),
-  getBalance: privateProcedure
+  getFilteredBalances: privateProcedure
     .input(
       z.object({
         categoriesIds: z.array(z.number()),

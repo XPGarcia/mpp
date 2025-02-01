@@ -7,17 +7,13 @@ import {
   CreateInitialCategoriesForUserInput,
   DeleteOneCategory,
   DeleteOneCategoryInput,
-  GetUserCategoriesBySpendingType,
-  GetUserCategoriesBySpendingTypeInput,
   GetUserCategoriesByTransaction,
   GetUserCategoriesByTransactionInput,
   UpdateOneCategory,
   UpdateOneCategoryInput,
-} from "@/modules/transactions/use-cases"
-import {
   FindUserCategoriesWithSpend,
   FindUserCategoriesWithSpendInput,
-} from "../use-cases/category/find-user-categories-with-spend"
+} from "@/modules/transactions/use-cases"
 
 export const categoriesClient = {
   createCategoryForUser: (input: CreateCategoryForUserInput) => {
@@ -33,12 +29,6 @@ export const categoriesClient = {
   deleteOne: (input: DeleteOneCategoryInput) => {
     const deleteOneCategory = myContainer.get<DeleteOneCategory>(TYPES.DeleteOneCategory)
     return deleteOneCategory.execute(input)
-  },
-  getUserCategoriesBySpendingType: (input: GetUserCategoriesBySpendingTypeInput) => {
-    const getUserCategoriesBySpendingType = myContainer.get<GetUserCategoriesBySpendingType>(
-      TYPES.GetUserCategoriesBySpendingType
-    )
-    return getUserCategoriesBySpendingType.execute(input)
   },
   updateOne: (input: UpdateOneCategoryInput) => {
     const updateOneCategory = myContainer.get<UpdateOneCategory>(TYPES.UpdateOneCategory)

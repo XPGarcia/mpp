@@ -14,15 +14,9 @@ import {
   UpdateTransaction,
   FindTransactionInput,
   FindTransaction,
-  FindTransactionsByUser,
-  FindTransactionsByUserInput,
-  FindTransactionsByUserAndMonth,
-  FindTransactionsByUserAndMonthInput,
-} from "@/modules/transactions/use-cases"
-import {
-  FindUserTransactions,
   FindUserTransactionsInput,
-} from "../use-cases/transactions/find-transaction-by-categories"
+  FindUserTransactions,
+} from "@/modules/transactions/use-cases"
 
 export const transactionsClient = {
   getMonthlyExpensesDistributionForUser: (input: GetMonthlyExpensesDistributionInput) => {
@@ -58,16 +52,6 @@ export const transactionsClient = {
   findOne: (input: FindTransactionInput) => {
     const findTransaction = myContainer.get<FindTransaction>(TYPES.FindTransaction)
     return findTransaction.execute(input)
-  },
-  findManyByUser: (input: FindTransactionsByUserInput) => {
-    const findTransactionsByUser = myContainer.get<FindTransactionsByUser>(TYPES.FindTransactionsByUser)
-    return findTransactionsByUser.execute(input)
-  },
-  findManyByUserAndMonth: (input: FindTransactionsByUserAndMonthInput) => {
-    const findTransactionsByUserAndMonth = myContainer.get<FindTransactionsByUserAndMonth>(
-      TYPES.FindTransactionsByUserAndMonth
-    )
-    return findTransactionsByUserAndMonth.execute(input)
   },
   findUserTransactions: (input: FindUserTransactionsInput) => {
     const findUserTransactions = myContainer.get<FindUserTransactions>(TYPES.FindUserTransactions)

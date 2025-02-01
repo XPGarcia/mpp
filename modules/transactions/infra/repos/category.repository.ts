@@ -87,38 +87,6 @@ export class DrizzleCategoryRepository implements CategoryRepository {
     await db.delete(categories).where(eq(categories.id, categoryId))
   }
 
-  async getUserCategoriesBySpendingTypeWithTotalSpend({
-    userId,
-    spendingType,
-    date,
-  }: {
-    userId: number
-    spendingType: SpendingType
-    date?: { month: string; year: string }
-  }) {
-    const spendingTypeId = getSpendingTypeId(spendingType)
-    const filters = [eq(categories.userId, userId), eq(categories.spendingTypeId, spendingTypeId)]
-    if (!!date) {
-      const dateFilters = [
-        sql`EXTRACT(YEAR FROM ${transactions.date}) = ${date.year}`,
-        sql`EXTRACT(MONTH FROM ${transactions.date}) = ${date.month}`,
-      ]
-      filters.push(...dateFilters)
-    }
-
-    return await db
-      .select({
-        id: categories.id,
-        name: categories.name,
-        spendingTypeId: categories.spendingTypeId,
-        totalSpend: sql`sum(${transactions.amount})`.mapWith(Number),
-      })
-      .from(categories)
-      .leftJoin(transactions, eq(categories.id, transactions.categoryId))
-      .where(and(...filters))
-      .groupBy(sql`${categories.id}`)
-  }
-
   async findUserCategoriesWithSpend(params: {
     userId: number
     filters: FindUserCategoriesFilters

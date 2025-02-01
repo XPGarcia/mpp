@@ -30,7 +30,7 @@ export default function Dashboard() {
     data,
     refetch: refetchTransactions,
     isLoading,
-  } = trpc.transactions.getUserTransactionsWithBalance.useQuery(
+  } = trpc.transactions.findUserTransactionsWithBalance.useQuery(
     { date, categoriesIds },
     {
       enabled: Boolean(session?.user?.id),

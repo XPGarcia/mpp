@@ -26,7 +26,7 @@ export class GetMonthlyExpensesDistributionForUser implements GetMonthlyExpenses
 
   async execute(input: GetMonthlyExpensesDistributionInput): GetMonthlyExpensesDistributionOutput {
     const { userId, month, year } = input
-    const transactions = await this._transactionRepository.findManyByUserIdAndMonthRange(userId, { month, year })
+    const transactions = await this._transactionRepository.findManyByUserAndFilters(userId, { date: { month, year } })
 
     let totalIncome = 0
     let totalExpensesForNecessity = 0

@@ -30,39 +30,8 @@ export class DrizzleTransactionRepository implements TransactionRepository {
     return TransactionMapper.toDomain(transaction)
   }
 
-  async findAllByUserId(userId: number): Promise<Transaction[]> {
-    const rows = await db
-      .select()
-      .from(transactions)
-      .leftJoin(categories, eq(categories.id, transactions.categoryId))
-      .leftJoin(transactionTypes, eq(transactionTypes.id, transactions.typeId))
-      .where(eq(transactions.userId, userId))
-      .orderBy(desc(transactions.date))
-    return TransactionMapper.toDomains(rows)
-  }
-
   async findAllByCategoryId(categoryId: number): Promise<Transaction[]> {
     const rows = await db.select().from(transactions).where(eq(transactions.categoryId, categoryId))
-    return TransactionMapper.toDomains(rows)
-  }
-
-  async findManyByUserIdAndMonthRange(
-    userId: number,
-    options: { month: string; year: string }
-  ): Promise<Transaction[]> {
-    const rows = await db
-      .select()
-      .from(transactions)
-      .leftJoin(categories, eq(categories.id, transactions.categoryId))
-      .leftJoin(transactionTypes, eq(transactionTypes.id, transactions.typeId))
-      .where(
-        and(
-          eq(transactions.userId, userId),
-          sql`EXTRACT(YEAR FROM ${transactions.date}) = ${options.year}`,
-          sql`EXTRACT(MONTH FROM ${transactions.date}) = ${options.month}`
-        )
-      )
-      .orderBy(desc(transactions.date))
     return TransactionMapper.toDomains(rows)
   }
 

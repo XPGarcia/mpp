@@ -58,20 +58,6 @@ export const categoryRouter = router({
     .mutation(async ({ input }) => {
       await categoriesClient.deleteOne({ categoryId: input.categoryId })
     }),
-  findManyBySpendTypeWithTotalSpend: privateProcedure
-    .input(
-      z.object({
-        spendingType: z.enum(getValues(SpendingType)),
-        date: z.object({ month: z.string(), year: z.string() }).optional(),
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      return await categoriesClient.getUserCategoriesBySpendingType({
-        userId: ctx.user.id,
-        spendingType: input.spendingType,
-        date: input.date,
-      })
-    }),
   findUserCategoriesWithSpend: privateProcedure
     .input(
       z.object({

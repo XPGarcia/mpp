@@ -63,7 +63,6 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
     },
     resolver: zodResolver(schema),
   })
-  console.log(form.getValues())
 
   const transactionType = form.watch("type")
 

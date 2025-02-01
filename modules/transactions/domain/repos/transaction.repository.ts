@@ -3,9 +3,7 @@ import { Transaction, TransactionFrequency, TransactionType } from "../entities"
 export interface TransactionRepository {
   createOne(input: CreateTransactionInput): Promise<Transaction | undefined>
   findOneById(transactionId: number): Promise<Transaction | undefined>
-  findAllByUserId(userId: number): Promise<Transaction[]>
   findAllByCategoryId(categoryId: number): Promise<Transaction[]>
-  findManyByUserIdAndMonthRange(userId: number, options: { month: string; year: string }): Promise<Transaction[]>
   updateOne(transactionId: number, input: UpdateTransactionInput): Promise<Transaction | undefined>
   deleteOne(transactionId: number): Promise<void>
   countByCategoryId(categoryId: number): Promise<number>

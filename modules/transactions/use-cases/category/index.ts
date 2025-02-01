@@ -1,6 +1,6 @@
 export * from "./create-category-for-user"
 export * from "./create-initial-categories-for-user"
 export * from "./delete-one-category"
-export * from "./get-user-categories-by-spend-type"
 export * from "./update-one-category"
 export * from "./get-user-categories-by-transaction"
+export * from "./find-user-categories-with-spend"

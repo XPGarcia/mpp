@@ -33,11 +33,10 @@ import {
   DeleteOneCategory,
   DeleteTransaction,
   FindTransaction,
-  FindTransactionsByUser,
-  FindTransactionsByUserAndMonth,
+  FindUserCategoriesWithSpend,
+  FindUserTransactions,
   GenerateRecurrentTransactions,
   GetMonthlyExpensesDistributionForUser,
-  GetUserCategoriesBySpendingType,
   GetUserCategoriesByTransaction,
   UpdateOneCategory,
   UpdateRecurrentTransaction,
@@ -55,8 +54,6 @@ import {
 } from "@/modules/users/use-cases"
 import { FeedbackRepository, UserRepository } from "@/modules/users/domain"
 import { ImplEmailService } from "@/modules/users/infra"
-import { FindUserTransactions } from "../transactions/use-cases/transactions/find-transaction-by-categories"
-import { FindUserCategoriesWithSpend } from "../transactions/use-cases/category/find-user-categories-with-spend"
 
 const myContainer = new Container()
 
@@ -93,7 +90,6 @@ myContainer.bind(TYPES.GetMonthlyExpensesDistributionForUser).to(GetMonthlyExpen
 myContainer.bind(TYPES.CreateCategoryForUser).to(CreateCategoryForUser)
 myContainer.bind(TYPES.CreateInitialCategoriesForUser).to(CreateInitialCategoriesForUser)
 myContainer.bind(TYPES.DeleteOneCategory).to(DeleteOneCategory)
-myContainer.bind(TYPES.GetUserCategoriesBySpendingType).to(GetUserCategoriesBySpendingType)
 myContainer.bind(TYPES.UpdateOneCategory).to(UpdateOneCategory)
 myContainer.bind(TYPES.GetUserCategoriesByTransaction).to(GetUserCategoriesByTransaction)
 myContainer.bind(TYPES.CreateTransaction).to(CreateTransaction)
@@ -103,8 +99,6 @@ myContainer.bind(TYPES.DeleteTransaction).to(DeleteTransaction)
 myContainer.bind(TYPES.UpdateRecurrentTransaction).to(UpdateRecurrentTransaction)
 myContainer.bind(TYPES.UpdateTransaction).to(UpdateTransaction)
 myContainer.bind(TYPES.FindTransaction).to(FindTransaction)
-myContainer.bind(TYPES.FindTransactionsByUser).to(FindTransactionsByUser)
-myContainer.bind(TYPES.FindTransactionsByUserAndMonth).to(FindTransactionsByUserAndMonth)
 myContainer.bind(TYPES.FindUserTransactions).to(FindUserTransactions)
 myContainer.bind(TYPES.FindUserCategoriesWithSpend).to(FindUserCategoriesWithSpend)
 /*********** Transactions **********/
