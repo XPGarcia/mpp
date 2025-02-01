@@ -8,6 +8,7 @@ import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { AppRoutes } from "@/src/utils/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
@@ -51,8 +52,21 @@ export const SignUpForm = () => {
   const submit = async (formData: SignUpFormData) => {
     try {
       await registerUser(formData)
-      toast({ description: "Account created successfully" })
-      router.push(AppRoutes.verifyEmail)
+      const response = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      })
+      if (!response || response?.error) {
+        toast({
+          description: response?.error || "Failed to log in automatically. Please log in manually.",
+          variant: "destructive",
+        })
+        router.replace(AppRoutes.login)
+      } else {
+        toast({ description: "Account created successfully" })
+        router.replace(AppRoutes.verifyEmail)
+      }
     } catch (error) {
       const message = getErrorMessage(error)
       toast({ description: message, variant: "destructive" })
