@@ -55,6 +55,8 @@ import {
 } from "@/modules/users/use-cases"
 import { FeedbackRepository, UserRepository } from "@/modules/users/domain"
 import { ImplEmailService } from "@/modules/users/infra"
+import { FindUserTransactions } from "../transactions/use-cases/transactions/find-transaction-by-categories"
+import { FindUserCategoriesWithSpend } from "../transactions/use-cases/category/find-user-categories-with-spend"
 
 const myContainer = new Container()
 
@@ -103,6 +105,8 @@ myContainer.bind(TYPES.UpdateTransaction).to(UpdateTransaction)
 myContainer.bind(TYPES.FindTransaction).to(FindTransaction)
 myContainer.bind(TYPES.FindTransactionsByUser).to(FindTransactionsByUser)
 myContainer.bind(TYPES.FindTransactionsByUserAndMonth).to(FindTransactionsByUserAndMonth)
+myContainer.bind(TYPES.FindUserTransactions).to(FindUserTransactions)
+myContainer.bind(TYPES.FindUserCategoriesWithSpend).to(FindUserCategoriesWithSpend)
 /*********** Transactions **********/
 
 /*********** Users **********/

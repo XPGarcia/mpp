@@ -1,6 +1,7 @@
 import { injectable } from "inversify"
 import {
   CreateTransactionInput,
+  FindUserTransactionsFilters,
   Transaction,
   TransactionRepository,
   UpdateTransactionInput,
@@ -8,7 +9,7 @@ import {
 import { db } from "@/db"
 import { categories, transactionTypes, transactions } from "@/db/schema"
 import { TransactionMapper } from "../mappers"
-import { and, desc, eq, sql, count } from "drizzle-orm"
+import { and, desc, eq, sql, count, inArray } from "drizzle-orm"
 import { getTransactionTypeId } from "../utils"
 
 @injectable()
@@ -100,5 +101,30 @@ export class DrizzleTransactionRepository implements TransactionRepository {
     }
 
     await db.update(transactions).set(toUpdateValues).where(eq(transactions.categoryId, categoryId))
+  }
+
+  async findManyByUserAndFilters(userId: number, filters: FindUserTransactionsFilters): Promise<Transaction[]> {
+    const { date, categoriesIds } = filters
+    const conditions = [eq(transactions.userId, userId)]
+
+    if (date) {
+      conditions.push(
+        sql`EXTRACT(YEAR FROM ${transactions.date}) = ${date.year}`,
+        sql`EXTRACT(MONTH FROM ${transactions.date}) = ${date.month}`
+      )
+    }
+
+    if (categoriesIds && categoriesIds.length > 0) {
+      conditions.push(inArray(transactions.categoryId, categoriesIds))
+    }
+
+    const rows = await db
+      .select()
+      .from(transactions)
+      .leftJoin(categories, eq(categories.id, transactions.categoryId))
+      .leftJoin(transactionTypes, eq(transactionTypes.id, transactions.typeId))
+      .where(and(...conditions))
+      .orderBy(desc(transactions.date))
+    return TransactionMapper.toDomains(rows)
   }
 }

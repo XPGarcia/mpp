@@ -40,6 +40,8 @@ const TYPES = {
   FindTransaction: Symbol.for("FindTransaction"),
   FindTransactionsByUser: Symbol.for("FindTransactionsByUser"),
   FindTransactionsByUserAndMonth: Symbol.for("FindTransactionsByUserAndMonth"),
+  FindUserTransactions: Symbol.for("FindUserTransactions"),
+  FindUserCategoriesWithSpend: Symbol.for("FindUserCategoriesWithSpend"),
   /*********** Transactions **********/
 
   /*********** Users **********/

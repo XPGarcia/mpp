@@ -72,4 +72,19 @@ export const categoryRouter = router({
         date: input.date,
       })
     }),
+  findUserCategoriesWithSpend: privateProcedure
+    .input(
+      z.object({
+        spendingTypes: z.array(z.enum(getValues(SpendingType))).optional(),
+        transactionTypes: z.array(z.enum(getValues(TransactionType))).optional(),
+        date: z.object({ month: z.string(), year: z.string() }).optional(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const categories = await categoriesClient.findUserCategoriesWithSpend({
+        userId: ctx.user.id,
+        filters: input,
+      })
+      return categories
+    }),
 })

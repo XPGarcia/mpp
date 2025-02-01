@@ -60,11 +60,17 @@ export const transactionRouter = router({
       return createdTransaction
     }),
   getUserTransactionsWithBalance: privateProcedure
-    .input(z.object({ month: z.string(), year: z.string() }))
+    .input(
+      z.object({
+        categoriesIds: z.array(z.number()),
+        date: z.object({ month: z.string(), year: z.string() }),
+      })
+    )
     .query(async ({ input, ctx }) => {
-      const transactions = await transactionsClient.findManyByUserAndMonth({
+      const { categoriesIds, date } = input
+      const transactions = await transactionsClient.findUserTransactions({
         userId: ctx.user.id,
-        date: input,
+        filters: { categoriesIds, date },
       })
       const balance = calculateBalance(transactions)
       return { balance, transactions }
@@ -72,4 +78,25 @@ export const transactionRouter = router({
   deleteOne: privateProcedure.input(z.object({ transactionId: z.number() })).mutation(async ({ input }) => {
     await transactionsClient.deleteOne({ transactionId: input.transactionId })
   }),
+  getBalance: privateProcedure
+    .input(
+      z.object({
+        categoriesIds: z.array(z.number()),
+        date: z.object({ month: z.string(), year: z.string() }),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { categoriesIds, date } = input
+      const totalTransactions = await transactionsClient.findUserTransactions({
+        userId: ctx.user.id,
+        filters: { date },
+      })
+      const totalBalance = calculateBalance(totalTransactions)
+      const filteredTransactions = await transactionsClient.findUserTransactions({
+        userId: ctx.user.id,
+        filters: { categoriesIds, date },
+      })
+      const filteredBalance = calculateBalance(filteredTransactions)
+      return { totalBalance, filteredBalance }
+    }),
 })

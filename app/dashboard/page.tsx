@@ -1,13 +1,16 @@
 "use client"
 import { FloatingAddButton } from "@/src/misc/components/floating-add-button/floating-add-button"
 import { MonthPicker, MonthPickerDate } from "@/src/misc/components/month-picker/month-picker"
+import { useBoolean } from "@/src/misc/hooks/use-boolean"
+import { FiltersDialogDrawer } from "@/src/transactions/components/filters/filters-dialog-drawer"
 import { TransactionRow } from "@/src/transactions/components/transaction-row"
+import { Button } from "@/src/ui-lib/components/ui/button"
 import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { AppRoutes } from "@/src/utils/routes"
 import { groupTransactionsByDate, isIncome } from "@/utils"
 import dayjs from "dayjs"
-import { Loader2 } from "lucide-react"
+import { Filter, Loader2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Fragment, useState } from "react"
@@ -15,18 +18,20 @@ import { Fragment, useState } from "react"
 export default function Dashboard() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { value: isFilterOpen, on: openFilter, off: closeFilter } = useBoolean(false)
 
   const [date, setDate] = useState<MonthPickerDate>({
     month: dayjs(new Date()).format("MM"),
     year: dayjs(new Date()).format("YYYY"),
   })
+  const [categoriesIds, setCategoriesIds] = useState<number[]>([])
 
   const {
     data,
     refetch: refetchTransactions,
     isLoading,
   } = trpc.transactions.getUserTransactionsWithBalance.useQuery(
-    { month: date.month, year: date.year },
+    { date, categoriesIds },
     {
       enabled: Boolean(session?.user?.id),
     }
@@ -43,16 +48,19 @@ export default function Dashboard() {
     refetchAccount()
   }
 
+  const changeFilters = (categoriesIds: number[]) => {
+    setCategoriesIds(() => [...categoriesIds])
+  }
+
   const groupedTransactionsByDate = groupTransactionsByDate(data?.transactions ?? [], "YYYY-MM-DD")
 
   return (
     <main className='flex w-full flex-col'>
-      <div className='flex justify-between pt-3'>
+      <div className='flex items-center justify-between pt-3'>
         <MonthPicker onChange={setDate} />
-        <div className='flex flex-col justify-end text-right'>
-          <p className='text-xxs'>Your current account balance</p>
-          <p className='text-xs font-semibold'>{formatNumberToMoney(account?.balance ?? 0)}</p>
-        </div>
+        <Button variant='outline' size='icon' onClick={openFilter}>
+          <Filter />
+        </Button>
       </div>
       {(isLoading || !data?.transactions) && (
         <div className='mt-10 flex items-center justify-center'>
@@ -106,6 +114,7 @@ export default function Dashboard() {
           <FloatingAddButton onClick={addTransaction} />
         </Fragment>
       )}
+      <FiltersDialogDrawer isOpen={isFilterOpen} date={date} onClose={closeFilter} onAccept={changeFilters} />
     </main>
   )
 }

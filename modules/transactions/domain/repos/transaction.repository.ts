@@ -10,6 +10,7 @@ export interface TransactionRepository {
   deleteOne(transactionId: number): Promise<void>
   countByCategoryId(categoryId: number): Promise<number>
   updateManyByCategoryId(categoryId: number, input: UpdateTransactionInput): Promise<void>
+  findManyByUserAndFilters(userId: number, filters: FindUserTransactionsFilters): Promise<Transaction[]>
 }
 
 export type CreateTransactionInput = {
@@ -28,3 +29,8 @@ export type CreateTransactionInput = {
 }
 
 export type UpdateTransactionInput = Partial<CreateTransactionInput>
+
+export type FindUserTransactionsFilters = {
+  date?: { month: string; year: string }
+  categoriesIds?: number[]
+}

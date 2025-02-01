@@ -6,3 +6,7 @@ export type Category = {
   transactionType: TransactionType
   spendingType: SpendingType
 }
+
+export type WithSpend<T> = T & {
+  totalSpend: number
+}

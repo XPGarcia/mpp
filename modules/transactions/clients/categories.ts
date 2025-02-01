@@ -14,6 +14,10 @@ import {
   UpdateOneCategory,
   UpdateOneCategoryInput,
 } from "@/modules/transactions/use-cases"
+import {
+  FindUserCategoriesWithSpend,
+  FindUserCategoriesWithSpendInput,
+} from "../use-cases/category/find-user-categories-with-spend"
 
 export const categoriesClient = {
   createCategoryForUser: (input: CreateCategoryForUserInput) => {
@@ -45,5 +49,9 @@ export const categoriesClient = {
       TYPES.GetUserCategoriesByTransaction
     )
     return getUserCategoriesByTransaction.execute(input)
+  },
+  findUserCategoriesWithSpend: (input: FindUserCategoriesWithSpendInput) => {
+    const findUserCategoriesWithSpend = myContainer.get<FindUserCategoriesWithSpend>(TYPES.FindUserCategoriesWithSpend)
+    return findUserCategoriesWithSpend.execute(input)
   },
 }

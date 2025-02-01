@@ -3,13 +3,15 @@ import {
   Category,
   CategoryRepository,
   CreateCategoryInput,
+  FindUserCategoriesFilters,
   SpendingType,
   TransactionType,
   UpdateCategoryInput,
+  WithSpend,
 } from "@/modules/transactions/domain"
 import { categories, transactions } from "@/db/schema"
 import { db } from "@/db"
-import { and, asc, eq, isNull, or, sql } from "drizzle-orm"
+import { and, asc, eq, inArray, isNull, or, sql } from "drizzle-orm"
 import { CategoryMapper } from "../mappers"
 import { getSpendingTypeId, getTransactionTypeId } from "../utils"
 
@@ -115,5 +117,51 @@ export class DrizzleCategoryRepository implements CategoryRepository {
       .leftJoin(transactions, eq(categories.id, transactions.categoryId))
       .where(and(...filters))
       .groupBy(sql`${categories.id}`)
+  }
+
+  async findUserCategoriesWithSpend(params: {
+    userId: number
+    filters: FindUserCategoriesFilters
+  }): Promise<WithSpend<Category>[]> {
+    const { userId, filters } = params
+    const { date, spendingTypes, transactionTypes } = filters
+
+    const transactionJoinConditions = [eq(categories.id, transactions.categoryId)]
+    if (date) {
+      const dateFilters = [
+        sql`EXTRACT(YEAR FROM ${transactions.date}) = ${date.year}`,
+        sql`EXTRACT(MONTH FROM ${transactions.date}) = ${date.month}`,
+      ]
+      transactionJoinConditions.push(...dateFilters)
+    }
+
+    const conditions = [eq(categories.userId, userId)]
+    if (spendingTypes && spendingTypes.length > 0) {
+      const spendingTypeIds = spendingTypes.map(getSpendingTypeId)
+      conditions.push(inArray(categories.spendingTypeId, spendingTypeIds))
+    }
+
+    if (transactionTypes && transactionTypes.length > 0) {
+      const transactionTypeIds = transactionTypes.map(getTransactionTypeId)
+      conditions.push(inArray(categories.transactionTypeId, transactionTypeIds))
+    }
+
+    const categoriesWithTotal = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        userId: categories.userId,
+        spendingTypeId: categories.spendingTypeId,
+        transactionTypeId: categories.transactionTypeId,
+        totalSpend: sql`COALESCE(SUM(${transactions.amount}), 0)`.mapWith(Number),
+        createdAt: categories.createdAt,
+        updatedAt: categories.updatedAt,
+      })
+      .from(categories)
+      .leftJoin(transactions, and(...transactionJoinConditions))
+      .where(and(...conditions))
+      .groupBy(sql`${categories.id}`)
+
+    return CategoryMapper.toDomainsWithSpend(categoriesWithTotal)
   }
 }

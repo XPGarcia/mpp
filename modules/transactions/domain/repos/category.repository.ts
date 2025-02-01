@@ -1,4 +1,4 @@
-import { Category, SpendingType, TransactionType } from "../entities"
+import { Category, SpendingType, TransactionType, WithSpend } from "../entities"
 
 export interface CategoryRepository {
   getUserCategoriesByTransaction({
@@ -29,6 +29,13 @@ export interface CategoryRepository {
       totalSpend: number
     }[]
   >
+  findUserCategoriesWithSpend({
+    userId,
+    filters,
+  }: {
+    userId: number
+    filters: FindUserCategoriesFilters
+  }): Promise<WithSpend<Category>[]>
 }
 
 export type CreateCategoryInput = {
@@ -42,3 +49,9 @@ export type CreateCategoryInput = {
 }
 
 export type UpdateCategoryInput = Omit<Partial<CreateCategoryInput>, "userId" | "id">
+
+export type FindUserCategoriesFilters = {
+  date?: { month: string; year: string }
+  spendingTypes?: SpendingType[]
+  transactionTypes?: TransactionType[]
+}
