@@ -2,11 +2,11 @@
 
 import { FormTextArea } from "@/src/misc/components/form-text-area/form-text-area"
 import { Button } from "@/src/ui-lib/components/ui/button"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import toast from "react-hot-toast"
 import { z } from "zod"
 
 const schema = z.object({
@@ -16,6 +16,7 @@ const schema = z.object({
 type FeedbackFormData = z.infer<typeof schema>
 
 export default function Feedback() {
+  const { toast } = useToast()
   const {
     reset,
     register,
@@ -31,10 +32,10 @@ export default function Feedback() {
     try {
       await submitFeedback({ message: formData.feedback })
       reset()
-      toast.success("Thanks for sharing your thoughts! Your feedback has been received.", { duration: 5000 })
+      toast({ description: "Thanks for sharing your thoughts! Your feedback has been received." })
     } catch (error) {
       const message = getErrorMessage(error)
-      toast.error(message)
+      toast({ description: message, variant: "destructive" })
     }
   }
 

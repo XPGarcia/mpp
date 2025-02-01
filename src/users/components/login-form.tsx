@@ -3,13 +3,13 @@
 import { Button } from "@/src/ui-lib/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/ui-lib/components/ui/form"
 import { Input } from "@/src/ui-lib/components/ui/input"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { AppRoutes } from "@/src/utils/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import toast from "react-hot-toast"
 import { z } from "zod"
 
 const schema = z.object({
@@ -20,6 +20,8 @@ const schema = z.object({
 type LoginFormData = z.infer<typeof schema>
 
 export const LoginForm = () => {
+  const { toast } = useToast()
+
   const form = useForm<LoginFormData>({
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(schema),
@@ -33,9 +35,9 @@ export const LoginForm = () => {
       redirect: false,
     })
     if (!response || response?.error) {
-      toast.error(response?.error || "An error occurred")
+      toast({ description: response?.error || "An error occurred", variant: "destructive" })
     } else {
-      toast.success("Logged in successfully")
+      toast({ description: "Logged in successfully" })
       router.replace(AppRoutes.landing)
     }
   }

@@ -6,12 +6,13 @@ import { MailCheck } from "lucide-react"
 import { Input } from "@/src/ui-lib/components/ui/input"
 import { Button } from "@/src/ui-lib/components/ui/button"
 import { trpc } from "@/src/utils/_trpc/client"
-import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { AppRoutes } from "@/src/utils/routes"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 
 export default function VerifyEmail() {
   const router = useRouter()
+  const { toast } = useToast()
   const [verificationCode, setVerificationCode] = useState("")
 
   const [timeLeft, setTimeLeft] = useState(0)
@@ -24,7 +25,7 @@ export default function VerifyEmail() {
     e.preventDefault()
     const isValid = await verifyOTP({ code: verificationCode })
     if (!isValid) {
-      toast.error("Invalid verification code")
+      toast({ description: "Invalid verification code", variant: "destructive" })
       return
     }
 

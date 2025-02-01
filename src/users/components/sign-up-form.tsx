@@ -3,6 +3,7 @@
 import { Button } from "@/src/ui-lib/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/ui-lib/components/ui/form"
 import { Input } from "@/src/ui-lib/components/ui/input"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { AppRoutes } from "@/src/utils/routes"
@@ -10,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import toast from "react-hot-toast"
 import { z } from "zod"
 
 const schema = z
@@ -37,6 +37,8 @@ const schema = z
 type SignUpFormData = z.infer<typeof schema>
 
 export const SignUpForm = () => {
+  const { toast } = useToast()
+
   const form = useForm<SignUpFormData>({
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(schema),
@@ -49,11 +51,11 @@ export const SignUpForm = () => {
   const submit = async (formData: SignUpFormData) => {
     try {
       await registerUser(formData)
-      toast.success("Account created successfully")
+      toast({ description: "Account created successfully" })
       router.push(AppRoutes.verifyEmail)
     } catch (error) {
       const message = getErrorMessage(error)
-      toast.error(message)
+      toast({ description: message, variant: "destructive" })
     }
   }
 

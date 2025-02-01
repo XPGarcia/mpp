@@ -6,16 +6,17 @@ import { OnboardingCreateAccount } from "@/src/onboarding/components/onboarding-
 import { OnboardingCreateBudget } from "@/src/onboarding/components/onboarding-create-budget"
 import { OnboardingIntroduction } from "@/src/onboarding/components/onboarding-introduction"
 import { OnboardingReview } from "@/src/onboarding/components/onboarding-review"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import toast from "react-hot-toast"
 
 type OnboardingSteps = "introduction" | "create-account" | "select-budget" | "review"
 
 export default function OnboardingPage() {
   const router = useRouter()
+  const { toast } = useToast()
 
   const [currentStep, setCurrentStep] = useState<OnboardingSteps>("introduction")
   const [onboardFormData, setOnboardFormData] = useState({
@@ -56,7 +57,7 @@ export default function OnboardingPage() {
       router.refresh()
     } catch (error) {
       const message = getErrorMessage(error)
-      toast.error(message)
+      toast({ description: message, variant: "destructive" })
     }
   }
 

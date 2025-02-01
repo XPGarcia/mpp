@@ -1,19 +1,20 @@
 "use client"
 
 import { CreateTransactionForm, CreateTransactionFormData } from "@/src/transactions/components/create-transaction-form"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { AppRoutes } from "@/src/utils/routes"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
 
 export default function AddTransaction() {
   const router = useRouter()
+  const { toast } = useToast()
 
   const { mutateAsync: createTransaction } = trpc.transactions.createOne.useMutation()
 
   const submit = async (data: CreateTransactionFormData) => {
     await createTransaction(data)
-    toast.success("Transaction created successfully")
+    toast({ description: "Transaction created successfully" })
   }
 
   const cancel = () => {

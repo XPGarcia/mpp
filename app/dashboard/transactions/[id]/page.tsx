@@ -1,11 +1,11 @@
 "use client"
 
 import { CreateTransactionForm, CreateTransactionFormData } from "@/src/transactions/components/create-transaction-form"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { AppRoutes } from "@/src/utils/routes"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
 
 interface Props {
   params: {
@@ -15,6 +15,7 @@ interface Props {
 
 export default function UpdateTransaction({ params }: Props) {
   const router = useRouter()
+  const { toast } = useToast()
 
   const {
     data: transaction,
@@ -23,8 +24,7 @@ export default function UpdateTransaction({ params }: Props) {
     isRefetching,
   } = trpc.transactions.findOneById.useQuery({ id: Number(params.id), withRecurrentTransaction: true }, { retry: 0 })
   if (error) {
-    console.error(error)
-    toast.error("Failed to load transaction")
+    toast({ description: "Failed to load transaction" })
     router.push(AppRoutes.dashboard)
   }
 
@@ -33,11 +33,10 @@ export default function UpdateTransaction({ params }: Props) {
   const submit = async (data: CreateTransactionFormData) => {
     try {
       await updateTransaction({ id: Number(params.id), ...data })
-      toast.success("Transaction updated successfully")
+      toast({ description: "Transaction updated successfully" })
       router.push(AppRoutes.dashboard)
     } catch (error) {
-      console.error(error)
-      toast.error("Something went wrong. Please try again.")
+      toast({ description: "Failed to update transaction", variant: "destructive" })
     }
   }
 

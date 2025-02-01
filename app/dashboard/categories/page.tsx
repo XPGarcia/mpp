@@ -8,13 +8,14 @@ import { useBoolean } from "@/src/misc/hooks/use-boolean"
 import { SelectTransactionType } from "@/src/transactions/components/select-transaction-type"
 import { useTransactionType } from "@/src/transactions/hooks/use-transaction-type"
 import { Button } from "@/src/ui-lib/components/ui/button"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
-import toast from "react-hot-toast"
 
 export default function CategoriesPage() {
+  const { toast } = useToast()
   const { transactionType, setTransactionType } = useTransactionType()
   const { value: isOpenCategoryForm, on: openCategoryForm, off: closeCategoryForm } = useBoolean(false)
   const { value: isOpenDelete, on: openDeleteAction, off: closeDeleteAction } = useBoolean(false)
@@ -51,24 +52,22 @@ export default function CategoriesPage() {
   const handleUpdateCategory = async (categoryId: number, data: CreateCategoryFormData) => {
     try {
       await updateCategory({ categoryId, ...data })
-      toast.success("Category updated successfully")
+      toast({ description: "Category updated successfully" })
       refetchCategories()
     } catch (error) {
-      console.error(error)
       const errorMessage = getErrorMessage(error, "Failed to update category")
-      toast.error(errorMessage)
+      toast({ description: errorMessage, variant: "destructive" })
     }
   }
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
     try {
       await createCategory(data)
-      toast.success("Category created successfully")
+      toast({ description: "Category created successfully" })
       refetchCategories()
     } catch (error) {
-      console.error(error)
       const errorMessage = getErrorMessage(error, "Failed to update category")
-      toast.error(errorMessage)
+      toast({ description: errorMessage, variant: "destructive" })
     }
   }
 
@@ -90,12 +89,11 @@ export default function CategoriesPage() {
 
     try {
       await deleteCategory({ categoryId: selectedCategory.id })
-      toast.success("Category deleted successfully")
+      toast({ description: "Category deleted successfully" })
       refetchCategories()
     } catch (error) {
-      console.error(error)
       const errorMessage = getErrorMessage(error, "Failed to delete category")
-      toast.error(errorMessage)
+      toast({ description: errorMessage, variant: "destructive" })
     }
 
     setSelectedCategory(undefined)

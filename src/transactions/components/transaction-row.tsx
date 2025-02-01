@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation"
 import { AppRoutes } from "@/src/utils/routes"
 import { useBoolean } from "@/src/misc/hooks/use-boolean"
 import { trpc } from "@/src/utils/_trpc/client"
-import toast from "react-hot-toast"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { Transaction } from "@/modules/transactions/types"
 import { isIncome } from "@/utils"
 import { DeleteTransactionDialogDrawer } from "./delete-transaction-dialog-drawer"
 import { Button } from "@/src/ui-lib/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
+import { useToast } from "@/src/ui-lib/hooks/use-toast"
 
 interface Props {
   transaction: Transaction
@@ -20,6 +20,7 @@ interface Props {
 
 export const TransactionRow = ({ transaction, onDelete }: Props) => {
   const router = useRouter()
+  const { toast } = useToast()
   const { value: actionsOpen, toggle: toggleActions, off: closeActions } = useBoolean(false)
   const { value: isOpenDelete, on: openDelete, off: closeDelete } = useBoolean(false)
 
@@ -33,14 +34,13 @@ export const TransactionRow = ({ transaction, onDelete }: Props) => {
   const handleDelete = async () => {
     try {
       await deleteTransaction({ transactionId: transaction.id })
-      toast.success("Transaction deleted successfully")
+      toast({ description: "Transaction deleted successfully" })
       closeDelete()
       closeActions()
       onDelete()
     } catch (error) {
-      console.error(error)
       const errorMessage = getErrorMessage(error, "Failed to delete transaction")
-      toast.error(errorMessage)
+      toast({ description: errorMessage, variant: "destructive" })
     }
   }
 
