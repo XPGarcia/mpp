@@ -30,30 +30,6 @@ const createTransactionsFromRecurrent = async (
   return createdTransactions
 }
 
-const executeForDailyTransactions = async (
-  recurrentTransactionRepo: RecurrentTransactionRepository,
-  createTransactionFromRecurrent: CreateTransactionFromRecurrent
-): Promise<Transaction[]> => {
-  const recurrentTransactions = await recurrentTransactionRepo.findAllDailyRecurrentForToday()
-  return await createTransactionsFromRecurrent(recurrentTransactions, createTransactionFromRecurrent)
-}
-
-const executeForWeeklyTransactions = async (
-  recurrentTransactionRepo: RecurrentTransactionRepository,
-  createTransactionFromRecurrent: CreateTransactionFromRecurrent
-): Promise<Transaction[]> => {
-  const recurrentTransactions = await recurrentTransactionRepo.findAllWeeklyRecurrentForThisWeek()
-  return await createTransactionsFromRecurrent(recurrentTransactions, createTransactionFromRecurrent)
-}
-
-const executeForMonthlyTransactions = async (
-  recurrentTransactionRepo: RecurrentTransactionRepository,
-  createTransactionFromRecurrent: CreateTransactionFromRecurrent
-): Promise<Transaction[]> => {
-  const recurrentTransactions = await recurrentTransactionRepo.findAllMonthlyRecurrentForThisMonth()
-  return await createTransactionsFromRecurrent(recurrentTransactions, createTransactionFromRecurrent)
-}
-
 export type GenerateRecurrentTransactionsOutput = Promise<Transaction[]>
 
 export interface GenerateRecurrentTransactionsUseCase {
@@ -69,8 +45,9 @@ export class GenerateRecurrentTransactions implements GenerateRecurrentTransacti
 
   async execute(): GenerateRecurrentTransactionsOutput {
     const updatedTransactions: Transaction[] = []
-    const newDailyTransactions = await executeForDailyTransactions(
-      this._recurrentTransactionRepo,
+    const recurrentDailyTransactions = await this._recurrentTransactionRepo.findAllRecurrentForPeriod("day")
+    const newDailyTransactions = await createTransactionsFromRecurrent(
+      recurrentDailyTransactions,
       this._createTransactionFromRecurrent
     )
     updatedTransactions.push(...newDailyTransactions)
@@ -81,8 +58,10 @@ export class GenerateRecurrentTransactions implements GenerateRecurrentTransacti
 
     const isTodayStartOfWeek = today.isSame(startOfWeek, "day")
     if (isTodayStartOfWeek) {
-      const newWeeklyTransactions = await executeForWeeklyTransactions(
-        this._recurrentTransactionRepo,
+      console.log("here week")
+      const recurrentWeeklyTransactions = await this._recurrentTransactionRepo.findAllRecurrentForPeriod("week")
+      const newWeeklyTransactions = await createTransactionsFromRecurrent(
+        recurrentWeeklyTransactions,
         this._createTransactionFromRecurrent
       )
       updatedTransactions.push(...newWeeklyTransactions)
@@ -90,8 +69,10 @@ export class GenerateRecurrentTransactions implements GenerateRecurrentTransacti
 
     const isTodayStartOfMonth = today.isSame(startOfMonth, "day")
     if (isTodayStartOfMonth) {
-      const newMonthlyTransactions = await executeForMonthlyTransactions(
-        this._recurrentTransactionRepo,
+      console.log("here monthly")
+      const recurrentMonthlyTransactions = await this._recurrentTransactionRepo.findAllRecurrentForPeriod("month")
+      const newMonthlyTransactions = await createTransactionsFromRecurrent(
+        recurrentMonthlyTransactions,
         this._createTransactionFromRecurrent
       )
       updatedTransactions.push(...newMonthlyTransactions)

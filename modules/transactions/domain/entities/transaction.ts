@@ -1,5 +1,7 @@
 import { Category } from "./category"
 
+export type TimeUnit = "day" | "week" | "month"
+
 export type Transaction = {
   id: number
   userId: number

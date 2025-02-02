@@ -1,4 +1,4 @@
-import { RecurrentTransaction, TransactionFrequency } from "../entities"
+import { RecurrentTransaction, TimeUnit, TransactionFrequency } from "../entities"
 
 export interface RecurrentTransactionRepository {
   createOne(input: CreateRecurrentTransactionInput): Promise<RecurrentTransaction | undefined>
@@ -10,9 +10,7 @@ export interface RecurrentTransactionRepository {
     toDate: Date
     frequency: TransactionFrequency
   }): Promise<RecurrentTransaction[]>
-  findAllDailyRecurrentForToday(): Promise<RecurrentTransaction[]>
-  findAllWeeklyRecurrentForThisWeek(): Promise<RecurrentTransaction[]>
-  findAllMonthlyRecurrentForThisMonth(): Promise<RecurrentTransaction[]>
+  findAllRecurrentForPeriod(timeUnit: TimeUnit): Promise<RecurrentTransaction[]>
 }
 
 export type CreateRecurrentTransactionInput = {

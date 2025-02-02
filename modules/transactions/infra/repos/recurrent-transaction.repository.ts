@@ -3,6 +3,7 @@ import {
   CreateRecurrentTransactionInput,
   RecurrentTransaction,
   RecurrentTransactionRepository,
+  TimeUnit,
   TransactionFrequency,
   UpdateRecurrentTransactionInput,
 } from "@/modules/transactions/domain"
@@ -71,29 +72,18 @@ export class DrizzleRecurrentTransactionRepository implements RecurrentTransacti
     return RecurrentTransactionMapper.toDomains(rows)
   }
 
-  async findAllDailyRecurrentForToday(): Promise<RecurrentTransaction[]> {
-    const today = dayjs().startOf("day").toDate()
-    const tomorrow = dayjs().add(1, "day").startOf("day").toDate()
-    return this.findManyRecurrentByRangeAndFrequency({ fromDate: today, toDate: tomorrow, frequency: "DAILY" })
-  }
-
-  async findAllWeeklyRecurrentForThisWeek(): Promise<RecurrentTransaction[]> {
-    const startOfWeek = dayjs().startOf("week").toDate()
-    const endOfWeek = dayjs().endOf("week").toDate()
+  async findAllRecurrentForPeriod(timeUnit: TimeUnit): Promise<RecurrentTransaction[]> {
+    const frequencyMapper: Record<TimeUnit, TransactionFrequency> = {
+      day: TransactionFrequency.DAILY,
+      week: TransactionFrequency.WEEKLY,
+      month: TransactionFrequency.MONTHLY,
+    }
+    const startOfPeriod = dayjs().startOf(timeUnit).toDate()
+    const endOfPeriod = dayjs().endOf(timeUnit).toDate()
     return this.findManyRecurrentByRangeAndFrequency({
-      fromDate: startOfWeek,
-      toDate: endOfWeek,
-      frequency: "WEEKLY",
-    })
-  }
-
-  async findAllMonthlyRecurrentForThisMonth(): Promise<RecurrentTransaction[]> {
-    const startOfMonth = dayjs().startOf("month").toDate()
-    const endOfMonth = dayjs().endOf("month").toDate()
-    return this.findManyRecurrentByRangeAndFrequency({
-      fromDate: startOfMonth,
-      toDate: endOfMonth,
-      frequency: "MONTHLY",
+      fromDate: startOfPeriod,
+      toDate: endOfPeriod,
+      frequency: frequencyMapper[timeUnit],
     })
   }
 }
