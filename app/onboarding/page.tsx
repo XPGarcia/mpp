@@ -1,5 +1,8 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+
 import { CreateAccountFormData } from "@/src/accounts/components/create-account-form/create-account-form"
 import { CreateBudgetFormData } from "@/src/accounts/components/create-budget-form/create-budget-form"
 import { OnboardingCreateAccount } from "@/src/onboarding/components/onboarding-create-account"
@@ -9,8 +12,6 @@ import { OnboardingReview } from "@/src/onboarding/components/onboarding-review"
 import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 type OnboardingSteps = "introduction" | "create-account" | "select-budget" | "review"
 
@@ -23,7 +24,7 @@ export default function OnboardingPage() {
     account: {
       name: "Personal account",
       startingBalance: 0,
-      currency: "USD" as "USD",
+      currency: "USD" as const,
     },
     budget: {
       name: "Balanced",

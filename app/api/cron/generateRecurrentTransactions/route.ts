@@ -1,7 +1,8 @@
+import type { NextRequest } from "next/server"
+
 import { transactionsClient } from "@/modules/transactions"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
 import { getStatusError } from "@/src/utils/errors/get-status-status"
-import type { NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
   console.log("Cron job started: generateRecurrentTransactions")

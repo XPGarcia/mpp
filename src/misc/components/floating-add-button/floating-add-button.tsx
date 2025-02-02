@@ -1,10 +1,9 @@
-import { ButtonHTMLAttributes } from "react"
-import { Button } from "@/src/ui-lib/components/ui/button"
 import { Plus } from "lucide-react"
+import { ButtonHTMLAttributes } from "react"
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {}
+import { Button } from "@/src/ui-lib/components/ui/button"
 
-export const FloatingAddButton = (props: Props) => {
+export const FloatingAddButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <Button
       variant='default'

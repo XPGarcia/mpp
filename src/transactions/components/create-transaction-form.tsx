@@ -1,29 +1,29 @@
 "use client"
 
-import { CalendarIcon, Plus } from "lucide-react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import dayjs from "dayjs"
+import { CalendarIcon, Plus } from "lucide-react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useState } from "react"
-import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
-import { trpc } from "@/src/utils/_trpc/client"
-import { adjustTimezoneFromLocalToUTC, adjustTimezoneFromUTCToLocal } from "@/src/utils/format/dates"
-import { getValues } from "@/src/utils/format/zod-enums"
-import { SelectTransactionType } from "./select-transaction-type"
+
 import { SpendingType, TransactionFrequency, TransactionType } from "@/modules/transactions/types"
-import { transactionFrequencyOptions } from "../constants"
-import { isIncome } from "@/utils"
-import { Button } from "@/src/ui-lib/components/ui/button"
-import { Input } from "@/src/ui-lib/components/ui/input"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/ui-lib/components/ui/form"
-import { Popover, PopoverContent, PopoverTrigger } from "@/src/ui-lib/components/ui/popover"
-import { cn } from "@/src/ui-lib/lib/utils"
-import dayjs from "dayjs"
-import { Calendar } from "@/src/ui-lib/components/ui/calendar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/ui-lib/components/ui/select"
-import { Checkbox } from "@/src/ui-lib/components/ui/checkbox"
+import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { CreateCategoryModalDrawer } from "@/src/categories/components/create-category-modal-drawer/create-category-modal-drawer"
-import { initialValueForFormDate } from "@/src/utils/format/forms"
+import { Button } from "@/src/ui-lib/components/ui/button"
+import { Calendar } from "@/src/ui-lib/components/ui/calendar"
+import { Checkbox } from "@/src/ui-lib/components/ui/checkbox"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/ui-lib/components/ui/form"
+import { Input } from "@/src/ui-lib/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/src/ui-lib/components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/ui-lib/components/ui/select"
+import { cn } from "@/src/ui-lib/lib/utils"
+import { trpc } from "@/src/utils/_trpc/client"
+import { getValues } from "@/src/utils/format/zod-enums"
+import { isIncome } from "@/utils"
+
+import { transactionFrequencyOptions } from "../constants"
+import { SelectTransactionType } from "./select-transaction-type"
 
 const schema = z.object({
   date: z.date().refine((date) => date != null, { message: "Date is required and must be a valid date" }),
@@ -89,7 +89,7 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
   }
 
   const handleChangeTransactionType = (type: TransactionType) => {
-    // @ts-ignore - we want to remove the category ID
+    // @ts-expect-error - we want to remove the category ID
     form.setValue("categoryId", undefined)
     form.setValue("type", type)
     form.trigger("type")

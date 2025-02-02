@@ -1,17 +1,18 @@
+import { and, asc, eq, inArray, isNull, or, sql } from "drizzle-orm"
 import { injectable } from "inversify"
+
+import { db } from "@/db"
+import { categories, transactions } from "@/db/schema"
 import {
   Category,
   CategoryRepository,
   CreateCategoryInput,
   FindUserCategoriesFilters,
-  SpendingType,
   TransactionType,
   UpdateCategoryInput,
   WithSpend,
 } from "@/modules/transactions/domain"
-import { categories, transactions } from "@/db/schema"
-import { db } from "@/db"
-import { and, asc, eq, inArray, isNull, or, sql } from "drizzle-orm"
+
 import { CategoryMapper } from "../mappers"
 import { getSpendingTypeId, getTransactionTypeId } from "../utils"
 
