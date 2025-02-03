@@ -1,6 +1,7 @@
 import { inject, injectable } from "inversify"
-import { EmailService, UserRepository } from "@/modules/users/domain"
+
 import { TYPES } from "@/modules/container/types"
+import { EmailService, UserRepository } from "@/modules/users/domain"
 
 export type SendVerificationEmailInput = {
   userId: number

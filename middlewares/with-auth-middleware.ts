@@ -1,8 +1,9 @@
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server"
-
 import { getToken } from "next-auth/jwt"
-import { CustomMiddleware } from "./chain-middlewares"
+
 import { AppRoutes } from "@/src/utils/routes"
+
+import { CustomMiddleware } from "./chain-middlewares"
 
 const protectedPaths = ["/dashboard"]
 
@@ -11,9 +12,9 @@ export function withAuthMiddleware(middleware: CustomMiddleware) {
     const response = NextResponse.next()
     const token = await getToken({ req: request })
 
-    // @ts-ignore
+    // @ts-expect-error - Add token to request
     request.nextauth = request.nextauth || {}
-    // @ts-ignore
+    // @ts-expect-error - Add token to request
     request.nextauth.token = token
     const pathname = request.nextUrl.pathname
 

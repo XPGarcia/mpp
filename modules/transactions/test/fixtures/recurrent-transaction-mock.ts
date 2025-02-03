@@ -1,6 +1,7 @@
+import { faker } from "@faker-js/faker"
+
 import { RecurrentTransaction, TransactionFrequency } from "@/modules/transactions/domain"
 import { generateEntityFromMock } from "@/utils"
-import { faker } from "@faker-js/faker"
 
 const RECURRENT_TRANSACTION_MOCK: RecurrentTransaction = {
   id: faker.number.int(),

@@ -1,8 +1,9 @@
+import { inject, injectable } from "inversify"
+
+import { TYPES } from "@/modules/container/types"
+import { SpendingType, TransactionRepository } from "@/modules/transactions/domain"
 import { InternalServerError } from "@/src/utils/errors/errors"
 import { calculatePercentageFromTotal } from "@/src/utils/math"
-import { inject, injectable } from "inversify"
-import { SpendingType, TransactionRepository } from "@/modules/transactions/domain"
-import { TYPES } from "@/modules/container/types"
 import { isIncome, isLuxury, isNecessity, isSavings } from "@/utils"
 
 export type GetMonthlyExpensesDistributionInput = {

@@ -1,6 +1,7 @@
-import { TYPES } from "@/modules/container/types"
 import { inject, injectable } from "inversify"
+
 import { Account, AccountRepository } from "@/modules/accounts/domain"
+import { TYPES } from "@/modules/container/types"
 
 export type CreateOneAccountInput = {
   userId: number

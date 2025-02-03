@@ -1,7 +1,8 @@
 import { myContainer } from "@/modules/container/inversify.config"
 import { TYPES } from "@/modules/container/types"
-import { DeleteOneCategory } from "./delete-one-category"
 import { CategoryRepository, TransactionRepository } from "@/modules/transactions/domain"
+
+import { DeleteOneCategory } from "./delete-one-category"
 
 const deleteCategoryMock = jest.fn() as jest.MockedFunction<CategoryRepository["deleteOne"]>
 const countTransactionsByCategoryIdMock = jest.fn() as jest.MockedFunction<TransactionRepository["countByCategoryId"]>

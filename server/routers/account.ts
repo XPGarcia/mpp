@@ -1,7 +1,9 @@
 import { z } from "zod"
-import { privateProcedure, router } from "../trpc"
-import { NotFoundError } from "@/src/utils/errors/errors"
+
 import { accountsClient } from "@/modules/accounts"
+import { NotFoundError } from "@/src/utils/errors/errors"
+
+import { privateProcedure, router } from "../trpc"
 
 export const accountRouter = router({
   findOneByUserId: privateProcedure.input(z.void()).query(async ({ ctx }) => {

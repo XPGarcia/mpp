@@ -1,8 +1,9 @@
+import { AccountBalanceEntryRepository, AccountRepository } from "@/modules/accounts/domain"
 import { myContainer } from "@/modules/container/inversify.config"
 import { TYPES } from "@/modules/container/types"
-import { UpdateAccountBalance } from "./update-account-balance"
+
 import { generateAccountBalanceEntryMock, generateAccountMock } from "../../test/fixtures"
-import { AccountBalanceEntryRepository, AccountRepository } from "@/modules/accounts/domain"
+import { UpdateAccountBalance } from "./update-account-balance"
 
 const findOneByIdMock = jest.fn() as jest.MockedFunction<AccountRepository["findOneById"]>
 const updateBalanceMock = jest.fn() as jest.MockedFunction<AccountRepository["updateBalance"]>

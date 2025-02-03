@@ -1,3 +1,5 @@
+import { inject, injectable } from "inversify"
+
 import { TYPES } from "@/modules/container/types"
 import {
   RecurrentTransaction,
@@ -5,7 +7,6 @@ import {
   Transaction,
   TransactionFrequency,
 } from "@/modules/transactions/domain"
-import { inject, injectable } from "inversify"
 import { calculateNextTransactionDate } from "@/modules/transactions/utils"
 
 export type UpdateRecurrentTransactionInput = {

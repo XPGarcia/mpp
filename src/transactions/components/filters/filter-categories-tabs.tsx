@@ -1,7 +1,9 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/ui-lib/components/ui/tabs"
-import { FilterCategoryOptions } from "./filter-category-options"
 import { useState } from "react"
+
 import { Category, WithSpend } from "@/modules/transactions/domain"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/ui-lib/components/ui/tabs"
+
+import { FilterCategoryOptions } from "./filter-category-options"
 
 interface Props {
   incomeCategories?: WithSpend<Category>[]

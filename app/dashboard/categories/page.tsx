@@ -1,5 +1,8 @@
 "use client"
 
+import { Pencil, Trash2 } from "lucide-react"
+import { useState } from "react"
+
 import { Category, TransactionType } from "@/modules/transactions/types"
 import { CreateCategoryFormData } from "@/src/categories/components/create-category-form/create-category-form"
 import { CreateCategoryModalDrawer } from "@/src/categories/components/create-category-modal-drawer/create-category-modal-drawer"
@@ -11,8 +14,6 @@ import { Button } from "@/src/ui-lib/components/ui/button"
 import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { getErrorMessage } from "@/src/utils/errors/get-error-message"
-import { Pencil, Trash2 } from "lucide-react"
-import { useState } from "react"
 
 export default function CategoriesPage() {
   const { toast } = useToast()

@@ -1,9 +1,9 @@
+import { eq } from "drizzle-orm"
 import { injectable } from "inversify"
 
-import { Account, AccountRepository, CreateAccountInput } from "@/modules/accounts/domain"
 import { db } from "@/db"
 import { accounts } from "@/db/schema"
-import { eq } from "drizzle-orm"
+import { Account, AccountRepository, CreateAccountInput } from "@/modules/accounts/domain"
 
 @injectable()
 export class DrizzleAccountRepository implements AccountRepository {

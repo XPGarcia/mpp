@@ -1,15 +1,14 @@
 import {
+  doublePrecision,
+  index,
+  integer,
   pgTable,
   serial,
+  smallint,
   smallserial,
-  pgEnum,
   text,
   timestamp,
   varchar,
-  integer,
-  smallint,
-  doublePrecision,
-  index,
 } from "drizzle-orm/pg-core"
 
 export const users = pgTable("User", {

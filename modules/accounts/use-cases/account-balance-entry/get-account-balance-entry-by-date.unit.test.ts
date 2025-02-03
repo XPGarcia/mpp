@@ -1,8 +1,9 @@
-import { myContainer } from "@/modules/container/inversify.config"
-import { TYPES } from "@/modules/container/types"
-import { GetAccountBalanceEntryByDate } from "./get-account-balance-entry-by-date"
 import { AccountBalanceEntryRepository, AccountRepository } from "@/modules/accounts/domain"
 import { generateAccountBalanceEntryMock, generateAccountMock } from "@/modules/accounts/test"
+import { myContainer } from "@/modules/container/inversify.config"
+import { TYPES } from "@/modules/container/types"
+
+import { GetAccountBalanceEntryByDate } from "./get-account-balance-entry-by-date"
 
 const findByUserIdMock = jest.fn() as jest.MockedFunction<AccountRepository["findByUserId"]>
 const findOneByAccountAndDateMock = jest.fn() as jest.MockedFunction<

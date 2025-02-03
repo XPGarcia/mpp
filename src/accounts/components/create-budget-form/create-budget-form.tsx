@@ -1,10 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
 import { Button } from "@/src/ui-lib/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/ui-lib/components/ui/form"
 import { Input } from "@/src/ui-lib/components/ui/input"
 import { Slider } from "@/src/ui-lib/components/ui/slider"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
 
 const schema = z
   .object({

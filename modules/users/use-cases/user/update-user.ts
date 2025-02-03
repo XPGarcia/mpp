@@ -1,7 +1,8 @@
-import { TYPES } from "@/modules/container/types"
-import { User, UserRepository, UpdateUserInput as UpdateUserInputRepo } from "@/modules/users/domain"
-import { InternalServerError } from "@/src/utils/errors/errors"
 import { inject, injectable } from "inversify"
+
+import { TYPES } from "@/modules/container/types"
+import { UpdateUserInput as UpdateUserInputRepo,User, UserRepository } from "@/modules/users/domain"
+import { InternalServerError } from "@/src/utils/errors/errors"
 
 export type UpdateUserInput = {
   userId: number

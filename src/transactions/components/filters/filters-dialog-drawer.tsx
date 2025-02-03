@@ -1,15 +1,17 @@
-import { Dialog, DialogContent } from "@/src/ui-lib/components/ui/dialog"
-import useMediaQuery from "@/src/ui-lib/hooks/use-media-query"
-import { Drawer, DrawerClose, DrawerContent } from "@/src/ui-lib/components/ui/drawer"
-import { FiltersHeaderTotals } from "./filters-header-totals"
-import { trpc } from "@/src/utils/_trpc/client"
-import { TransactionType } from "@/modules/transactions/domain"
 import { DialogTitle } from "@radix-ui/react-dialog"
-import { FilterCategoriesTabs } from "./filter-categories-tabs"
-import { MonthPickerDate } from "@/src/misc/components/month-picker/month-picker"
-import { useState } from "react"
-import { Button } from "@/src/ui-lib/components/ui/button"
 import { Filter } from "lucide-react"
+import { useState } from "react"
+
+import { TransactionType } from "@/modules/transactions/domain"
+import { MonthPickerDate } from "@/src/misc/components/month-picker/month-picker"
+import { Button } from "@/src/ui-lib/components/ui/button"
+import { Dialog, DialogContent } from "@/src/ui-lib/components/ui/dialog"
+import { Drawer, DrawerClose, DrawerContent } from "@/src/ui-lib/components/ui/drawer"
+import useMediaQuery from "@/src/ui-lib/hooks/use-media-query"
+import { trpc } from "@/src/utils/_trpc/client"
+
+import { FilterCategoriesTabs } from "./filter-categories-tabs"
+import { FiltersHeaderTotals } from "./filters-header-totals"
 
 interface InnerProps {
   date: MonthPickerDate

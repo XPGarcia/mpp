@@ -7,12 +7,12 @@ import {
   CreateInitialCategoriesForUserInput,
   DeleteOneCategory,
   DeleteOneCategoryInput,
+  FindUserCategoriesWithSpend,
+  FindUserCategoriesWithSpendInput,
   GetUserCategoriesByTransaction,
   GetUserCategoriesByTransactionInput,
   UpdateOneCategory,
   UpdateOneCategoryInput,
-  FindUserCategoriesWithSpend,
-  FindUserCategoriesWithSpendInput,
 } from "@/modules/transactions/use-cases"
 
 export const categoriesClient = {

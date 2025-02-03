@@ -1,5 +1,6 @@
-import { Button } from "@/src/ui-lib/components/ui/button"
 import { Banknote, Newspaper, WandSparkles } from "lucide-react"
+
+import { Button } from "@/src/ui-lib/components/ui/button"
 
 interface Props {
   onContinue: () => void

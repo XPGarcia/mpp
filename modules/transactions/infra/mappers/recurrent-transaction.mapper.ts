@@ -1,5 +1,6 @@
 import { recurrentTransactions } from "@/db/schema"
 import { RecurrentTransaction } from "@/modules/transactions/domain"
+
 import { getTransactionFrequencyFromId } from "../utils"
 
 type DrizzleRecurrentTransaction = typeof recurrentTransactions.$inferSelect

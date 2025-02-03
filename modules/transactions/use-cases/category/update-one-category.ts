@@ -1,4 +1,6 @@
 import { inject, injectable } from "inversify"
+
+import { TYPES } from "@/modules/container/types"
 import {
   AccountsBalanceEntriesService,
   AccountsService,
@@ -8,9 +10,8 @@ import {
   TransactionRepository,
   TransactionType,
 } from "@/modules/transactions/domain"
-import { TYPES } from "@/modules/container/types"
-import { InternalServerError, NotFoundError } from "@/src/utils/errors/errors"
 import { calculateAmountFromExpenseToIncome, calculateAmountFromIncomeToExpense } from "@/modules/transactions/utils"
+import { InternalServerError, NotFoundError } from "@/src/utils/errors/errors"
 import { groupTransactionsByDate, isExpense, isIncome } from "@/utils"
 
 export type UpdateOneCategoryInput = {

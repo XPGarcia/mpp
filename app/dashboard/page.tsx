@@ -1,4 +1,10 @@
 "use client"
+import dayjs from "dayjs"
+import { Filter, Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { Fragment, useState } from "react"
+
 import { FloatingAddButton } from "@/src/misc/components/floating-add-button/floating-add-button"
 import { MonthPicker, MonthPickerDate } from "@/src/misc/components/month-picker/month-picker"
 import { useBoolean } from "@/src/misc/hooks/use-boolean"
@@ -9,11 +15,6 @@ import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { AppRoutes } from "@/src/utils/routes"
 import { groupTransactionsByDate, isIncome } from "@/utils"
-import dayjs from "dayjs"
-import { Filter, Loader2 } from "lucide-react"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { Fragment, useState } from "react"
 
 export default function Dashboard() {
   const { data: session } = useSession()
@@ -37,15 +38,12 @@ export default function Dashboard() {
     }
   )
 
-  const { data: account, refetch: refetchAccount } = trpc.accounts.findOneByUserId.useQuery()
-
   const addTransaction = () => {
     router.push(AppRoutes.addTransaction)
   }
 
   const deleteTransaction = () => {
     refetchTransactions()
-    refetchAccount()
   }
 
   const changeFilters = (categoriesIds: number[]) => {

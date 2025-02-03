@@ -1,14 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/src/ui-lib/components/ui/card"
 import { MailCheck } from "lucide-react"
-import { Input } from "@/src/ui-lib/components/ui/input"
-import { Button } from "@/src/ui-lib/components/ui/button"
-import { trpc } from "@/src/utils/_trpc/client"
 import { useRouter } from "next/navigation"
-import { AppRoutes } from "@/src/utils/routes"
+import { useEffect, useState } from "react"
+
+import { Button } from "@/src/ui-lib/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter,CardHeader, CardTitle } from "@/src/ui-lib/components/ui/card"
+import { Input } from "@/src/ui-lib/components/ui/input"
 import { useToast } from "@/src/ui-lib/hooks/use-toast"
+import { trpc } from "@/src/utils/_trpc/client"
+import { AppRoutes } from "@/src/utils/routes"
 
 export default function VerifyEmail() {
   const router = useRouter()

@@ -1,7 +1,8 @@
 import { injectable } from "inversify"
-import { AccountsService } from "@/modules/transactions/domain"
-import { UpdateAccountBalanceInput, UpdateAccountBalanceOutput } from "@/modules/accounts/use-cases"
+
 import { accountsClient } from "@/modules/accounts"
+import { UpdateAccountBalanceInput, UpdateAccountBalanceOutput } from "@/modules/accounts/use-cases"
+import { AccountsService } from "@/modules/transactions/domain"
 
 @injectable()
 export class ImplAccountsService implements AccountsService {

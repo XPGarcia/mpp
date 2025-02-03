@@ -1,7 +1,8 @@
-import { NotFoundError } from "@/src/utils/errors/errors"
 import { inject, injectable } from "inversify"
+
 import { AccountBalanceEntry, AccountBalanceEntryRepository, AccountRepository } from "@/modules/accounts/domain"
 import { TYPES } from "@/modules/container/types"
+import { NotFoundError } from "@/src/utils/errors/errors"
 
 export type UpdateAccountBalanceInput = {
   accountBalanceEntry: AccountBalanceEntry

@@ -1,10 +1,11 @@
+import dayjs from "dayjs"
+import { and, eq, gt, isNull } from "drizzle-orm"
 import { injectable } from "inversify"
-import { CreateUserInput, User, UserRepository } from "@/modules/users/domain"
+import { generate as generateOtp } from "otp-generator"
+
 import { db } from "@/db"
 import { otpCodes, users } from "@/db/schema"
-import { and, eq, gt, isNull } from "drizzle-orm"
-import { generate as generateOtp } from "otp-generator"
-import dayjs from "dayjs"
+import { CreateUserInput, User, UserRepository } from "@/modules/users/domain"
 
 @injectable()
 export class DrizzleUserRepository implements UserRepository {

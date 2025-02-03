@@ -1,6 +1,7 @@
-import { Container } from "inversify"
 import "reflect-metadata"
-import { TYPES } from "./types"
+
+import { Container } from "inversify"
+
 import { AccountBalanceEntryRepository, AccountRepository, BudgetRepository } from "@/modules/accounts/domain"
 import {
   DrizzleAccountBalanceEntryRepository,
@@ -10,12 +11,12 @@ import {
 import {
   CreateOneAccount,
   CreateOneAccountBalanceEntry,
+  CreateOneBudget,
+  FindOneAccountBalanceEntryByAccountAndDate,
+  FindOneBudgetByUserId,
   GetAccountBalanceEntryByDate,
   GetUserAccount,
   UpdateAccountBalance,
-  FindOneAccountBalanceEntryByAccountAndDate,
-  FindOneBudgetByUserId,
-  CreateOneBudget,
 } from "@/modules/accounts/use-cases"
 import { RecurrentTransactionRepository, TransactionRepository } from "@/modules/transactions/domain"
 import {
@@ -42,18 +43,20 @@ import {
   UpdateRecurrentTransaction,
   UpdateTransaction,
 } from "@/modules/transactions/use-cases"
+import { FeedbackRepository, UserRepository } from "@/modules/users/domain"
 import { DrizzleFeedbackRepository, DrizzleUserRepository } from "@/modules/users/infra"
+import { ImplEmailService } from "@/modules/users/infra"
 import {
   CreateUser,
   FindOneUserById,
   Login,
+  SendVerificationEmail,
   SubmitFeedback,
   UpdateUser,
-  SendVerificationEmail,
   VerifyOTP,
 } from "@/modules/users/use-cases"
-import { FeedbackRepository, UserRepository } from "@/modules/users/domain"
-import { ImplEmailService } from "@/modules/users/infra"
+
+import { TYPES } from "./types"
 
 const myContainer = new Container()
 

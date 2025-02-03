@@ -1,7 +1,8 @@
-import { usersClient } from "@/modules/users"
-import { BadRequestError, InternalServerError } from "@/src/utils/errors/errors"
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+
+import { usersClient } from "@/modules/users"
+import { BadRequestError, InternalServerError } from "@/src/utils/errors/errors"
 
 declare module "next-auth" {
   interface Session extends DefaultSession {

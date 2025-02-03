@@ -1,9 +1,11 @@
 import { z } from "zod"
-import { publicProcedure, privateProcedure, router } from "../trpc"
-import { usersClient } from "@/modules/users"
+
 import { accountBalanceEntriesClient, accountsClient, budgetsClient } from "@/modules/accounts"
-import { BadRequestError } from "@/src/utils/errors/errors"
 import { categoriesClient } from "@/modules/transactions"
+import { usersClient } from "@/modules/users"
+import { BadRequestError } from "@/src/utils/errors/errors"
+
+import { privateProcedure, publicProcedure, router } from "../trpc"
 
 export const userRouter = router({
   register: publicProcedure

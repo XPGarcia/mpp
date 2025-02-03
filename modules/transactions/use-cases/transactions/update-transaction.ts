@@ -1,3 +1,5 @@
+import { inject, injectable } from "inversify"
+
 import { TYPES } from "@/modules/container/types"
 import {
   AccountsBalanceEntriesService,
@@ -9,7 +11,7 @@ import {
   TransactionType,
 } from "@/modules/transactions/domain"
 import { calculateAmountForBalance } from "@/modules/transactions/utils"
-import { inject, injectable } from "inversify"
+
 import { UpdateRecurrentTransaction } from "./update-recurrent-transaction"
 
 export type UpdateTransactionInput = {

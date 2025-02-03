@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt"
 import { inject, injectable } from "inversify"
-import { User, UserRepository } from "@/modules/users/domain"
+
 import { TYPES } from "@/modules/container/types"
+import { User, UserRepository } from "@/modules/users/domain"
 
 const LOGIN_ERRORS = {
   USER_NOT_FOUND: "Invalid credentials",

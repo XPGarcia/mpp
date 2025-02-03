@@ -1,7 +1,8 @@
 import { injectable } from "inversify"
-import { CreateFeedbackInput, Feedback, FeedbackRepository } from "@/modules/users/domain"
+
 import { db } from "@/db"
 import { feedbacks } from "@/db/schema"
+import { CreateFeedbackInput, Feedback, FeedbackRepository } from "@/modules/users/domain"
 
 @injectable()
 export class DrizzleFeedbackRepository implements FeedbackRepository {

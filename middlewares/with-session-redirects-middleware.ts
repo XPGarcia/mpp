@@ -1,8 +1,9 @@
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server"
+import { getSession } from "next-auth/react"
+
+import { AppRoutes } from "@/src/utils/routes"
 
 import { CustomMiddleware } from "./chain-middlewares"
-import { AppRoutes } from "@/src/utils/routes"
-import { getSession } from "next-auth/react"
 
 export const config = {
   runtime: "nodejs", // rather than "edge"

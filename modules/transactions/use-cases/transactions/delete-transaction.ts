@@ -1,5 +1,6 @@
-import { TYPES } from "@/modules/container/types"
 import { inject, injectable } from "inversify"
+
+import { TYPES } from "@/modules/container/types"
 import {
   AccountsBalanceEntriesService,
   AccountsService,

@@ -1,4 +1,6 @@
 import { myContainer } from "@/modules/container/inversify.config"
+import { TYPES } from "@/modules/container/types"
+
 import {
   CreateOneAccount,
   CreateOneAccountInput,
@@ -7,7 +9,6 @@ import {
   UpdateAccountBalance,
   UpdateAccountBalanceInput,
 } from "../use-cases"
-import { TYPES } from "@/modules/container/types"
 
 export const accountsClient = {
   getUserAccount: (input: GetUserAccountInput) => {

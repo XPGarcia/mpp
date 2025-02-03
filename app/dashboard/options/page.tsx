@@ -1,10 +1,11 @@
 "use client"
 
-import { AppRoutes } from "@/src/utils/routes"
-import { Layers, Tag, MailOpen, TriangleAlert } from "lucide-react"
-import { signOut } from "next-auth/react"
+import { Layers, MailOpen, Tag, TriangleAlert } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
 import { MouseEvent } from "react"
+
+import { AppRoutes } from "@/src/utils/routes"
 
 export default function Options() {
   const router = useRouter()

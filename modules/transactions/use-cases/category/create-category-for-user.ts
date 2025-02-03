@@ -1,7 +1,8 @@
-import { InternalServerError } from "@/src/utils/errors/errors"
-import { Category, CategoryRepository, SpendingType, TransactionType } from "@/modules/transactions/domain"
 import { inject, injectable } from "inversify"
+
 import { TYPES } from "@/modules/container/types"
+import { Category, CategoryRepository, SpendingType, TransactionType } from "@/modules/transactions/domain"
+import { InternalServerError } from "@/src/utils/errors/errors"
 
 export type CreateCategoryForUserInput = {
   userId: number

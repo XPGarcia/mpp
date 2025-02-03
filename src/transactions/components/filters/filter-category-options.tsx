@@ -1,8 +1,10 @@
-import { Category, WithSpend } from "@/modules/transactions/domain"
-import { FilterOption } from "./filter-option"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
+
+import { Category, WithSpend } from "@/modules/transactions/domain"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
+
+import { FilterOption } from "./filter-option"
 
 interface Props {
   categories?: WithSpend<Category>[]

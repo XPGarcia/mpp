@@ -1,6 +1,7 @@
+import { inject, injectable } from "inversify"
+
 import { TYPES } from "@/modules/container/types"
 import { User, UserRepository } from "@/modules/users/domain"
-import { inject, injectable } from "inversify"
 
 export type FindOneUserByIdInput = {
   userId: number

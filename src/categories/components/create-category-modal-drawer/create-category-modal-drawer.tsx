@@ -1,7 +1,8 @@
-import { CreateCategoryForm, CreateCategoryFormData } from "../create-category-form/create-category-form"
+import { Dialog, DialogClose,DialogContent, DialogHeader, DialogTitle } from "@/src/ui-lib/components/ui/dialog"
+import { Drawer, DrawerClose,DrawerContent, DrawerHeader, DrawerTitle } from "@/src/ui-lib/components/ui/drawer"
 import useMediaQuery from "@/src/ui-lib/hooks/use-media-query"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/src/ui-lib/components/ui/dialog"
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/src/ui-lib/components/ui/drawer"
+
+import { CreateCategoryForm, CreateCategoryFormData } from "../create-category-form/create-category-form"
 
 interface Props {
   defaultValues?: CreateCategoryFormData

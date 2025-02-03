@@ -1,12 +1,13 @@
 import { injectable } from "inversify"
-import { AccountsBalanceEntriesService } from "@/modules/transactions/domain"
+
+import { accountBalanceEntriesClient } from "@/modules/accounts"
 import {
   FindOneAccountBalanceEntryByAccountAndDateInput,
   FindOneAccountBalanceEntryByAccountAndDateOutput,
   GetAccountBalanceEntryByDateInput,
   GetAccountBalanceEntryByDateOutput,
 } from "@/modules/accounts/use-cases"
-import { accountBalanceEntriesClient } from "@/modules/accounts"
+import { AccountsBalanceEntriesService } from "@/modules/transactions/domain"
 
 @injectable()
 export class ImplAccountBalanceEntriesService implements AccountsBalanceEntriesService {

@@ -1,12 +1,13 @@
 "use client"
 
+import dayjs from "dayjs"
+import { useState } from "react"
+
 import { SpendingType } from "@/modules/transactions/types"
 import { BudgetSpendingTypeProgress } from "@/src/accounts/components/budget-spending-type-progress/budget-spending-type-progress"
 import { MonthPicker, MonthPickerDate } from "@/src/misc/components/month-picker/month-picker"
 import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
-import dayjs from "dayjs"
-import { useState } from "react"
 
 export default function Stats() {
   const [date, setDate] = useState<MonthPickerDate>({

@@ -1,6 +1,5 @@
 import { myContainer } from "@/modules/container/inversify.config"
 import { TYPES } from "@/modules/container/types"
-import { UpdateOneCategory } from "./update-one-category"
 import {
   AccountsBalanceEntriesService,
   AccountsService,
@@ -9,8 +8,10 @@ import {
   TransactionRepository,
   TransactionType,
 } from "@/modules/transactions/domain"
-import { generateCategoryFromMock, generateAccountBalanceEntryMock } from "@/modules/transactions/test"
+import { generateAccountBalanceEntryMock,generateCategoryFromMock } from "@/modules/transactions/test"
+
 import { generateTransactionMock } from "../../test/fixtures/transaction-mock"
+import { UpdateOneCategory } from "./update-one-category"
 
 const findCategoryByIdMock = jest.fn() as jest.MockedFunction<CategoryRepository["findOneById"]>
 const updateCategoryMock = jest.fn() as jest.MockedFunction<CategoryRepository["updateOne"]>

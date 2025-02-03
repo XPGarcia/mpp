@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /**
  * Creates an object with the same properties as the provided entity,
  * but with mocked values

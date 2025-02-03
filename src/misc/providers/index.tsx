@@ -1,8 +1,9 @@
 "use client"
 
-import { TRPCProvider } from "@/src/utils/_trpc/provider"
 import { Session } from "next-auth"
 import { SessionProvider } from "next-auth/react"
+
+import { TRPCProvider } from "@/src/utils/_trpc/provider"
 
 interface Props {
   children: React.ReactNode

@@ -1,6 +1,7 @@
+import { inject, injectable } from "inversify"
+
 import { TYPES } from "@/modules/container/types"
 import { RecurrentTransactionRepository, Transaction, TransactionRepository } from "@/modules/transactions/domain"
-import { inject, injectable } from "inversify"
 
 export type FindTransactionInput = {
   transactionId: number

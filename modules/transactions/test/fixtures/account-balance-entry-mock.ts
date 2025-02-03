@@ -1,6 +1,7 @@
+import { faker } from "@faker-js/faker"
+
 import { AccountBalanceEntry } from "@/modules/accounts/domain"
 import { generateEntityFromMock } from "@/utils"
-import { faker } from "@faker-js/faker"
 
 const ACCOUNT_BALANCE_ENTRY_MOCK: AccountBalanceEntry = {
   id: faker.number.int(),

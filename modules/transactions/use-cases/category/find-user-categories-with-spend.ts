@@ -1,6 +1,7 @@
+import { inject, injectable } from "inversify"
+
 import { TYPES } from "@/modules/container/types"
 import { Category, CategoryRepository, FindUserCategoriesFilters, WithSpend } from "@/modules/transactions/domain"
-import { inject, injectable } from "inversify"
 
 export type FindUserCategoriesWithSpendInput = {
   userId: number

@@ -1,7 +1,8 @@
-import { BadRequestError } from "@/src/utils/errors/errors"
 import { inject, injectable } from "inversify"
+
 import { TYPES } from "@/modules/container/types"
 import { CategoryRepository, TransactionRepository } from "@/modules/transactions/domain"
+import { BadRequestError } from "@/src/utils/errors/errors"
 
 export type DeleteOneCategoryInput = {
   categoryId: number

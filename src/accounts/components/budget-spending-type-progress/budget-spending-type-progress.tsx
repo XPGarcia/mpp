@@ -1,12 +1,13 @@
+import { Loader2 } from "lucide-react"
+import { Fragment, useState } from "react"
+
 import { SpendingType } from "@/modules/transactions/types"
+import { SpendingTypeToLabel } from "@/src/transactions/constants"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/src/ui-lib/components/ui/accordion"
+import { Progress } from "@/src/ui-lib/components/ui/progress"
 import { trpc } from "@/src/utils/_trpc/client"
 import { formatNumberToMoney } from "@/src/utils/format/format-to-money"
 import { calculatePercentage, calculatePercentageFromTotal } from "@/src/utils/math"
-import { Fragment, useState } from "react"
-import { SpendingTypeToLabel } from "@/src/transactions/constants"
-import { Progress } from "@/src/ui-lib/components/ui/progress"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/src/ui-lib/components/ui/accordion"
-import { Loader2 } from "lucide-react"
 
 type ExpenseDistribution = {
   total: number

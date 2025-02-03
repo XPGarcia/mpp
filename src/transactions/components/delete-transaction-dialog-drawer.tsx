@@ -1,8 +1,8 @@
-import useMediaQuery from "@/src/ui-lib/hooks/use-media-query"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/src/ui-lib/components/ui/dialog"
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/src/ui-lib/components/ui/drawer"
 import { Transaction } from "@/modules/transactions/domain"
 import { Button } from "@/src/ui-lib/components/ui/button"
+import { Dialog, DialogClose,DialogContent, DialogHeader, DialogTitle } from "@/src/ui-lib/components/ui/dialog"
+import { Drawer, DrawerClose,DrawerContent, DrawerHeader, DrawerTitle } from "@/src/ui-lib/components/ui/drawer"
+import useMediaQuery from "@/src/ui-lib/hooks/use-media-query"
 
 interface Props {
   transaction: Transaction

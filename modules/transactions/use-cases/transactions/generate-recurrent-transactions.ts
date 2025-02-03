@@ -60,7 +60,6 @@ export class GenerateRecurrentTransactions implements GenerateRecurrentTransacti
 
     const isTodayStartOfWeek = today.isSame(startOfWeek, "day")
     if (isTodayStartOfWeek) {
-      console.log("here week")
       const recurrentWeeklyTransactions = await this._recurrentTransactionRepo.findAllRecurrentForPeriod("week")
       const newWeeklyTransactions = await createTransactionsFromRecurrent(
         recurrentWeeklyTransactions,
@@ -71,7 +70,6 @@ export class GenerateRecurrentTransactions implements GenerateRecurrentTransacti
 
     const isTodayStartOfMonth = today.isSame(startOfMonth, "day")
     if (isTodayStartOfMonth) {
-      console.log("here monthly")
       const recurrentMonthlyTransactions = await this._recurrentTransactionRepo.findAllRecurrentForPeriod("month")
       const newMonthlyTransactions = await createTransactionsFromRecurrent(
         recurrentMonthlyTransactions,

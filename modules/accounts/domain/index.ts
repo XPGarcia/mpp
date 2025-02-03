@@ -1,2 +1,2 @@
-export * from "./repos"
 export * from "./entities"
+export * from "./repos"

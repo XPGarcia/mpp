@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+
 import { TransactionFrequency } from "@/modules/transactions/domain"
 
 export const calculateNextTransactionDate = (startDate: Date, frequency: TransactionFrequency): Date => {

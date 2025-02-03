@@ -1,6 +1,6 @@
 import { categories } from "@/db/schema"
-
 import { Category, WithSpend } from "@/modules/transactions/domain"
+
 import { getSpendingTypeFromId, getTransactionTypeFromId } from "../utils"
 
 type DrizzleCategory = typeof categories.$inferSelect

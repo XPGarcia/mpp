@@ -1,10 +1,11 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+
 import { CreateTransactionForm, CreateTransactionFormData } from "@/src/transactions/components/create-transaction-form"
 import { useToast } from "@/src/ui-lib/hooks/use-toast"
 import { trpc } from "@/src/utils/_trpc/client"
 import { AppRoutes } from "@/src/utils/routes"
-import { useRouter } from "next/navigation"
 
 export default function AddTransaction() {
   const router = useRouter()

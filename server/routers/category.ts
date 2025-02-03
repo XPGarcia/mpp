@@ -1,8 +1,10 @@
 import { z } from "zod"
-import { privateProcedure, router } from "../trpc"
+
+import { categoriesClient } from "@/modules/transactions"
 import { SpendingType, TransactionType } from "@/modules/transactions/types"
 import { getValues } from "@/src/utils/format/zod-enums"
-import { categoriesClient } from "@/modules/transactions"
+
+import { privateProcedure, router } from "../trpc"
 
 export const categoryRouter = router({
   createOneForUser: privateProcedure

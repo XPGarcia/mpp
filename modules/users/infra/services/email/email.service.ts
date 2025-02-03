@@ -1,7 +1,8 @@
 import { injectable } from "inversify"
+import { Resend } from "resend"
 
 import { EmailService, SendEmailInput, SendVerificationEmailInput } from "@/modules/users/domain"
-import { Resend } from "resend"
+
 import { OTPEmailTemplate } from "./templates"
 
 const resend = new Resend(process.env.RESEND_API_KEY)

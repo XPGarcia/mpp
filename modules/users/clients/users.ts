@@ -1,4 +1,6 @@
 import { myContainer } from "@/modules/container/inversify.config"
+import { TYPES } from "@/modules/container/types"
+
 import {
   CreateUser,
   CreateUserInput,
@@ -6,12 +8,11 @@ import {
   FindOneUserByIdInput,
   Login,
   LoginInput,
+  SendVerificationEmail,
   UpdateUser,
   UpdateUserInput,
-  SendVerificationEmail,
   VerifyOTP,
 } from "../use-cases"
-import { TYPES } from "@/modules/container/types"
 
 export const usersClient = {
   createOne: (input: CreateUserInput) => {

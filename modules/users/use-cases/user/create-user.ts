@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt"
 import { inject, injectable } from "inversify"
-import { User, UserRepository } from "@/modules/users/domain"
+
 import { TYPES } from "@/modules/container/types"
+import { User, UserRepository } from "@/modules/users/domain"
 
 export type CreateUserInput = {
   firstName: string

@@ -1,7 +1,7 @@
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/src/ui-lib/components/ui/dialog"
-import useMediaQuery from "@/src/ui-lib/hooks/use-media-query"
-import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle } from "@/src/ui-lib/components/ui/drawer"
 import { Button } from "@/src/ui-lib/components/ui/button"
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/src/ui-lib/components/ui/dialog"
+import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle } from "@/src/ui-lib/components/ui/drawer"
+import useMediaQuery from "@/src/ui-lib/hooks/use-media-query"
 
 interface InnerProps {
   onClose: () => void

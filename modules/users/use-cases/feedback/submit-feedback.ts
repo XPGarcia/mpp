@@ -1,6 +1,7 @@
+import { inject, injectable } from "inversify"
+
 import { TYPES } from "@/modules/container/types"
 import { Feedback, FeedbackRepository } from "@/modules/users/domain"
-import { inject, injectable } from "inversify"
 
 export type SubmitFeedbackInput = {
   userId: number

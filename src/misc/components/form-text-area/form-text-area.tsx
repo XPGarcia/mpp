@@ -1,5 +1,6 @@
-import { FormLabel } from "@/src/ui-lib/components/ui/form"
 import { forwardRef, TextareaHTMLAttributes } from "react"
+
+import { FormLabel } from "@/src/ui-lib/components/ui/form"
 
 const styles = {
   default: "border-shades-50 focus:border-blue-400 focus:ring-blue-300 focus:outline-blue-400",
@@ -24,7 +25,7 @@ const ErrorMessage = ({ message }: { message: string }) => {
 }
 
 export const FormTextArea = forwardRef<HTMLTextAreaElement, Props>(
-  ({ size = "md", label, errorMessage, helperText, onChange, ...props }, ref) => {
+  ({ size = "md", label, errorMessage, helperText, ...props }, ref) => {
     const hasError = errorMessage !== undefined
     const style = hasError ? styles.error : styles.default
     const sizeStyle = sizes[size]
