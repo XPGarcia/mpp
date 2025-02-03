@@ -30,6 +30,10 @@ const getPercentage = (budget: number, expenseDistribution: ExpenseDistribution)
     return calculatePercentageFromTotal(budget, expenseDistribution.percentage)
   }
 
+  if (budget > 0 && expenseDistribution.total > 0) {
+    return 1 // show 1% if there's budget and spending is really low
+  }
+
   return expenseDistribution.total > 0 ? 100 : 0 // show 100% if there's no budget but there's spending
 }
 
@@ -48,9 +52,13 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
   )
 
   const getOrderedCategoriesWithPercentage = () => {
+    if (!categories) {
+      return []
+    }
     const orderedCategories = categories?.sort((a, b) => b.totalSpend - a.totalSpend)
-    const biggestCategory = orderedCategories?.[0] // there must be at least one because total is > 0
-    return orderedCategories?.map((category) => {
+    const filteredCategories = orderedCategories?.filter((category) => category.totalSpend > 0)
+    const biggestCategory = filteredCategories?.[0] // there must be at least one because total is > 0
+    return filteredCategories?.map((category) => {
       if (!biggestCategory) return { ...category, percentage: 0 }
       const percentage =
         category.id === biggestCategory.id
@@ -60,7 +68,7 @@ export const BudgetSpendingTypeProgress = ({ spendingType, budget, totalIncome, 
     })
   }
 
-  const mappedCategories = getOrderedCategoriesWithPercentage() ?? []
+  const mappedCategories = getOrderedCategoriesWithPercentage()
 
   return (
     <div className='flex flex-col text-xs font-medium text-shades-500'>
