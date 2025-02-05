@@ -42,6 +42,9 @@ const TYPES = {
   FindTransactionsByUserAndMonth: Symbol.for("FindTransactionsByUserAndMonth"),
   FindUserTransactions: Symbol.for("FindUserTransactions"),
   FindUserCategoriesWithSpend: Symbol.for("FindUserCategoriesWithSpend"),
+  FindUserRecurrentTransactions: Symbol.for("FindUserRecurrentTransactions"),
+  FindRecurrentTransaction: Symbol.for("FindRecurrentTransaction"),
+  DeleteRecurrentTransaction: Symbol.for("DeleteRecurrentTransaction"),
   /*********** Transactions **********/
 
   /*********** Users **********/

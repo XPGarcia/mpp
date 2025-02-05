@@ -23,7 +23,7 @@ export default function UpdateTransaction({ params }: Props) {
     error,
     isLoading,
     isRefetching,
-  } = trpc.transactions.findOneById.useQuery({ id: Number(params.id), withRecurrentTransaction: true }, { retry: 0 })
+  } = trpc.transactions.findOneById.useQuery({ id: Number(params.id) }, { retry: 0 })
   if (error) {
     toast({ description: "Failed to load transaction" })
     router.push(AppRoutes.dashboard)
@@ -50,8 +50,8 @@ export default function UpdateTransaction({ params }: Props) {
       <div className='flex w-full max-w-slim flex-col px-4 pt-8'>
         {transaction && !isLoading && !isRefetching && (
           <CreateTransactionForm
-            initialValues={{ ...transaction, description: transaction.description ?? "" }}
-            withFrequency={transaction.isRecurrent}
+            initialValues={{ ...transaction, description: transaction.description ?? "", isRecurrent: false }}
+            withFrequency={false}
             onSubmit={submit}
             onCancel={cancel}
           />

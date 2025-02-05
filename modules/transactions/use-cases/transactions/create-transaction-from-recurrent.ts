@@ -1,8 +1,7 @@
 import { inject, injectable } from "inversify"
 
 import { TYPES } from "@/modules/container/types"
-import { RecurrentTransaction, Transaction, TransactionRepository } from "@/modules/transactions/domain"
-import { NotFoundError } from "@/src/utils/errors/errors"
+import { RecurrentTransaction, Transaction } from "@/modules/transactions/domain"
 
 import { CreateTransaction } from "./create-transaction"
 
@@ -16,25 +15,17 @@ export interface CreateTransactionFromRecurrentUseCase {
 
 @injectable()
 export class CreateTransactionFromRecurrent implements CreateTransactionFromRecurrentUseCase {
-  @inject(TYPES.TransactionRepository) private readonly _transactionRepository!: TransactionRepository
   @inject(TYPES.CreateTransaction) private readonly _createTransaction!: CreateTransaction
 
   async execute(recurrentTransaction: CreateTransactionFromRecurrentInput): CreateTransactionFromRecurrentOutput {
-    const oldTransaction = await this._transactionRepository.findOneById(recurrentTransaction.transactionId)
-    if (!oldTransaction) {
-      console.error("Transaction not found for recurrent", { recurrentTransaction })
-      throw new NotFoundError("Transaction not found")
-    }
-
     const newTransaction = await this._createTransaction.execute({
-      amount: oldTransaction.amount,
-      categoryId: oldTransaction.categoryId,
-      type: oldTransaction.type,
-      userId: oldTransaction.userId,
-      description: oldTransaction.description,
+      amount: recurrentTransaction.amount,
+      categoryId: recurrentTransaction.categoryId,
+      type: recurrentTransaction.type,
+      userId: recurrentTransaction.userId,
+      description: recurrentTransaction.description,
       date: recurrentTransaction.nextDate,
-      isRecurrent: true,
-      frequency: recurrentTransaction.frequency,
+      isRecurrent: false,
     })
 
     return newTransaction

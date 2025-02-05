@@ -46,29 +46,33 @@ export class CreateTransaction implements CreateTransactionUseCase {
       date: input.date,
     })
 
-    const createdTransaction = await this._transactionRepository.createOne({
-      ...input,
-      accountId: accountBalanceEntry.accountId,
-    })
-    if (!createdTransaction) {
-      throw new Error("Failed to create transaction")
-    }
-
+    let newRecurrentTransactionId: number | undefined
     if (input.isRecurrent) {
       if (!input.frequency) {
         console.error("Frequency is required for recurrent transactions", { input })
         throw new BadRequestError("Frequency is required for recurrent transactions")
       }
       const createdRecurrentTransaction = await this._recurrentTransactionRepository.createOne({
-        transactionId: createdTransaction.id,
-        startDate: createdTransaction.date,
-        nextDate: calculateNextTransactionDate(createdTransaction.date, input.frequency),
+        ...input,
+        accountId: accountBalanceEntry.accountId,
+        startDate: input.date,
+        nextDate: calculateNextTransactionDate(input.date, input.frequency),
         frequency: input.frequency,
       })
       if (!createdRecurrentTransaction) {
         console.error("Failed to create recurrent transaction", { input })
         throw new Error("Failed to create recurrent transaction")
       }
+      newRecurrentTransactionId = createdRecurrentTransaction.id
+    }
+
+    const createdTransaction = await this._transactionRepository.createOne({
+      ...input,
+      accountId: accountBalanceEntry.accountId,
+      recurrentTransactionId: newRecurrentTransactionId,
+    })
+    if (!createdTransaction) {
+      throw new Error("Failed to create transaction")
     }
 
     const amount = isIncome(createdTransaction.type) ? createdTransaction.amount : createdTransaction.amount * -1

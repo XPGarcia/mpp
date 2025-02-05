@@ -32,9 +32,12 @@ import {
   CreateTransaction,
   CreateTransactionFromRecurrent,
   DeleteOneCategory,
+  DeleteRecurrentTransaction,
   DeleteTransaction,
+  FindRecurrentTransaction,
   FindTransaction,
   FindUserCategoriesWithSpend,
+  FindUserRecurrentTransactions,
   FindUserTransactions,
   GenerateRecurrentTransactions,
   GetMonthlyExpensesDistributionForUser,
@@ -104,6 +107,9 @@ myContainer.bind(TYPES.UpdateTransaction).to(UpdateTransaction)
 myContainer.bind(TYPES.FindTransaction).to(FindTransaction)
 myContainer.bind(TYPES.FindUserTransactions).to(FindUserTransactions)
 myContainer.bind(TYPES.FindUserCategoriesWithSpend).to(FindUserCategoriesWithSpend)
+myContainer.bind(TYPES.FindUserRecurrentTransactions).to(FindUserRecurrentTransactions)
+myContainer.bind(TYPES.FindRecurrentTransaction).to(FindRecurrentTransaction)
+myContainer.bind(TYPES.DeleteRecurrentTransaction).to(DeleteRecurrentTransaction)
 /*********** Transactions **********/
 
 /*********** Users **********/

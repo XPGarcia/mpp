@@ -1,6 +1,6 @@
 "use client"
 
-import { Layers, MailOpen, Tag, TriangleAlert } from "lucide-react"
+import { Layers, MailOpen, Tag, TimerReset, TriangleAlert } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { MouseEvent } from "react"
@@ -21,6 +21,13 @@ export default function Options() {
       icon: <Layers />,
       onClick: () => {
         router.push(AppRoutes.accounts)
+      },
+    },
+    {
+      label: "Recurrent Trans",
+      icon: <TimerReset />,
+      onClick: () => {
+        router.push(AppRoutes.recurrentTransactions)
       },
     },
     {

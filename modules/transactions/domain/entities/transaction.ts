@@ -12,16 +12,22 @@ export type Transaction = {
   category?: Category
   description?: string
   accountId: number
-  isRecurrent: boolean
-  frequency?: TransactionFrequency
+  account?: {
+    id: number
+    name: string
+  }
+  recurrentTransactionId?: number
 }
 
-export type RecurrentTransaction = {
+export type RecurrentTransaction = Pick<
+  Transaction,
+  "userId" | "date" | "amount" | "type" | "categoryId" | "description" | "accountId" | "category" | "account"
+> & {
   id: number
-  transactionId: number
   frequency: TransactionFrequency
   startDate: Date
   nextDate: Date
+  transactions?: Transaction[]
 }
 
 export const TransactionType = {

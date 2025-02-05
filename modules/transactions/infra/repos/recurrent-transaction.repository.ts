@@ -1,11 +1,12 @@
 import dayjs from "dayjs"
-import { and, eq, gte, lt } from "drizzle-orm"
+import { and, desc, eq, gte, lt } from "drizzle-orm"
 import { injectable } from "inversify"
 
 import { db } from "@/db"
-import { recurrentTransactions } from "@/db/schema"
+import { categories, recurrentTransactions } from "@/db/schema"
 import {
   CreateRecurrentTransactionInput,
+  FindOneRecurrentByIdOptions,
   RecurrentTransaction,
   RecurrentTransactionRepository,
   TimeUnit,
@@ -14,38 +15,41 @@ import {
 } from "@/modules/transactions/domain"
 
 import { RecurrentTransactionMapper } from "../mappers"
-import { getTransactionFrequencyId } from "../utils"
+import { getTransactionFrequencyId, getTransactionTypeId } from "../utils"
 
 @injectable()
 export class DrizzleRecurrentTransactionRepository implements RecurrentTransactionRepository {
   async createOne(input: CreateRecurrentTransactionInput): Promise<RecurrentTransaction | undefined> {
+    const typeId = getTransactionTypeId(input.type)
     const frequencyId = getTransactionFrequencyId(input.frequency)
     const createdRows = await db
       .insert(recurrentTransactions)
-      .values({ ...input, frequencyId })
+      .values({ ...input, typeId, frequencyId })
       .returning()
     return RecurrentTransactionMapper.toDomain(createdRows[0])
   }
 
-  async findRecurrentByParentId(parentId: number): Promise<RecurrentTransaction | undefined> {
+  async findOneById(id: number, options?: FindOneRecurrentByIdOptions): Promise<RecurrentTransaction | undefined> {
     const recurrentTransaction = await db.query.recurrentTransactions.findFirst({
-      where: eq(recurrentTransactions.transactionId, parentId),
+      with: { category: true, account: true, transactions: Boolean(options?.withTransactions) ? true : undefined },
+      where: eq(recurrentTransactions.id, id),
     })
-    if (!recurrentTransaction) {
-      return
-    }
     return RecurrentTransactionMapper.toDomain(recurrentTransaction)
   }
 
-  async deleteRecurrentByParentId(parentId: number): Promise<void> {
-    await db.delete(recurrentTransactions).where(eq(recurrentTransactions.transactionId, parentId))
+  async deleteOneById(id: number): Promise<void> {
+    await db.delete(recurrentTransactions).where(eq(recurrentTransactions.id, id))
   }
 
   async updateRecurrent(id: number, input: UpdateRecurrentTransactionInput): Promise<RecurrentTransaction | undefined> {
     const frequencyId = !!input.frequency ? getTransactionFrequencyId(input.frequency) : undefined
-    const toUpdateValues = { ...input, frequencyId }
+    const typeId = !!input.type ? getTransactionTypeId(input.type) : undefined
+    const toUpdateValues = { ...input, typeId, frequencyId }
     if (!frequencyId) {
       delete toUpdateValues.frequencyId
+    }
+    if (!typeId) {
+      delete toUpdateValues.typeId
     }
 
     const updatedRecurrentTransaction = await db
@@ -87,5 +91,15 @@ export class DrizzleRecurrentTransactionRepository implements RecurrentTransacti
       toDate: endOfPeriod,
       frequency: frequencyMapper[timeUnit],
     })
+  }
+
+  async findManyByUser(userId: number): Promise<RecurrentTransaction[]> {
+    const rows = await db
+      .select()
+      .from(recurrentTransactions)
+      .leftJoin(categories, eq(categories.id, recurrentTransactions.categoryId))
+      .where(eq(recurrentTransactions.userId, userId))
+      .orderBy(desc(recurrentTransactions.nextDate))
+    return RecurrentTransactionMapper.toDomains(rows)
   }
 }

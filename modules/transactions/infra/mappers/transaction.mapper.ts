@@ -1,4 +1,4 @@
-import { categories, transactions,transactionTypes } from "@/db/schema"
+import { categories, transactions, transactionTypes } from "@/db/schema"
 import { Transaction, TransactionType } from "@/modules/transactions/domain"
 
 import { getTransactionTypeFromId } from "../utils"
@@ -52,6 +52,6 @@ function singleToDomain(dbTransaction: DrizzleTransaction): Transaction {
     type: getTransactionTypeFromId(dbTransaction.typeId),
     categoryId: dbTransaction.categoryId,
     description: dbTransaction.description ?? undefined,
-    isRecurrent: false,
+    recurrentTransactionId: dbTransaction.recurrentTransactionId ?? undefined,
   }
 }

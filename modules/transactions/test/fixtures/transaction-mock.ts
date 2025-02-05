@@ -10,7 +10,6 @@ const TRANSACTION_MOCK: Transaction = {
   amount: faker.number.float(),
   categoryId: faker.number.int(),
   date: new Date(),
-  isRecurrent: false,
   type: TransactionType.EXPENSE,
   description: faker.lorem.sentence(),
 }

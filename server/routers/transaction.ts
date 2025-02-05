@@ -12,10 +12,7 @@ export const transactionRouter = router({
   findOneById: privateProcedure
     .input(z.object({ id: z.number(), withRecurrentTransaction: z.boolean().default(false) }))
     .query(async ({ input }) => {
-      const transaction = await transactionsClient.findOne({
-        transactionId: input.id,
-        withRecurrentTransaction: input.withRecurrentTransaction,
-      })
+      const transaction = await transactionsClient.findOne({ transactionId: input.id })
       if (!transaction) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Transaction not found" })
       }
@@ -96,5 +93,22 @@ export const transactionRouter = router({
       })
       const filteredBalance = calculateBalance(filteredTransactions)
       return { totalBalance, filteredBalance }
+    }),
+  findUserRecurrentTransactions: privateProcedure.query(async ({ ctx }) => {
+    const recurrentTransactions = await transactionsClient.findUserRecurrentTransactions({ userId: ctx.user.id })
+    return recurrentTransactions
+  }),
+  findOneRecurrentById: privateProcedure.input(z.object({ id: z.number() })).query(async ({ input }) => {
+    const recurrentTransaction = await transactionsClient.findRecurrentTransaction({
+      recurrentTransactionId: input.id,
+      options: { withTransactions: true },
+    })
+    return recurrentTransaction
+  }),
+  deleteRecurrentTransaction: privateProcedure
+    .input(z.object({ recurrentTransactionId: z.number() }))
+    .mutation(async ({ input }) => {
+      const { recurrentTransactionId } = input
+      await transactionsClient.deleteRecurrentTransaction({ recurrentTransactionId })
     }),
 })

@@ -5,10 +5,16 @@ import {
   CreateTransactionFromRecurrent,
   CreateTransactionFromRecurrentInput,
   CreateTransactionInput,
+  DeleteRecurrentTransaction,
+  DeleteRecurrentTransactionInput,
   DeleteTransaction,
   DeleteTransactionInput,
+  FindRecurrentTransaction,
+  FindRecurrentTransactionInput,
   FindTransaction,
   FindTransactionInput,
+  FindUserRecurrentTransactions,
+  FindUserRecurrentTransactionsInput,
   FindUserTransactions,
   FindUserTransactionsInput,
   GenerateRecurrentTransactions,
@@ -56,5 +62,19 @@ export const transactionsClient = {
   findUserTransactions: (input: FindUserTransactionsInput) => {
     const findUserTransactions = myContainer.get<FindUserTransactions>(TYPES.FindUserTransactions)
     return findUserTransactions.execute(input)
+  },
+  findUserRecurrentTransactions: (input: FindUserRecurrentTransactionsInput) => {
+    const findUserRecurrentTransactions = myContainer.get<FindUserRecurrentTransactions>(
+      TYPES.FindUserRecurrentTransactions
+    )
+    return findUserRecurrentTransactions.execute(input)
+  },
+  findRecurrentTransaction: (input: FindRecurrentTransactionInput) => {
+    const findRecurrentTransaction = myContainer.get<FindRecurrentTransaction>(TYPES.FindRecurrentTransaction)
+    return findRecurrentTransaction.execute(input)
+  },
+  deleteRecurrentTransaction: (input: DeleteRecurrentTransactionInput) => {
+    const deleteRecurrentTransaction = myContainer.get<DeleteRecurrentTransaction>(TYPES.DeleteRecurrentTransaction)
+    return deleteRecurrentTransaction.execute(input)
   },
 }

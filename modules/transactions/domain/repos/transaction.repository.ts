@@ -1,4 +1,4 @@
-import { Transaction, TransactionFrequency, TransactionType } from "../entities"
+import { Transaction, TransactionType } from "../entities"
 
 export interface TransactionRepository {
   createOne(input: CreateTransactionInput): Promise<Transaction | undefined>
@@ -8,6 +8,7 @@ export interface TransactionRepository {
   deleteOne(transactionId: number): Promise<void>
   countByCategoryId(categoryId: number): Promise<number>
   updateManyByCategoryId(categoryId: number, input: UpdateTransactionInput): Promise<void>
+  updateManyByRecurrentId(categoryId: number, input: UpdateTransactionInput): Promise<void>
   findManyByUserAndFilters(userId: number, filters: FindUserTransactionsFilters): Promise<Transaction[]>
 }
 
@@ -22,8 +23,7 @@ export type CreateTransactionInput = {
   updatedAt?: Date
   description?: string | null
   type: TransactionType
-  isRecurrent: boolean
-  frequency?: TransactionFrequency
+  recurrentTransactionId?: number | null
 }
 
 export type UpdateTransactionInput = Partial<CreateTransactionInput>

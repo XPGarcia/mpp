@@ -1,8 +1,8 @@
-import { and, count, desc, eq, inArray,sql } from "drizzle-orm"
+import { and, count, desc, eq, inArray, sql } from "drizzle-orm"
 import { injectable } from "inversify"
 
 import { db } from "@/db"
-import { categories, transactions,transactionTypes } from "@/db/schema"
+import { categories, transactions, transactionTypes } from "@/db/schema"
 import {
   CreateTransactionInput,
   FindUserTransactionsFilters,
@@ -72,6 +72,16 @@ export class DrizzleTransactionRepository implements TransactionRepository {
     }
 
     await db.update(transactions).set(toUpdateValues).where(eq(transactions.categoryId, categoryId))
+  }
+
+  async updateManyByRecurrentId(recurrentId: number, input: UpdateTransactionInput): Promise<void> {
+    const typeId = !!input.type ? getTransactionTypeId(input.type) : undefined
+    const toUpdateValues = { ...input, typeId }
+    if (!typeId) {
+      delete toUpdateValues.typeId
+    }
+
+    await db.update(transactions).set(toUpdateValues).where(eq(transactions.recurrentTransactionId, recurrentId))
   }
 
   async findManyByUserAndFilters(userId: number, filters: FindUserTransactionsFilters): Promise<Transaction[]> {

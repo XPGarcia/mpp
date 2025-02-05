@@ -29,15 +29,22 @@ export class UpdateRecurrentTransaction implements UpdateRecurrentTransactionUse
 
   async execute(input: UpdateRecurrentTransactionInput): UpdateRecurrentTransactionOutput {
     const { oldTransaction, updatedTransaction, newIsRecurrent, newFrequency } = input
-    if (!newIsRecurrent) {
-      await this._recurrentTransactionRepo.deleteRecurrentByParentId(oldTransaction.id)
-      return
-    }
+    // TODO: handle recurrent transactions deletion
+    // if (!newIsRecurrent) {
+    //   await this._recurrentTransactionRepo.deleteRecurrentByParentId(oldTransaction.id)
+    //   return
+    // }
     if (!newFrequency) {
       console.error("Frequency is required to update recurrent transactions", { input })
       throw new Error("Frequency is required to update recurrent transactions")
     }
-    const recurrentTransaction = await this._recurrentTransactionRepo.findRecurrentByParentId(oldTransaction.id)
+    if (!updatedTransaction.recurrentTransactionId) {
+      console.error("Transaction is not recurrent", { input })
+      throw new Error("Transaction is not recurrent")
+    }
+    const recurrentTransaction = await this._recurrentTransactionRepo.findOneById(
+      updatedTransaction.recurrentTransactionId
+    )
     if (!recurrentTransaction) {
       console.error("Recurrent transaction not found", { input })
       throw new Error("Recurrent transaction not found")

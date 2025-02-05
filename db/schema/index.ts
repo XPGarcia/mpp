@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm"
 import {
   doublePrecision,
   index,
@@ -58,6 +59,10 @@ export const categories = pgTable("Category", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
 
+export const categoriesRelations = relations(categories, ({ one, many }) => ({
+  transactions: many(transactions),
+}))
+
 export const transactions = pgTable("Transaction", {
   id: serial("id").primaryKey(),
   typeId: smallint("type_id")
@@ -75,9 +80,25 @@ export const transactions = pgTable("Transaction", {
   amount: doublePrecision("amount").notNull(),
   description: text("description"),
   date: timestamp("date").notNull(),
+  recurrentTransactionId: integer("recurrent_transaction_id").references(() => recurrentTransactions.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
+
+export const transactionRelations = relations(transactions, ({ one, many }) => ({
+  category: one(categories, {
+    fields: [transactions.categoryId],
+    references: [categories.id],
+  }),
+  account: one(accounts, {
+    fields: [transactions.accountId],
+    references: [accounts.id],
+  }),
+  recurrentTransaction: one(recurrentTransactions, {
+    fields: [transactions.recurrentTransactionId],
+    references: [recurrentTransactions.id],
+  }),
+}))
 
 export const feedbacks = pgTable("Feedback", {
   id: serial("id").primaryKey(),
@@ -100,6 +121,10 @@ export const accounts = pgTable("Account", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
+
+export const accountsRelations = relations(accounts, ({ one, many }) => ({
+  transactions: many(transactions),
+}))
 
 export const budgets = pgTable("Budget", {
   id: serial("id").primaryKey(),
@@ -145,9 +170,23 @@ export const recurrentTransactions = pgTable(
   "RecurrentTransaction",
   {
     id: serial("id").primaryKey(),
-    transactionId: integer("transaction_id")
-      .notNull()
-      .references(() => transactions.id),
+    // Start transaction data
+    typeId: smallint("type_id")
+      .references(() => transactionTypes.id)
+      .notNull(),
+    categoryId: integer("category_id")
+      .references(() => categories.id)
+      .notNull(),
+    userId: integer("user_id")
+      .references(() => users.id)
+      .notNull(),
+    accountId: integer("account_id")
+      .references(() => accounts.id)
+      .notNull(),
+    amount: doublePrecision("amount").notNull(),
+    description: text("description"),
+    date: timestamp("date").notNull(),
+    // End transaction data
     frequencyId: smallint("frequency_id")
       .notNull()
       .references(() => transactionFrequencies.id),
@@ -162,3 +201,15 @@ export const recurrentTransactions = pgTable(
     }
   }
 )
+
+export const recurrentTransactionRelations = relations(recurrentTransactions, ({ one, many }) => ({
+  category: one(categories, {
+    fields: [recurrentTransactions.categoryId],
+    references: [categories.id],
+  }),
+  account: one(accounts, {
+    fields: [recurrentTransactions.accountId],
+    references: [accounts.id],
+  }),
+  transactions: many(transactions),
+}))

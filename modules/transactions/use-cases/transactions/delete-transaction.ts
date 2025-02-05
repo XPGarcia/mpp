@@ -1,12 +1,7 @@
 import { inject, injectable } from "inversify"
 
 import { TYPES } from "@/modules/container/types"
-import {
-  AccountsBalanceEntriesService,
-  AccountsService,
-  RecurrentTransactionRepository,
-  TransactionRepository,
-} from "@/modules/transactions/domain"
+import { AccountsBalanceEntriesService, AccountsService, TransactionRepository } from "@/modules/transactions/domain"
 import { NotFoundError } from "@/src/utils/errors/errors"
 import { isIncome } from "@/utils"
 
@@ -23,8 +18,6 @@ export interface DeleteTransactionUseCase {
 @injectable()
 export class DeleteTransaction implements DeleteTransactionUseCase {
   @inject(TYPES.TransactionRepository) private readonly _transactionRepository!: TransactionRepository
-  @inject(TYPES.RecurrentTransactionRepository)
-  private readonly _recurrentTransactionRepository!: RecurrentTransactionRepository
   @inject(TYPES.AccountBalanceEntriesService)
   private readonly _accountBalanceEntryService!: AccountsBalanceEntriesService
   @inject(TYPES.AccountsService) private readonly _accountsService!: AccountsService
@@ -41,10 +34,6 @@ export class DeleteTransaction implements DeleteTransactionUseCase {
       date: transaction.date,
     })
 
-    const recurrentTransaction = await this._recurrentTransactionRepository.findRecurrentByParentId(input.transactionId)
-    if (!!recurrentTransaction) {
-      await this._recurrentTransactionRepository.deleteRecurrentByParentId(input.transactionId)
-    }
     await this._transactionRepository.deleteOne(transaction.id)
 
     const amount = isIncome(transaction.type) ? transaction.amount * -1 : transaction.amount

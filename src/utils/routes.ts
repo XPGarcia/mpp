@@ -13,4 +13,6 @@ export const AppRoutes = {
   onboarding: `/onboarding`,
   updateTransaction: (id: number) => `${appRoot}/transactions/${id}`,
   categories: `${appRoot}/categories`,
+  recurrentTransactions: `${appRoot}/recurrent-transactions`,
+  editRecurrentTransaction: (id: number) => `${appRoot}/recurrent-transactions/${id}`,
 }
