@@ -53,5 +53,6 @@ function singleToDomain(dbTransaction: DrizzleTransaction): Transaction {
     categoryId: dbTransaction.categoryId,
     description: dbTransaction.description ?? undefined,
     recurrentTransactionId: dbTransaction.recurrentTransactionId ?? undefined,
+    createdAt: dbTransaction.createdAt,
   }
 }

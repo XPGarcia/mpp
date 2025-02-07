@@ -14,5 +14,6 @@ export const AppRoutes = {
   updateTransaction: (id: number) => `${appRoot}/transactions/${id}`,
   categories: `${appRoot}/categories`,
   recurrentTransactions: `${appRoot}/recurrent-transactions`,
-  editRecurrentTransaction: (id: number) => `${appRoot}/recurrent-transactions/${id}`,
+  viewRecurrentTransaction: (id: number) => `${appRoot}/recurrent-transactions/${id}`,
+  updateRecurrentTransaction: (id: number) => `${appRoot}/recurrent-transactions/${id}/update`,
 }

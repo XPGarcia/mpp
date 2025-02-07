@@ -1,8 +1,9 @@
 import { inject, injectable } from "inversify"
 
 import { TYPES } from "@/modules/container/types"
-import { RecurrentTransaction, Transaction } from "@/modules/transactions/domain"
+import { RecurrentTransaction, RecurrentTransactionRepository, Transaction } from "@/modules/transactions/domain"
 
+import { calculateNextTransactionDate } from "../../utils"
 import { CreateTransaction } from "./create-transaction"
 
 export type CreateTransactionFromRecurrentInput = RecurrentTransaction
@@ -16,6 +17,8 @@ export interface CreateTransactionFromRecurrentUseCase {
 @injectable()
 export class CreateTransactionFromRecurrent implements CreateTransactionFromRecurrentUseCase {
   @inject(TYPES.CreateTransaction) private readonly _createTransaction!: CreateTransaction
+  @inject(TYPES.RecurrentTransactionRepository)
+  private readonly _recurrentTransactionRepo!: RecurrentTransactionRepository
 
   async execute(recurrentTransaction: CreateTransactionFromRecurrentInput): CreateTransactionFromRecurrentOutput {
     const newTransaction = await this._createTransaction.execute({
@@ -26,6 +29,11 @@ export class CreateTransactionFromRecurrent implements CreateTransactionFromRecu
       description: recurrentTransaction.description,
       date: recurrentTransaction.nextDate,
       isRecurrent: false,
+    })
+
+    await this._recurrentTransactionRepo.updateRecurrent(recurrentTransaction.id, {
+      startDate: newTransaction.date,
+      nextDate: calculateNextTransactionDate(newTransaction.date, recurrentTransaction.frequency),
     })
 
     return newTransaction

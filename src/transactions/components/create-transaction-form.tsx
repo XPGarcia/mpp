@@ -210,7 +210,11 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
                 render={({ field }) => (
                   <FormItem className='flex flex-row items-start space-x-3 space-y-0 py-4'>
                     <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={Boolean(initialValues?.isRecurrent)}
+                      />
                     </FormControl>
                     <div className='space-y-1 leading-none'>
                       <FormLabel>Is a recurrent transaction?</FormLabel>

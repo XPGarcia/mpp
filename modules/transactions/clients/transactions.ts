@@ -20,6 +20,8 @@ import {
   GenerateRecurrentTransactions,
   GetMonthlyExpensesDistributionForUser,
   GetMonthlyExpensesDistributionInput,
+  UpdateRecurrentTransaction,
+  UpdateRecurrentTransactionInput,
   UpdateTransaction,
   UpdateTransactionInput,
 } from "@/modules/transactions/use-cases"
@@ -76,5 +78,9 @@ export const transactionsClient = {
   deleteRecurrentTransaction: (input: DeleteRecurrentTransactionInput) => {
     const deleteRecurrentTransaction = myContainer.get<DeleteRecurrentTransaction>(TYPES.DeleteRecurrentTransaction)
     return deleteRecurrentTransaction.execute(input)
+  },
+  updateRecurrentTransaction: (input: UpdateRecurrentTransactionInput) => {
+    const updateRecurrentTransaction = myContainer.get<UpdateRecurrentTransaction>(TYPES.UpdateRecurrentTransaction)
+    return updateRecurrentTransaction.execute(input)
   },
 }

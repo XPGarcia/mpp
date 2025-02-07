@@ -17,6 +17,7 @@ export type Transaction = {
     name: string
   }
   recurrentTransactionId?: number
+  createdAt: Date
 }
 
 export type RecurrentTransaction = Pick<

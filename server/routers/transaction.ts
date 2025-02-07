@@ -51,8 +51,8 @@ export const transactionRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const createdTransaction = await transactionsClient.updateOne(input)
-      return createdTransaction
+      const updatedTransaction = await transactionsClient.updateOne(input)
+      return updatedTransaction
     }),
   findUserTransactionsWithBalance: privateProcedure
     .input(
@@ -110,5 +110,22 @@ export const transactionRouter = router({
     .mutation(async ({ input }) => {
       const { recurrentTransactionId } = input
       await transactionsClient.deleteRecurrentTransaction({ recurrentTransactionId })
+    }),
+  updateRecurrentTransaction: privateProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        date: z.date(),
+        amount: z.number().min(0),
+        categoryId: z.number().min(1),
+        type: z.enum(getValues(TransactionType)),
+        description: z.string(),
+        isRecurrent: z.boolean(),
+        frequency: z.enum(getValues(TransactionFrequency)),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const updatedRecurrentTransaction = await transactionsClient.updateRecurrentTransaction(input)
+      return updatedRecurrentTransaction
     }),
 })

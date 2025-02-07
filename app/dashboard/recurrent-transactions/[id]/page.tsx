@@ -3,6 +3,7 @@
 import { Loader2, Pencil, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
+import { Transaction } from "@/modules/transactions/domain"
 import { useBoolean } from "@/src/misc/hooks/use-boolean"
 import { DeleteRecurrentTransactionDialogDrawer } from "@/src/transactions/components/delete-recurrent-transaction-dialog-drawer"
 import { RecurrentTransactionCard } from "@/src/transactions/components/recurrent-transaction-card"
@@ -18,7 +19,7 @@ interface Props {
   }
 }
 
-export default function EditRecurrentTransactionPage({ params }: Props) {
+export default function ViewRecurrentTransactionPage({ params }: Props) {
   const router = useRouter()
   const { toast } = useToast()
   const { value: isOpenDelete, on: openDelete, off: closeDelete } = useBoolean(false)
@@ -42,9 +43,28 @@ export default function EditRecurrentTransactionPage({ params }: Props) {
     )
   }
 
+  const goToUpdatePage = () => {
+    router.push(AppRoutes.updateRecurrentTransaction(recurrentTransaction.id))
+  }
+
   const handleDelete = async () => {
     closeDelete()
     router.push(AppRoutes.recurrentTransactions)
+  }
+
+  const generateTransactionFromRecurrent = () => {
+    const transaction: Transaction = {
+      id: 0,
+      amount: recurrentTransaction.amount,
+      date: recurrentTransaction.nextDate,
+      description: recurrentTransaction.description,
+      type: recurrentTransaction.type,
+      accountId: recurrentTransaction.accountId,
+      categoryId: recurrentTransaction.categoryId,
+      userId: recurrentTransaction.userId,
+      createdAt: new Date(),
+    }
+    return transaction
   }
 
   return (
@@ -53,7 +73,7 @@ export default function EditRecurrentTransactionPage({ params }: Props) {
         <div className='flex items-center justify-between py-3'>
           <h1 className='text-xl font-semibold'>{recurrentTransaction.description}</h1>
           <div className='flex items-center gap-2'>
-            <Button size='icon' variant='outline'>
+            <Button size='icon' variant='outline' onClick={goToUpdatePage}>
               <Pencil />
             </Button>
             <Button size='icon' variant='destructive' onClick={openDelete}>
@@ -72,6 +92,7 @@ export default function EditRecurrentTransactionPage({ params }: Props) {
               Transactions Overview
             </h2>
             <div>
+              <RecurrentTransactionOverviewItem transaction={generateTransactionFromRecurrent()} isPending={true} />
               {recurrentTransaction.transactions?.map((transaction) => (
                 <RecurrentTransactionOverviewItem key={transaction.id} transaction={transaction} />
               ))}

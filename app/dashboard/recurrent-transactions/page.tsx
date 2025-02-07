@@ -16,8 +16,8 @@ export default function RecurrentTransactionsPage() {
     router.push(AppRoutes.addTransaction)
   }
 
-  const editRecurrentTransaction = (id: number) => {
-    router.push(AppRoutes.editRecurrentTransaction(id))
+  const viewRecurrentTransaction = (id: number) => {
+    router.push(AppRoutes.viewRecurrentTransaction(id))
   }
 
   return (
@@ -30,7 +30,7 @@ export default function RecurrentTransactionsPage() {
           <div
             key={recurrentTransaction.id}
             className='cursor-pointer'
-            onClick={() => editRecurrentTransaction(recurrentTransaction.id)}
+            onClick={() => viewRecurrentTransaction(recurrentTransaction.id)}
           >
             <RecurrentTransactionCard recurrentTransaction={recurrentTransaction} />
           </div>
