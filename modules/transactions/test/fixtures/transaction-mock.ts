@@ -12,6 +12,7 @@ const TRANSACTION_MOCK: Transaction = {
   date: new Date(),
   type: TransactionType.EXPENSE,
   description: faker.lorem.sentence(),
+  createdAt: new Date(),
 }
 
 export const generateTransactionMock = generateEntityFromMock(TRANSACTION_MOCK)
