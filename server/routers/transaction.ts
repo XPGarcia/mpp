@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server"
+import dayjs from "dayjs"
 import { z } from "zod"
 
 import { transactionsClient } from "@/modules/transactions"
@@ -7,6 +8,19 @@ import { calculateBalance } from "@/modules/transactions/utils"
 import { getValues } from "@/src/utils/format/zod-enums"
 
 import { privateProcedure, router } from "../trpc"
+
+const getBackfillBoundary = (frequency: TransactionFrequency): dayjs.Dayjs => {
+  switch (frequency) {
+    case TransactionFrequency.DAILY:
+      return dayjs().endOf("day")
+    case TransactionFrequency.WEEKLY:
+      return dayjs().endOf("week")
+    case TransactionFrequency.MONTHLY:
+      return dayjs().endOf("month")
+    case TransactionFrequency.YEARLY:
+      return dayjs().endOf("year")
+  }
+}
 
 export const transactionRouter = router({
   findOneById: privateProcedure
@@ -28,6 +42,7 @@ export const transactionRouter = router({
         description: z.string(),
         isRecurrent: z.boolean(),
         frequency: z.enum(getValues(TransactionFrequency)).optional(),
+        totalOccurrences: z.number().int().min(1).optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -35,6 +50,27 @@ export const transactionRouter = router({
         userId: ctx.user.id,
         ...input,
       })
+
+      // Backfill missed transactions if recurrent with a past start date.
+      // Use end of current period as boundary because the cron already ran
+      // for this period and won't pick up newly created recurrences until next period.
+      if (createdTransaction.recurrentTransactionId != null) {
+        let recurrent = await transactionsClient.findRecurrentTransaction({
+          recurrentTransactionId: createdTransaction.recurrentTransactionId,
+        })
+
+        if (recurrent) {
+          const backfillBoundary = getBackfillBoundary(recurrent.frequency)
+
+          while (recurrent && !recurrent.finishedAt && !dayjs(recurrent.nextDate).isAfter(backfillBoundary, "day")) {
+            await transactionsClient.createTransactionFromRecurrent(recurrent)
+            recurrent = await transactionsClient.findRecurrentTransaction({
+              recurrentTransactionId: createdTransaction.recurrentTransactionId,
+            })
+          }
+        }
+      }
+
       return createdTransaction
     }),
   updateOne: privateProcedure
@@ -122,6 +158,7 @@ export const transactionRouter = router({
         description: z.string(),
         isRecurrent: z.boolean(),
         frequency: z.enum(getValues(TransactionFrequency)),
+        totalOccurrences: z.number().int().min(1).optional(),
       })
     )
     .mutation(async ({ input }) => {

@@ -17,6 +17,7 @@ export type UpdateRecurrentTransactionInput = {
   type: TransactionType
   description?: string
   frequency: TransactionFrequency
+  totalOccurrences?: number
 }
 
 export type UpdateRecurrentTransactionOutput = Promise<RecurrentTransaction | undefined>
@@ -31,16 +32,26 @@ export class UpdateRecurrentTransaction implements UpdateRecurrentTransactionUse
   private readonly _recurrentTransactionRepo!: RecurrentTransactionRepository
 
   async execute(input: UpdateRecurrentTransactionInput): UpdateRecurrentTransactionOutput {
-    const { id, date, ...rest } = input
+    const { id, date, totalOccurrences, ...rest } = input
     const recurrentTransaction = await this._recurrentTransactionRepo.findOneById(input.id)
     if (!recurrentTransaction) {
       console.error("Recurrent transaction not found", { input })
       throw new Error("Recurrent transaction not found")
     }
+    if (
+      totalOccurrences != null &&
+      recurrentTransaction.currentOccurrence != null &&
+      totalOccurrences < recurrentTransaction.currentOccurrence
+    ) {
+      throw new Error(
+        `Total occurrences (${totalOccurrences}) cannot be less than current occurrence (${recurrentTransaction.currentOccurrence})`
+      )
+    }
     const updatedRecurrentTransaction = await this._recurrentTransactionRepo.updateRecurrent(recurrentTransaction.id, {
       ...rest,
       startDate: date,
       nextDate: calculateNextTransactionDate(date, rest.frequency),
+      totalOccurrences,
     })
     if (!updatedRecurrentTransaction) {
       console.error("Failed to update recurrent transaction", { input })

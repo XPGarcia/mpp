@@ -129,4 +129,25 @@ describe("Generate recurrent transactions", () => {
       expect(result).toEqual([mockTransaction])
     })
   })
+
+  describe("All finished recurrences", () => {
+    beforeEach(() => {
+      MockDate.set("2025-01-29T00:00:00Z")
+      jest.clearAllMocks()
+    })
+
+    afterEach(() => {
+      MockDate.reset()
+      jest.restoreAllMocks()
+    })
+
+    it("should not generate any transactions when repo returns empty (all finished)", async () => {
+      findAllRecurrentForPeriod.mockResolvedValue([])
+
+      const result = await useCase.execute()
+
+      expect(execCreateTransactionFromRecurrent).not.toHaveBeenCalled()
+      expect(result).toEqual([])
+    })
+  })
 })

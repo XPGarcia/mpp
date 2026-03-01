@@ -50,7 +50,7 @@ export default function UpdateTransaction({ params }: Props) {
       <div className='flex w-full max-w-slim flex-col px-4 pt-8'>
         {transaction && !isLoading && !isRefetching && (
           <CreateTransactionForm
-            initialValues={{ ...transaction, description: transaction.description ?? "", isRecurrent: false }}
+            initialValues={{ ...transaction, description: transaction.description ?? "", isRecurrent: false, hasEndOccurrences: false }}
             withFrequency={false}
             onSubmit={submit}
             onCancel={cancel}

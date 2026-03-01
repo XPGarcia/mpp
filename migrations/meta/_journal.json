@@ -120,6 +120,13 @@
       "when": 1738682612677,
       "tag": "0016_modern_jazinda",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1772393452008,
+      "tag": "0017_talented_goliath",
+      "breakpoints": true
     }
   ]
 }

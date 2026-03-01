@@ -25,6 +25,9 @@ export type CreateRecurrentTransactionInput = Pick<
   createdAt?: Date | undefined
   updatedAt?: Date | undefined
   frequency: TransactionFrequency
+  totalOccurrences?: number
+  currentOccurrence?: number
+  finishedAt?: Date
 }
 
 export type UpdateRecurrentTransactionInput = Partial<CreateRecurrentTransactionInput>

@@ -10,7 +10,7 @@ import {
   TransactionRepository,
   TransactionType,
 } from "@/modules/transactions/domain"
-import { calculateNextTransactionDate } from "@/modules/transactions/utils"
+import { calculateNextTransactionDate, formatRecurrentDescription } from "@/modules/transactions/utils"
 import { BadRequestError } from "@/src/utils/errors/errors"
 import { isIncome } from "@/utils"
 
@@ -23,6 +23,7 @@ export type CreateTransactionInput = {
   description?: string
   isRecurrent: boolean
   frequency?: TransactionFrequency
+  totalOccurrences?: number
 }
 
 export type CreateTransactionOutput = Promise<Transaction>
@@ -52,12 +53,17 @@ export class CreateTransaction implements CreateTransactionUseCase {
         console.error("Frequency is required for recurrent transactions", { input })
         throw new BadRequestError("Frequency is required for recurrent transactions")
       }
+
+      const isFinite = input.totalOccurrences != null
       const createdRecurrentTransaction = await this._recurrentTransactionRepository.createOne({
         ...input,
         accountId: accountBalanceEntry.accountId,
         startDate: input.date,
         nextDate: calculateNextTransactionDate(input.date, input.frequency),
         frequency: input.frequency,
+        totalOccurrences: input.totalOccurrences,
+        currentOccurrence: isFinite ? 1 : undefined,
+        finishedAt: isFinite && input.totalOccurrences === 1 ? new Date() : undefined,
       })
       if (!createdRecurrentTransaction) {
         console.error("Failed to create recurrent transaction", { input })
@@ -66,8 +72,14 @@ export class CreateTransaction implements CreateTransactionUseCase {
       newRecurrentTransactionId = createdRecurrentTransaction.id
     }
 
+    const isFinite = input.isRecurrent && input.totalOccurrences != null
+    const description = isFinite
+      ? formatRecurrentDescription(input.description, 1, input.totalOccurrences!)
+      : input.description
+
     const createdTransaction = await this._transactionRepository.createOne({
       ...input,
+      description,
       accountId: accountBalanceEntry.accountId,
       recurrentTransactionId: newRecurrentTransactionId,
     })

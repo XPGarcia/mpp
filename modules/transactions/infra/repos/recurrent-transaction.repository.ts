@@ -1,5 +1,5 @@
 import dayjs from "dayjs"
-import { and, desc, eq, gte, lt } from "drizzle-orm"
+import { and, desc, eq, gte, isNull, lt } from "drizzle-orm"
 import { injectable } from "inversify"
 
 import { db } from "@/db"
@@ -72,7 +72,8 @@ export class DrizzleRecurrentTransactionRepository implements RecurrentTransacti
         and(
           gte(recurrentTransactions.nextDate, input.fromDate),
           lt(recurrentTransactions.nextDate, input.toDate),
-          eq(recurrentTransactions.frequencyId, getTransactionFrequencyId(input.frequency))
+          eq(recurrentTransactions.frequencyId, getTransactionFrequencyId(input.frequency)),
+          isNull(recurrentTransactions.finishedAt)
         )
       )
     return RecurrentTransactionMapper.toDomains(rows)

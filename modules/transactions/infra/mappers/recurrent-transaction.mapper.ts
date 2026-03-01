@@ -67,6 +67,9 @@ function singleToDomain(dbRecurrentTransaction: DrizzleRecurrentTransaction): Re
     frequency: getTransactionFrequencyFromId(dbRecurrentTransaction.frequencyId),
     startDate: dbRecurrentTransaction.startDate,
     nextDate: dbRecurrentTransaction.nextDate,
+    totalOccurrences: dbRecurrentTransaction.totalOccurrences ?? undefined,
+    currentOccurrence: dbRecurrentTransaction.currentOccurrence ?? undefined,
+    finishedAt: dbRecurrentTransaction.finishedAt ?? undefined,
     account: dbRecurrentTransaction.account
       ? { id: dbRecurrentTransaction.account.id, name: dbRecurrentTransaction.account.name }
       : undefined,

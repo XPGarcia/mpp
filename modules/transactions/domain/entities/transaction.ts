@@ -28,6 +28,9 @@ export type RecurrentTransaction = Pick<
   frequency: TransactionFrequency
   startDate: Date
   nextDate: Date
+  totalOccurrences?: number
+  currentOccurrence?: number
+  finishedAt?: Date
   transactions?: Transaction[]
 }
 

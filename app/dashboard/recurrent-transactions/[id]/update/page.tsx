@@ -68,7 +68,10 @@ export default function UpdateRecurrentTransactionPage({ params }: Props) {
             date: recurrentTransaction.startDate,
             description: recurrentTransaction.description ?? "",
             isRecurrent: true,
+            hasEndOccurrences: Boolean(recurrentTransaction.totalOccurrences),
+            totalOccurrences: recurrentTransaction.totalOccurrences,
           }}
+          currentOccurrence={recurrentTransaction.currentOccurrence}
           onSubmit={submit}
           onCancel={cancel}
         />

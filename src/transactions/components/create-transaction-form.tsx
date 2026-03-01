@@ -38,18 +38,21 @@ const schema = z.object({
   frequency: z
     .enum(getValues(TransactionFrequency), { message: "Select a valid frequency for transaction" })
     .optional(),
+  hasEndOccurrences: z.boolean().default(false),
+  totalOccurrences: z.number().int().min(1).optional(),
 })
 
 export type CreateTransactionFormData = z.infer<typeof schema>
 
 interface Props {
   initialValues?: CreateTransactionFormData
+  currentOccurrence?: number
   withFrequency?: boolean
   onSubmit: (data: CreateTransactionFormData) => void
   onCancel: () => void
 }
 
-export const CreateTransactionForm = ({ initialValues, withFrequency = true, onSubmit, onCancel }: Props) => {
+export const CreateTransactionForm = ({ initialValues, currentOccurrence, withFrequency = true, onSubmit, onCancel }: Props) => {
   const [openCategoryForm, setOpenCategoryForm] = useState(false)
   const form = useForm<CreateTransactionFormData>({
     defaultValues: {
@@ -60,6 +63,8 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
       description: initialValues?.description ?? "",
       isRecurrent: initialValues?.isRecurrent ?? false,
       frequency: initialValues?.frequency,
+      hasEndOccurrences: initialValues?.hasEndOccurrences ?? false,
+      totalOccurrences: initialValues?.totalOccurrences,
     },
     resolver: zodResolver(schema),
   })
@@ -73,10 +78,17 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
   const { mutateAsync: createCategoryForUser } = trpc.categories.createOneForUser.useMutation()
 
   const submit = (data: CreateTransactionFormData) => {
+    if (currentOccurrence != null && data.totalOccurrences != null && data.totalOccurrences < currentOccurrence) {
+      form.setError("totalOccurrences", {
+        message: `Total occurrences cannot be less than current occurrence (${currentOccurrence})`,
+      })
+      return
+    }
     if (!initialValues) {
       form.reset()
     }
-    onSubmit(data)
+    const { hasEndOccurrences: _, ...rest } = data
+    onSubmit(rest as CreateTransactionFormData)
   }
 
   const handleCreateCategory = async (data: CreateCategoryFormData) => {
@@ -224,30 +236,79 @@ export const CreateTransactionForm = ({ initialValues, withFrequency = true, onS
               />
 
               {form.watch("isRecurrent") && (
-                <FormField
-                  control={form.control}
-                  name='frequency'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Frequency</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                <>
+                  <FormField
+                    control={form.control}
+                    name='frequency'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Frequency</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder='Select a frequency' />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {transactionFrequencyOptions.map((frequencyOption) => (
+                              <SelectItem key={frequencyOption.value} value={frequencyOption.value}>
+                                {frequencyOption.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='hasEndOccurrences'
+                    render={({ field }) => (
+                      <FormItem className='flex flex-row items-start space-x-3 space-y-0 py-4'>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder='Select a frequency' />
-                          </SelectTrigger>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={Boolean(initialValues?.hasEndOccurrences)}
+                          />
                         </FormControl>
-                        <SelectContent>
-                          {transactionFrequencyOptions.map((frequencyOption) => (
-                            <SelectItem key={frequencyOption.value} value={frequencyOption.value}>
-                              {frequencyOption.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
+                        <div className='space-y-1 leading-none'>
+                          <FormLabel>Ends after a number of occurrences</FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+
+                  {form.watch("hasEndOccurrences") && (
+                    <FormField
+                      control={form.control}
+                      name='totalOccurrences'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Total occurrences</FormLabel>
+                          <FormControl>
+                            <Input
+                              type='number'
+                              min={currentOccurrence ?? 1}
+                              step={1}
+                              {...field}
+                              value={field.value || ""}
+                              onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                            />
+                          </FormControl>
+                          {currentOccurrence != null && (
+                            <p className='text-sm text-muted-foreground'>
+                              Current occurrence: {currentOccurrence}
+                            </p>
+                          )}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   )}
-                />
+                </>
               )}
             </>
           )}
