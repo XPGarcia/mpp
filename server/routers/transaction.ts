@@ -131,7 +131,10 @@ export const transactionRouter = router({
       return { totalBalance, filteredBalance }
     }),
   findUserRecurrentTransactions: privateProcedure.query(async ({ ctx }) => {
-    const recurrentTransactions = await transactionsClient.findUserRecurrentTransactions({ userId: ctx.user.id })
+    const recurrentTransactions = await transactionsClient.findUserRecurrentTransactions({
+      userId: ctx.user.id,
+      showDeleted: false,
+    })
     return recurrentTransactions
   }),
   findOneRecurrentById: privateProcedure.input(z.object({ id: z.number() })).query(async ({ input }) => {

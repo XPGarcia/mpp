@@ -70,6 +70,7 @@ function singleToDomain(dbRecurrentTransaction: DrizzleRecurrentTransaction): Re
     totalOccurrences: dbRecurrentTransaction.totalOccurrences ?? undefined,
     currentOccurrence: dbRecurrentTransaction.currentOccurrence ?? undefined,
     finishedAt: dbRecurrentTransaction.finishedAt ?? undefined,
+    deletedAt: dbRecurrentTransaction.deletedAt ?? undefined,
     account: dbRecurrentTransaction.account
       ? { id: dbRecurrentTransaction.account.id, name: dbRecurrentTransaction.account.name }
       : undefined,

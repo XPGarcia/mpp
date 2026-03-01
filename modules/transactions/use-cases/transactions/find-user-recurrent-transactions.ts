@@ -5,6 +5,7 @@ import { RecurrentTransaction, RecurrentTransactionRepository } from "@/modules/
 
 export type FindUserRecurrentTransactionsInput = {
   userId: number
+  showDeleted?: boolean
 }
 
 export type FindUserRecurrentTransactionsOutput = Promise<RecurrentTransaction[]>
@@ -19,6 +20,6 @@ export class FindUserRecurrentTransactions implements FindUserRecurrentTransacti
   private readonly _recurrentTransactionRepo!: RecurrentTransactionRepository
 
   async execute(input: FindUserRecurrentTransactionsInput): FindUserRecurrentTransactionsOutput {
-    return this._recurrentTransactionRepo.findManyByUser(input.userId)
+    return this._recurrentTransactionRepo.findManyByUser(input.userId, { showDeleted: input.showDeleted ?? true })
   }
 }

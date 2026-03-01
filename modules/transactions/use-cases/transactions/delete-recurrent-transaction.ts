@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify"
 
 import { TYPES } from "@/modules/container/types"
-import { RecurrentTransactionRepository, TransactionRepository } from "@/modules/transactions/domain"
+import { RecurrentTransactionRepository } from "@/modules/transactions/domain"
 import { NotFoundError } from "@/src/utils/errors/errors"
 
 export type DeleteRecurrentTransactionInput = {
@@ -18,7 +18,6 @@ export interface DeleteRecurrentTransactionUseCase {
 export class DeleteRecurrentTransaction implements DeleteRecurrentTransactionUseCase {
   @inject(TYPES.RecurrentTransactionRepository)
   private readonly _recurrentTransactionRepo!: RecurrentTransactionRepository
-  @inject(TYPES.TransactionRepository) private readonly _transactionRepo!: TransactionRepository
 
   async execute(input: DeleteRecurrentTransactionInput): Promise<DeleteRecurrentTransactionOutput> {
     const recurrentTransaction = await this._recurrentTransactionRepo.findOneById(input.recurrentTransactionId)
@@ -27,8 +26,6 @@ export class DeleteRecurrentTransaction implements DeleteRecurrentTransactionUse
       throw new NotFoundError("Recurrent transaction not found to delete")
     }
 
-    await this._transactionRepo.updateManyByRecurrentId(recurrentTransaction.id, { recurrentTransactionId: null })
-
-    await this._recurrentTransactionRepo.deleteOneById(recurrentTransaction.id)
+    await this._recurrentTransactionRepo.updateRecurrent(recurrentTransaction.id, { deletedAt: new Date() })
   }
 }

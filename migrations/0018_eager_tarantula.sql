@@ -1,0 +1,1 @@
+ALTER TABLE "RecurrentTransaction" ADD COLUMN "deleted_at" timestamp;

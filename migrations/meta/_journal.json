@@ -127,6 +127,13 @@
       "when": 1772393452008,
       "tag": "0017_talented_goliath",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1772402351710,
+      "tag": "0018_eager_tarantula",
+      "breakpoints": true
     }
   ]
 }

@@ -195,6 +195,7 @@ export const recurrentTransactions = pgTable(
     totalOccurrences: integer("total_occurrences"),
     currentOccurrence: integer("current_occurrence"),
     finishedAt: timestamp("finished_at"),
+    deletedAt: timestamp("deleted_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },

@@ -38,7 +38,7 @@ export class DrizzleRecurrentTransactionRepository implements RecurrentTransacti
   }
 
   async deleteOneById(id: number): Promise<void> {
-    await db.delete(recurrentTransactions).where(eq(recurrentTransactions.id, id))
+    await db.update(recurrentTransactions).set({ deletedAt: new Date() }).where(eq(recurrentTransactions.id, id))
   }
 
   async updateRecurrent(id: number, input: UpdateRecurrentTransactionInput): Promise<RecurrentTransaction | undefined> {
@@ -73,7 +73,8 @@ export class DrizzleRecurrentTransactionRepository implements RecurrentTransacti
           gte(recurrentTransactions.nextDate, input.fromDate),
           lt(recurrentTransactions.nextDate, input.toDate),
           eq(recurrentTransactions.frequencyId, getTransactionFrequencyId(input.frequency)),
-          isNull(recurrentTransactions.finishedAt)
+          isNull(recurrentTransactions.finishedAt),
+          isNull(recurrentTransactions.deletedAt)
         )
       )
     return RecurrentTransactionMapper.toDomains(rows)
@@ -94,12 +95,16 @@ export class DrizzleRecurrentTransactionRepository implements RecurrentTransacti
     })
   }
 
-  async findManyByUser(userId: number): Promise<RecurrentTransaction[]> {
+  async findManyByUser(userId: number, options?: { showDeleted?: boolean }): Promise<RecurrentTransaction[]> {
+    const conditions = [eq(recurrentTransactions.userId, userId)]
+    if (options?.showDeleted !== true) {
+      conditions.push(isNull(recurrentTransactions.deletedAt))
+    }
     const rows = await db
       .select()
       .from(recurrentTransactions)
       .leftJoin(categories, eq(categories.id, recurrentTransactions.categoryId))
-      .where(eq(recurrentTransactions.userId, userId))
+      .where(and(...conditions))
       .orderBy(desc(recurrentTransactions.nextDate))
     return RecurrentTransactionMapper.toDomains(rows)
   }

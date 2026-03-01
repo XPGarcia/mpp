@@ -12,7 +12,7 @@ export interface RecurrentTransactionRepository {
     frequency: TransactionFrequency
   }): Promise<RecurrentTransaction[]>
   findAllRecurrentForPeriod(timeUnit: TimeUnit): Promise<RecurrentTransaction[]>
-  findManyByUser(userId: number): Promise<RecurrentTransaction[]>
+  findManyByUser(userId: number, options?: { showDeleted?: boolean }): Promise<RecurrentTransaction[]>
 }
 
 export type CreateRecurrentTransactionInput = Pick<
@@ -28,6 +28,7 @@ export type CreateRecurrentTransactionInput = Pick<
   totalOccurrences?: number
   currentOccurrence?: number
   finishedAt?: Date
+  deletedAt?: Date
 }
 
 export type UpdateRecurrentTransactionInput = Partial<CreateRecurrentTransactionInput>
